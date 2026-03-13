@@ -17,12 +17,13 @@ If you are developing a production application, we recommend using TypeScript wi
 
 # Dev Notes
 
-## Tech Stack
+## Tech Stack, Frameworks, Libraries
 
 - ReactJs
 - [Vite](https://vite.dev/guide/)
 - [Tauri](https://v2.tauri.app/start/)
 - [TailwindCSS](https://tailwindcss.com/docs/installation/using-vite)
+- [Lucide React](https://lucide.dev/icons) Icons
 
 ## Build
 
