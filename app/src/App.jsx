@@ -5,6 +5,7 @@ import Purchases from "./pages/Purchases/Purchases"
 import Expenses from "./pages/Expenses/Expenses"
 import Reports from "./pages/Reports/Reports"
 import Header from './components/Header'
+import NotFound from "./pages/NotFound"
 
 function App() {
 
@@ -19,6 +20,8 @@ function App() {
           <Route path="/purchases" element={<Purchases />} />
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/reports" element={<Reports />} />
+
+          <Route path="*" element={<NotFound />} /> 
         </Routes>
       </BrowserRouter>
   )

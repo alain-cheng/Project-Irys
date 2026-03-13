@@ -1,40 +1,49 @@
 import { NavLink } from "react-router-dom";
+import { ChevronRight, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 function Sidebar({ links }) {
-    return(
-        <aside className="border border-border-soft w-64 rounded-2xl px-4 py-2">
-            <ul className="flex flex-col">
-                Sidebar
-            </ul>
-            <ul className="flex flex-col">
-                Sidebar
-            </ul>
-        </aside>
-    )
-}
+  const [expanded, setExpanded] = useState(null)
+  
+  return(
+    <aside className="fixed left-0 top-16 border border-border-soft w-64 h-full rounded-2xl px-4 py-2 bg-background">
+        <ul className="flex flex-col">
+            {links.map((link) => {
 
-/**
- *   
- return (
-    <aside className="w-64 p-4 border-r border-black">
-      <ul className="flex flex-col gap-2">
-        {links.map((link) => (
-          <li key={link.path}>
-            <NavLink
-              to={link.path}
-              className={({ isActive }) =>
-                `block px-3 py-2 rounded-lg ${
-                  isActive ? "bg-accent-soft" : "hover:bg-accent-soft"
-                }`
-              }
-            >
-              {link.label}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+              const Icon = link.icon
+              const isOpen = expanded === link.path
+
+              return(
+                <li key={link.path}>
+                  <div
+                    onClick={() => setExpanded(isOpen ? null : link.path)}
+                    className="flex items-center justify-between px-3 py-1 rounded-lg text-sm hover:text-accent cursor-pointer"
+                  >
+                    <NavLink
+                      to={link.path}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3 py-1 rounded-lg text-sm ${
+                          isActive 
+                            ? "text-accent-strong" 
+                            : "hover:text-accent-strong"
+                        }` 
+                      }
+                    >
+                      <Icon size={18} />
+                      {link.label}
+                    </NavLink>
+
+                    {isOpen
+                      ? <ChevronDown size={16} />
+                      : <ChevronRight size={16} />
+                    }
+                  </div>
+                </li>
+              )
+            })}
+        </ul>
     </aside>
   )
- */
+}
 
 export default Sidebar
