@@ -22,7 +22,7 @@ function Purchases() {
             <Sidebar links={purchasesLinks} />
 
             <main className="ml-80 mt-20">
-                <h1 className="text-2xl text-text">Purchases</h1>
+                <h1 className="text-2xl text-text mb-5">Purchases</h1>
 
                 <div className="flex items-center gap-5">
                     <Node 

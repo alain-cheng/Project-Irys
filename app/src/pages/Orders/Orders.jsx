@@ -18,12 +18,10 @@ function Orders() {
 
     return (
         <div className="flex pt-2 space-x-2">
-            <Sidebar 
-                links={orderLinks}
-            />
+            <Sidebar links={orderLinks} />
 
             <main className="ml-80 mt-20">
-                <h1 className="text-2xl text-text">Orders</h1>
+                <h1 className="text-2xl text-text mb-5">Orders</h1>
                 {/* to consider using React Flow for the flowchart-style UI */}
                 <div className="flex items-center gap-5">
                     <Node 
