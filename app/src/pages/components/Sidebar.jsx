@@ -8,38 +8,54 @@ function Sidebar({ links }) {
   return(
     <aside className="fixed left-0 top-16 border border-border-soft w-64 h-full rounded-2xl px-4 py-2 bg-background">
         <ul className="flex flex-col">
-            {links.map((link) => {
+            {links
+              .filter(link => link.showInSidebar !== false)
+              .map((link) => {
+                const Icon = link.icon
+                const isOpen = expanded === link.path
 
-              const Icon = link.icon
-              const isOpen = expanded === link.path
-
-              return(
-                <li key={link.path}>
-                  <div
-                    onClick={() => setExpanded(isOpen ? null : link.path)}
-                    className="flex items-center justify-between px-3 py-1 rounded-lg text-sm hover:text-accent cursor-pointer"
-                  >
-                    <NavLink
-                      to={link.path}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-1 rounded-lg text-sm ${
-                          isActive 
-                            ? "text-accent-strong" 
-                            : "hover:text-accent-strong"
-                        }` 
-                      }
+                return(
+                  <li key={link.path}>
+                    <div
+                      onClick={() => setExpanded(isOpen ? null : link.path)}
+                      className="flex items-center justify-between px-3 py-1 rounded-lg text-sm hover:text-accent cursor-pointer"
                     >
-                      <Icon size={18} />
-                      {link.label}
-                    </NavLink>
+                      <NavLink
+                        to={link.path}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-1 rounded-lg text-sm ${
+                            isActive 
+                              ? "text-accent-strong" 
+                              : "hover:text-accent-strong"
+                          }` 
+                        }
+                      >
+                        <Icon size={18} />
+                        {link.label}
+                      </NavLink>
 
-                    {isOpen
-                      ? <ChevronDown size={16} />
-                      : <ChevronRight size={16} />
-                    }
-                  </div>
-                </li>
-              )
+                      {isOpen
+                        ? <ChevronDown size={16} />
+                        : <ChevronRight size={16} />
+                      }
+                    </div>
+                    
+                    {isOpen && link.children && (
+                      <ul className="ml-6 flex flex-col gap-1">
+                        {link.children.map((child) => (
+                          <li key={child.path}>
+                            <NavLink
+                              to={child.path}
+                              className="block text-sm font-light pl-8 py-0.5 rounded-lg hover:text-accent-strong"
+                            >
+                              {child.label}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                )
             })}
         </ul>
     </aside>
