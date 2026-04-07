@@ -35,7 +35,7 @@ function Reports() {
                     <div className="flex flex-row gap-1 mt-5">
                         <div 
                             onClick={() => setSelected(REPORTS_TYPE.Inventory)}
-                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft
+                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft hover:cursor-pointer
                                 ${Selected === REPORTS_TYPE.Inventory
                                     ? "bg-accent border-none font-bold"
                                     : "hover:bg-accent-soft"
@@ -46,7 +46,7 @@ function Reports() {
                         </div>
                         <div 
                             onClick={() => setSelected(REPORTS_TYPE.Orders)}
-                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft
+                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft hover:cursor-pointer
                                 ${Selected === REPORTS_TYPE.Orders
                                     ? "bg-accent border-none font-bold"
                                     : "hover:bg-accent-soft"
@@ -57,7 +57,7 @@ function Reports() {
                         </div>
                         <div 
                             onClick={() => setSelected(REPORTS_TYPE.Purchases)}
-                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft
+                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft hover:cursor-pointer
                                 ${Selected === REPORTS_TYPE.Purchases
                                     ? "bg-accent border-none font-bold"
                                     : "hover:bg-accent-soft"
@@ -68,7 +68,7 @@ function Reports() {
                         </div>
                         <div 
                             onClick={() => setSelected(REPORTS_TYPE.Misc)}
-                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft
+                            className={`border border-b-0 px-5 rounded-t-lg hover:bg-accent-soft hover:cursor-pointer
                                 ${Selected === REPORTS_TYPE.Misc
                                     ? "bg-accent border-none font-bold"
                                     : "hover:bg-accent-soft"
