@@ -6,7 +6,7 @@ function Sidebar({ links }) {
   const [expanded, setExpanded] = useState(null)
   
   return(
-    <aside className="fixed left-0 top-16 border border-border-soft w-64 h-full rounded-2xl px-4 py-2 bg-background">
+    <aside className="fixed left-0 top-18 border border-border-soft w-64 h-full rounded-2xl px-4 py-2 bg-background">
         <ul className="flex flex-col">
             {links
               .filter(link => link.showInSidebar !== false)
