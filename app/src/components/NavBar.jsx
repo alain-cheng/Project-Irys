@@ -1,46 +1,67 @@
 import { useNavigate } from "react-router-dom"
+import { NavLink } from "react-router-dom";
 
 function NavBar() {
     const navigate = useNavigate();
 
     return(
-        <div className="border-b border-border-soft rounded-2xl">
-            {/* */}
+        <div className="border-b border-border-soft rounded-2xl py-2">
             <div className="">
-                <button 
-                    onClick={() => navigate("/")}
-                    className="px-3 py-2 rounded-l-2xl hover:bg-accent-soft"
+                <NavLink
+                    to="/"
+                    end
+                    className={({ isActive }) =>
+                        `px-3 py-2 rounded-l-2xl ${
+                            isActive ? "bg-accent" : "hover:bg-accent-soft"
+                        }`
+                    }
                 >
                         Dashboard
-                </button>
+                </NavLink>
 
-                <button 
-                    onClick={() => navigate("/orders")}
-                    className="px-3 py-2 hover:bg-accent-soft"
+                <NavLink 
+                    to="/orders"
+                    className={({ isActive }) =>
+                        `px-3 py-2 ${
+                            isActive ? "bg-accent" : "hover:bg-accent-soft"
+                        }`
+                    }
                 >
                     Orders
-                </button>
+                </NavLink>
 
-                <button 
-                    onClick={() => navigate("/purchases")}
-                    className="px-3 py-2 hover:bg-accent-soft"
+                <NavLink
+                    to="/purchases"
+                    className={({ isActive}) => 
+                        `px-3 py-2 ${
+                            isActive ? "bg-accent" : "hover:bg-accent-soft"
+                        }`
+                    }
                 >
                         Purchases
-                </button>
+                </NavLink>
 
-                <button 
-                    onClick={() => navigate("/expenses")}
-                    className="px-3 py-2 hover:bg-accent-soft"
+                <NavLink 
+                    to="/expenses"
+                    className={({ isActive }) => 
+                        `px-3 py-2 ${
+                            isActive ? "bg-accent" : "hover:bg-accent-soft"
+                        }`
+                    }
                 >
                     Expenses
-                </button>
+                </NavLink>
 
-                <button 
-                    onClick={() => navigate("/reports")}
-                    className="px-3 py-2 rounded-r-2xl hover:bg-accent-soft"
+                <NavLink 
+                    to="/reports"
+                    className={({ isActive }) => 
+                        `px-3 py-2 rounded-r-2xl ${
+                            isActive ? "bg-accent" : "hover:bg-accent-soft"
+                        }`
+                    }
                 >
                     Reports
-                </button>
+                </NavLink>
             </div>
         </div>
     )
