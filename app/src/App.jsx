@@ -8,6 +8,7 @@ import List from "./pages/Orders/Customers/List"
 import DataEntry from "./pages/Orders/Customers/DataEntry"
 import PaymentHistory from "./pages/Orders/Customers/PaymentHistory"
 import SalesHistory from "./pages/Orders/Customers/SalesHistory"
+import SalesOrders from "./pages/Orders/SalesOrders/SalesOrders"
 
 import Purchases from "./pages/Purchases/Purchases"
 import PurchasesDefault from "./pages/Purchases/PurchasesDefault"
@@ -37,6 +38,7 @@ function App() {
             <Route path="customers/data_entry" element={<DataEntry />}/>
             <Route path="customers/payment_history" element={<PaymentHistory />}/>
             <Route path="customers/sales_history" element={<SalesHistory />}/>
+            <Route path="sales_orders" element={<SalesOrders />}/>
           </Route>
 
           <Route path="/purchases" element={<Purchases />}>

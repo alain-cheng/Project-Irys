@@ -99,14 +99,20 @@ export const items = [
         categoryId: 5,
         wholesalePrice: 1450.00,
         wholesaleDiscount: 0,
-        retail1Price: 0,
+        retail1Price: 1399.00,
         retail1Discount: 0,
-        retail2Price: 0,
+        retail2Price: 1499.00,
         retail2Discount: 0,
-        purchasePrice: 0,
+        purchasePrice: 1500.00,
         purchaseDiscount: 0,
-        specialPrice: 0,
+        specialPrice: 1299.50,
         specialDiscount: 0,
         averageCost: 1450.00
     },
 ]
+
+// helpers
+
+export const getAllItems = () => { return items }
+
+export const getItemById = (id) => items.find(i => i.id === id)

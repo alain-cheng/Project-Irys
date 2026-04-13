@@ -6,7 +6,7 @@ function Customers() {
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Customers</h1>
 
-            {/* container */}
+            {/* table container */}
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
                     <table className="bg-background min-w-full">
