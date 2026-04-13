@@ -9,7 +9,7 @@ function Purchases() {
         <div className="flex pt-2 space-x-2">
             <Sidebar links={purchasesLinks} />
 
-            <main className="ml-80 mt-20">
+            <main className="ml-70 mt-20">
                 <Outlet />
             </main>
         </div>    
