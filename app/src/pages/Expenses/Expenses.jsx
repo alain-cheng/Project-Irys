@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { expensesLinks } from "../../routes/expensesLinks"
+import { expensesLinks } from "../../routes/expensesLinks.js"
 
 import Sidebar from "../components/Sidebar"
 

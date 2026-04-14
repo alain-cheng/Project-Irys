@@ -43,7 +43,7 @@ function Customers() {
                                     <td>{customer.phone}</td>
                                     <td>{customer.fax}</td>
                                     <td>{customer.tin}</td>
-                                    <td>{customer.creditLimit}</td>
+                                    <td>{customer.creditLimit.toFixed(2)}</td>
                                     <td>{customer.salesman}</td>
                                 </tr>
                             ))}

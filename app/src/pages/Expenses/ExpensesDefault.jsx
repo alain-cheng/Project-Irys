@@ -1,4 +1,4 @@
-import { expensesLinks } from "../../routes/expensesLinks"
+import { expensesLinks } from "../../routes/expensesLinks.js"
 
 import Node from "../components/Node"
 
