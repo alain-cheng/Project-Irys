@@ -10,6 +10,10 @@ import PaymentHistory from "./pages/Orders/Customers/PaymentHistory"
 import SalesHistory from "./pages/Orders/Customers/SalesHistory"
 import SalesOrders from "./pages/Orders/SalesOrders/SalesOrders"
 import Invoices from "./pages/Orders/Invoices/Invoices"
+import OrderPayments from "./pages/Orders/OrderPayments/OrderPayments"
+import CreditReturns from "./pages/Orders/CreditReturns/CreditReturns"
+import Collections from "./pages/Orders/Collections/Collections"
+import InvoiceReturns from "./pages/Orders/InvoiceReturns/InvoiceReturns"
 
 import Purchases from "./pages/Purchases/Purchases"
 import PurchasesDefault from "./pages/Purchases/PurchasesDefault"
@@ -35,12 +39,17 @@ function App() {
           <Route path="/orders" element={<Orders />}>
             <Route index element={<OrdersDefault/>}/> 
             <Route path="customers" element={<Customers />}/>
-            <Route path="customers/list" element={<List />}/>
+            {/* <Route path="customers/list" element={<List />}/>
             <Route path="customers/data_entry" element={<DataEntry />}/>
             <Route path="customers/payment_history" element={<PaymentHistory />}/>
-            <Route path="customers/sales_history" element={<SalesHistory />}/>
+            <Route path="customers/sales_history" element={<SalesHistory />}/> */}
             <Route path="sales_orders" element={<SalesOrders />}/>
             <Route path="invoices" element={<Invoices />}/>
+            <Route path="order_payments" element={<OrderPayments />}/>
+            <Route path="credit_returns" element={<CreditReturns />}/>
+
+            <Route path="collections" element={<Collections />}/>
+            <Route path="invoice_returns" element={<InvoiceReturns />}/>
           </Route>
 
           <Route path="/purchases" element={<Purchases />}>

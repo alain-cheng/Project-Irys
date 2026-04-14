@@ -20,6 +20,6 @@ export const invoiceReturns = [
 
 // helpers
 
-export const GetAllInvoiceReturns = () => { return invoiceReturns }
+export const getAllInvoiceReturns = () => { return invoiceReturns }
 
-export const GetInvoiceReturnsById = (id) => invoiceReturns.find(i => i.id === id)
+export const getInvoiceReturnsById = (id) => invoiceReturns.find(i => i.id === id)
