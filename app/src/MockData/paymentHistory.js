@@ -6,7 +6,7 @@ export const paymentHistory = [
         paymentMode: "",
         bankName: "",
         checkNumber: 0,
-        checkData: "",
+        checkDate: new Date("2026-01-31"),
         status: "paid"
     },
     {
@@ -16,7 +16,7 @@ export const paymentHistory = [
         paymentMode: "",
         bankName: "",
         checkNumber: 0,
-        checkData: "",
+        checkDate: new Date("2026-01-31"),
         status: "paid"
     },
     {
@@ -26,7 +26,7 @@ export const paymentHistory = [
         paymentMode: "",
         bankName: "",
         checkNumber: 0,
-        checkData: "",
+        checkDate: new Date("2026-01-31"),
         status: "paid"
     },
 ]

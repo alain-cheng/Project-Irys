@@ -2,7 +2,7 @@ export const creditMemo = [
     {
         id: 5001,
         customerId: 1009,
-        date: "",
+        date: new Date("2026-01-31"),
         poNumber: 0,
         creditId: 0,
         itemId: 0,

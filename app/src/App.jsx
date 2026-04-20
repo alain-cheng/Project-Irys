@@ -43,10 +43,10 @@ function App() {
           <Route path="/orders" element={<Orders />}>
             <Route index element={<OrdersDefault/>}/> 
             <Route path="customers" element={<Customers />}/>
-            {/* <Route path="customers/list" element={<List />}/>
+             <Route path="customers/list" element={<List />}/>
             <Route path="customers/data_entry" element={<DataEntry />}/>
             <Route path="customers/payment_history" element={<PaymentHistory />}/>
-            <Route path="customers/sales_history" element={<SalesHistory />}/> */}
+            <Route path="customers/sales_history" element={<SalesHistory />}/>
             <Route path="sales_orders" element={<SalesOrders />}/>
             <Route path="invoices" element={<Invoices />}/>
             <Route path="order_payments" element={<OrderPayments />}/>

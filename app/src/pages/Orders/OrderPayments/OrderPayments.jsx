@@ -38,7 +38,7 @@ function OrderPayments() {
                                     <td>{getSalesOrderById(payment.salesOrderId)?.id ?? "-"}</td>
                                     <td>{payment.collector}</td>
                                     <td>{payment.ciNumber}</td>
-                                    <td>{payment.orderDate}</td>
+                                    <td>{payment.orderDate.toLocaleDateString()}</td>
                                     <td>{payment.amount}</td>
                                     <td>{payment.balance}</td>
                                     <td>{payment.credits}</td>

@@ -28,7 +28,7 @@ function Collections() {
                                     <td className="sticky left-0 z-5 bg-background">{c.id}</td>
                                     <td>{c.salesman}</td>
                                     <td>{c.invoiceId}</td>
-                                    <td>{c.orderDate}</td>
+                                    <td>{c.orderDate.toLocaleDateString()}</td>
                                     <td>{c.customers}</td>
                                     <td>{c.amount.toFixed(2)}</td>
                                     <td>{c.balance.toFixed(2)}</td>

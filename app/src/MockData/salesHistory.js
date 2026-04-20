@@ -1,13 +1,13 @@
 export const salesHistory = [
     {
         id: 7001,
-        orderDate: "",
-        orderNumber: 0,
+        orderDate: new Date("2026-01-31"),
+        orderNumber: 2001,
         balance: 0,
-        amountPaid: 0,
+        amountPaid: 1251.55,
         adjustments: 0,
         returns: 0,
-        status: ""
+        status: "Complete"
     }
 ]
 

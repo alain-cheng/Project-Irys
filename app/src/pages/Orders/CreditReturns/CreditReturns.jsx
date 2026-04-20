@@ -35,7 +35,7 @@ function CreditReturns() {
                                 <tr key={cm.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 bg-background">{cm.id}</td>
                                     <td>{getCustomerById(cm.customerId)?.name ?? "-"}</td>
-                                    <td>{cm.date}</td>
+                                    <td>{cm.date.toLocaleDateString()}</td>
                                     <td>{cm.poNumber}</td>
                                     <td>{cm.creditId}</td>
                                     <td>{getItemById(cm.itemId)?.id ?? "-"}</td>
