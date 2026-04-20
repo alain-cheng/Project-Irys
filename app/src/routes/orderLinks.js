@@ -67,7 +67,7 @@ export const orderLinks = [
     { 
         icon: Box, 
         label: "Items", 
-        path: "/orders/items",
+        path: "/items",
         children: [
 
         ],
@@ -77,7 +77,7 @@ export const orderLinks = [
     { 
         icon: ListTodo, 
         label: "Item Orders", 
-        path: "/orders/item_orders",
+        path: "/item_orders",
         children: [
 
         ],

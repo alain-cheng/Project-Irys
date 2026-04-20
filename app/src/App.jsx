@@ -15,6 +15,9 @@ import CreditReturns from "./pages/Orders/CreditReturns/CreditReturns"
 import Collections from "./pages/Orders/Collections/Collections"
 import InvoiceReturns from "./pages/Orders/InvoiceReturns/InvoiceReturns"
 
+import Items from "./pages/Common/Items"
+import ItemOrders from "./pages/Common/ItemOrders"
+
 import Purchases from "./pages/Purchases/Purchases"
 import PurchasesDefault from "./pages/Purchases/PurchasesDefault"
 
@@ -25,6 +28,7 @@ import Reports from "./pages/Reports/Reports"
 
 import Header from './components/Header'
 import NotFound from "./pages/NotFound"
+
 
 function App() {
 
@@ -51,6 +55,10 @@ function App() {
             <Route path="collections" element={<Collections />}/>
             <Route path="invoice_returns" element={<InvoiceReturns />}/>
           </Route>
+
+          <Route path="/items" element={<Items />} />
+          
+          <Route path="/item_orders" element={<ItemOrders />} />
 
           <Route path="/purchases" element={<Purchases />}>
             <Route index element={<PurchasesDefault/>}/> 
