@@ -1,40 +1,65 @@
 import { NavLink } from "react-router-dom";
+import { ChevronRight, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 function Sidebar({ links }) {
-    return(
-        <aside className="border border-border-soft w-64 rounded-2xl px-4 py-2">
-            <ul className="flex flex-col">
-                Sidebar
-            </ul>
-            <ul className="flex flex-col">
-                Sidebar
-            </ul>
-        </aside>
-    )
-}
+  const [expanded, setExpanded] = useState(null)
+  
+  return(
+    <aside className="fixed left-0 top-18 border border-border-soft w-64 h-full rounded-2xl px-4 py-2 bg-background">
+        <ul className="flex flex-col">
+            {links
+              .filter(link => link.showInSidebar !== false)
+              .map((link) => {
+                const Icon = link.icon
+                const isOpen = expanded === link.path
 
-/**
- *   
- return (
-    <aside className="w-64 p-4 border-r border-black">
-      <ul className="flex flex-col gap-2">
-        {links.map((link) => (
-          <li key={link.path}>
-            <NavLink
-              to={link.path}
-              className={({ isActive }) =>
-                `block px-3 py-2 rounded-lg ${
-                  isActive ? "bg-accent-soft" : "hover:bg-accent-soft"
-                }`
-              }
-            >
-              {link.label}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+                return(
+                  <li key={link.path}>
+                    <div
+                      onClick={() => setExpanded(isOpen ? null : link.path)}
+                      className="flex items-center justify-between px-3 py-1 rounded-lg text-sm hover:text-accent cursor-pointer"
+                    >
+                      <NavLink
+                        to={link.path}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-1 rounded-lg text-sm ${
+                            isActive 
+                              ? "text-accent-strong" 
+                              : "hover:text-accent-strong"
+                          }` 
+                        }
+                      >
+                        <Icon size={18} />
+                        {link.label}
+                      </NavLink>
+
+                      {isOpen
+                        ? <ChevronDown size={16} />
+                        : <ChevronRight size={16} />
+                      }
+                    </div>
+                    
+                    {isOpen && link.children && (
+                      <ul className="ml-6 flex flex-col gap-1">
+                        {link.children.map((child) => (
+                          <li key={child.path}>
+                            <NavLink
+                              to={child.path}
+                              className="block text-sm font-light pl-8 py-0.5 rounded-lg hover:text-accent-strong"
+                            >
+                              {child.label}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                )
+            })}
+        </ul>
     </aside>
   )
- */
+}
 
 export default Sidebar
