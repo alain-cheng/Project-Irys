@@ -51,7 +51,6 @@ function App() {
             <Route path="invoices" element={<Invoices />}/>
             <Route path="order_payments" element={<OrderPayments />}/>
             <Route path="credit_returns" element={<CreditReturns />}/>
-
             <Route path="collections" element={<Collections />}/>
             <Route path="invoice_returns" element={<InvoiceReturns />}/>
           </Route>

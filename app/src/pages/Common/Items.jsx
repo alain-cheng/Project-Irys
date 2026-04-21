@@ -2,9 +2,10 @@ import { getAllItems } from "../../MockData/items"
 import { getUnitById } from "../../MockData/units"
 import { getItemCategoryById } from "../../MockData/itemCategories"
 
-import { orderLinks } from "../../routes/orderLinks"
+import { commonLinks } from "../../routes/commonLinks"
 
 import Sidebar from "../components/Sidebar"
+import Breadcrumb from "../../components/Breadcrumb"
 
 function getAverageCost(item) {
     const prices = [
@@ -23,9 +24,13 @@ function getAverageCost(item) {
 function Items() {
     return(
         <div className="flex pt-16 space-x-2">
-            <Sidebar links={orderLinks} />
+            <Sidebar links={commonLinks} />
+
+            
 
             <main className="ml-70 mr-5 flex-1 min-w-0">
+                <Breadcrumb />
+
                 <div className="flex flex-col h-full py-5">
                     <h1 className="text-2xl text-text mb-5">Items</h1>
 
