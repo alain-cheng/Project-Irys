@@ -9,11 +9,11 @@ function OrderPayments() {
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">Payment No.</th>
+                                <th className="sticky left-0 top-0 z-10 ">Payment No.</th>
                                 <th>Customer</th>
                                 <th>Sales Order No.</th>
                                 <th>Collector</th>
@@ -32,8 +32,8 @@ function OrderPayments() {
 
                         <tbody>
                             {getAllPayments().map((payment) => (
-                                <tr key={payment.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{payment.id}</td>
+                                <tr key={payment.id} className=" hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5 ">{payment.id}</td>
                                     <td>{getCustomerById(payment.customerId)?.name ?? "-"}</td>
                                     <td>{getSalesOrderById(payment.salesOrderId)?.id ?? "-"}</td>
                                     <td>{payment.collector}</td>

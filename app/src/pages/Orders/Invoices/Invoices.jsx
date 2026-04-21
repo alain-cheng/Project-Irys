@@ -10,11 +10,11 @@ function Invoices() {
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">ID</th>
                                 <th>Customer</th>
                                 <th>Item</th>
                                 <th>Quantity</th>
@@ -28,8 +28,8 @@ function Invoices() {
 
                         <tbody className="border">
                             {getAllInvoices().map((invoice) => (
-                                <tr key={invoice.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{invoice.id}</td>
+                                <tr key={invoice.id} className=" hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5 ">{invoice.id}</td>
                                     <td>{getCustomerById(invoice.customerId).name}</td>
                                     <td>{getItemById(invoice.itemId).itemName}</td>
                                     <td>{invoice.quantity}</td>

@@ -2,6 +2,7 @@
 
 @theme {
   --color-background: #FFFFFF;
+  --color-background-light: #F9F9F9;
   --color-text: #49454F;
   --color-border: #000000;
   --color-border-soft: #E6E6E6; 
@@ -50,13 +51,17 @@ h1 {
   letter-spacing: -1.5px;
 }
 
+/* Global Styling for all Table Components */
+
 th {
   border: 1px solid var(--color-border-soft);
   padding: 0.5rem 0.75rem;
   text-align: left;
+  background-color: var(--color-background-light);
 }
 
 td {
   border: 1px solid var(--color-border-soft);
   padding: 0.5rem 0.75rem;
+  background-color: var(--color-background);
 }

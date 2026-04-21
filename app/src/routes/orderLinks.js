@@ -36,7 +36,7 @@ export const orderLinks = [
     },
     { 
         icon: FileText, 
-        label: "Invoice", 
+        label: "Invoices", 
         path: "/orders/invoices",
         children: [
 
@@ -46,7 +46,7 @@ export const orderLinks = [
     },
     { 
         icon: HandCoins, 
-        label: "Order Payment", 
+        label: "Order Payments", 
         path: "/orders/order_payments",
         children: [
 
