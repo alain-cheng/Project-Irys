@@ -35,4 +35,6 @@ export const itemCategories = [
 
 // helpers
 
+export const getAllItemCategories = () => { return itemCategories }
+
 export const getItemCategoryById = (id) => itemCategories.find(i => i.id === id)

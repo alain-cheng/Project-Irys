@@ -1,6 +1,8 @@
+import { useMemo } from "react"
+
 import { getAllItems } from "../../MockData/items"
-import { getUnitById } from "../../MockData/units"
-import { getItemCategoryById } from "../../MockData/itemCategories"
+import { getAllUnits, getUnitById, units } from "../../MockData/units"
+import { getAllItemCategories, getItemCategoryById } from "../../MockData/itemCategories"
 
 import { commonLinks } from "../../routes/commonLinks"
 
@@ -22,11 +24,25 @@ function getAverageCost(item) {
 }
 
 function Items() {
+    const itemViews = useMemo(() => {
+        const unitsMap = Object.fromEntries(
+            getAllUnits().map(u => [u.id, u])
+        )
+
+        const categoriesMap = Object.fromEntries(
+            getAllItemCategories().map(ic => [ic.id, ic])
+        )
+
+        return getAllItems().map(item => ({
+            ...item,
+            unitName: unitsMap[item.unitId]?.unitName ?? "-",
+            categoryName: categoriesMap[item.categoryId]?.categoryName ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex pt-16 space-x-2">
             <Sidebar links={commonLinks} />
-
-            
 
             <main className="ml-70 mr-5 flex-1 min-w-0">
                 <Breadcrumb />
@@ -64,17 +80,17 @@ function Items() {
                                 </thead>
         
                                 <tbody>
-                                    {getAllItems().map((item) => (
+                                    {itemViews.map((item) => (
                                         <tr key={item.id} className="bg-background hover:bg-accent-soft transition">
                                             <td className="sticky left-0 z-5 bg-background">{item.id}</td>
                                             <td>{item.itemName}</td>
                                             <td>{item.stocks}</td>
                                             <td>{item.badStocks}</td>
-                                            <td>{getUnitById(item.unitId).unitName}</td>
+                                            <td>{item.unitName}</td>
                                             <td>{item.comm}</td>
                                             <td>{item.terms}</td>
                                             <td>{item.loc}</td>
-                                            <td>{getItemCategoryById(item.categoryId).categoryName}</td>
+                                            <td>{item.categoryName}</td>
                                             <td>{item.wholesalePrice.toFixed(2)}</td>
                                             <td>{item.wholesaleDiscount}</td>
                                             <td>{item.retail1Price.toFixed(2)}</td>

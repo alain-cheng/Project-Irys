@@ -39,4 +39,6 @@ export const units = [
 
 // helpers
 
+export const getAllUnits = () => { return units }
+
 export const getUnitById = (id) => units.find(u => u.id === id)

@@ -6,12 +6,12 @@ function MenuModal({ onClose }) {
             {/* overlay */}
             <div
                 onClick={onClose}
-                className="fixed inset-0 bg-black/20 z-40"
+                className="fixed inset-0 bg-black/20 z-55"
             />
 
             {/* panel */}
             <div
-                className="border border-border-soft fixed left-1 top-17 z-50 bg-background p-5 min-w-200 shadow-lg rounded-2xl"
+                className="border border-border-soft fixed left-1 top-17 z-60 bg-background p-5 min-w-200 shadow-lg rounded-2xl"
             >
                 <h2 className="text-xl text-accent-strong">Navigate</h2>
 

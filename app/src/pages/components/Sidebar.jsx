@@ -13,12 +13,17 @@ function Sidebar({ links }) {
               .map((link) => {
                 const Icon = link.icon
                 const isOpen = expanded === link.path
+                const hasChildren = link.children && link.children.length > 0
 
                 return(
                   <li key={link.path}>
                     <div
-                      onClick={() => setExpanded(isOpen ? null : link.path)}
-                      className="flex items-center justify-between px-3 py-1 rounded-lg text-sm hover:text-accent cursor-pointer"
+                      onClick={() => { 
+                        if (hasChildren) {
+                          setExpanded(isOpen ? null : link.path)
+                        }
+                      }}
+                      className={`flex items-center justify-between px-3 py-1 rounded-lg text-sm ${ hasChildren ? "cursor-pointer" : ""}`}
                     >
                       <NavLink
                         to={link.path}
@@ -34,10 +39,10 @@ function Sidebar({ links }) {
                         {link.label}
                       </NavLink>
 
-                      {isOpen
-                        ? <ChevronDown size={16} />
-                        : <ChevronRight size={16} />
-                      }
+                      {hasChildren && (isOpen
+                        ? <ChevronDown size={16} className="hover:text-accent" />
+                        : <ChevronRight size={16} className="hover:text-accent" />
+                    )}
                     </div>
                     
                     {isOpen && link.children && (
@@ -46,7 +51,13 @@ function Sidebar({ links }) {
                           <li key={child.path}>
                             <NavLink
                               to={child.path}
-                              className="block text-sm font-light pl-8 py-0.5 rounded-lg hover:text-accent-strong"
+                              className={({ isActive }) =>
+                                `block text-sm font-light pl-8 py-0.5 rounded-lg hover:text-accent-strong ${
+                                isActive 
+                                  ? "text-accent-strong" 
+                                  : "hover:text-accent-strong"
+                                }`
+                              }
                             >
                               {child.label}
                             </NavLink>

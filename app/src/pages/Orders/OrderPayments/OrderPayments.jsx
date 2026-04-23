@@ -1,8 +1,27 @@
+import { useMemo } from "react";
+
 import { payments, getAllPayments } from "../../../MockData/payments";
-import { getCustomerById } from "../../../MockData/customers";
-import { getSalesOrderById } from "../../../MockData/salesOrder";
+import { getAllCustomers, getCustomerById } from "../../../MockData/customers";
+import { getAllSalesOrder, getSalesOrderById } from "../../../MockData/salesOrder";
+
 
 function OrderPayments() {
+    const paymentsView = useMemo(() => {
+        const customersMap = Object.fromEntries(
+            getAllCustomers().map(c => [c.id, c])
+        )
+
+        const salesOrderMap = Object.fromEntries(
+            getAllSalesOrder().map(so => [so.id, so])
+        )
+
+        return getAllPayments().map(payment => ({
+            ...payment,
+            customerName: customersMap[payment.customerId]?.name ?? "-",
+            salesOrderNo: salesOrderMap[payment.salesOrderId]?.id ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Order Payments</h1>
@@ -31,11 +50,11 @@ function OrderPayments() {
                         </thead>
 
                         <tbody>
-                            {getAllPayments().map((payment) => (
+                            {paymentsView.map((payment) => (
                                 <tr key={payment.id} className=" hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{payment.id}</td>
-                                    <td>{getCustomerById(payment.customerId)?.name ?? "-"}</td>
-                                    <td>{getSalesOrderById(payment.salesOrderId)?.id ?? "-"}</td>
+                                    <td>{payment.customerName}</td>
+                                    <td>{payment.salesOrderNo}</td>
                                     <td>{payment.collector}</td>
                                     <td>{payment.ciNumber}</td>
                                     <td>{payment.orderDate.toLocaleDateString()}</td>

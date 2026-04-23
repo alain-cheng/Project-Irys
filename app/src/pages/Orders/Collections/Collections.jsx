@@ -1,6 +1,14 @@
+import { useMemo } from "react"
+
 import { getAllCollection } from "../../../MockData/collection"
 
 function Collections() {
+    const collectionsView = useMemo(() => {
+        return getAllCollection().map(c => ({
+            ...c,
+        }))
+    }, [])
+
     return(
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Collections</h1>
@@ -23,7 +31,7 @@ function Collections() {
                         </thead>
 
                         <tbody>
-                            {getAllCollection().map((c) => (
+                            {collectionsView.map((c) => (
                                 <tr key={c.id} className=" hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{c.id}</td>
                                     <td>{c.salesman}</td>

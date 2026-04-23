@@ -1,8 +1,26 @@
+import { useMemo } from "react"
+
 import { creditMemo, getAllCreditMemo } from "../../../MockData/creditMemo"
-import { getCustomerById } from "../../../MockData/customers"
-import { getItemById } from "../../../MockData/items"
+import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
+import { getAllItems, getItemById } from "../../../MockData/items"
 
 function CreditReturns() {
+    const creditMemoView = useMemo(() => {
+        const customersMap = Object.fromEntries(
+            getAllCustomers().map(c => [c.id, c])
+        )
+
+        const itemsMap = Object.fromEntries(
+            getAllItems().map(i => [i.id, i])
+        )
+
+        return getAllCreditMemo().map(cm => ({
+            ...cm,
+            customerName: customersMap[cm.customerId]?.name ?? "-",
+            itemNo: itemsMap[cm.itemId]?.id ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Credit Returns</h1>
@@ -31,14 +49,14 @@ function CreditReturns() {
                         </thead>
 
                         <tbody>
-                            {getAllCreditMemo().map((cm) => (
+                            {creditMemoView.map((cm) => (
                                 <tr key={cm.id} className=" hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{cm.id}</td>
-                                    <td>{getCustomerById(cm.customerId)?.name ?? "-"}</td>
+                                    <td>{cm.customerName}</td>
                                     <td>{cm.date.toLocaleDateString()}</td>
                                     <td>{cm.poNumber}</td>
                                     <td>{cm.creditId}</td>
-                                    <td>{getItemById(cm.itemId)?.id ?? "-"}</td>
+                                    <td>{cm.itemNo}</td>
                                     <td>{cm.quantity}</td>
                                     <td>{cm.badQty}</td>
                                     <td>{cm.unitPrice}</td>

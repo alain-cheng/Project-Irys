@@ -1,7 +1,20 @@
+import { useMemo } from "react"
+
 import { getAllInvoiceReturns } from "../../../MockData/invoiceReturns"
-import { getCustomerById } from "../../../MockData/customers"
+import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
 
 function InvoiceReturns() {
+    const invoiceReturnsView = useMemo(() => {
+        const customersMap = Object.fromEntries(
+            getAllCustomers().map(c => [c.id, c])
+        )
+
+        return getAllInvoiceReturns().map(ir => ({
+            ...ir,
+            customerName: customersMap[ir.customerId]?.name ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Invoice Returns</h1>
@@ -31,10 +44,10 @@ function InvoiceReturns() {
                         </thead>
 
                         <tbody>
-                            {getAllInvoiceReturns().map((ir) => (
+                            {invoiceReturnsView.map((ir) => (
                                 <tr key={ir.id} className=" hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{ir.id}</td>
-                                    <td>{getCustomerById(ir.customerId).name}</td>
+                                    <td>{ir.customerName}</td>
                                     <td>{ir.address}</td>
                                     <td>{ir.phone}</td>
                                     <td>{ir.orderNumber}</td>

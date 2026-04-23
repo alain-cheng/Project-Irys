@@ -1,12 +1,31 @@
-import { getItemById } from "../../MockData/items"
+import { useMemo } from "react"
+
+import { getAllItems, getItemById } from "../../MockData/items"
 import { getAllOrders } from "../../MockData/orders"
-import { getUnitById } from "../../MockData/units"
+import { getAllUnits, getUnitById } from "../../MockData/units"
 import { commonLinks } from "../../routes/commonLinks"
 
 import Sidebar from "../components/Sidebar"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function ItemOrders() {
+    const itemOrdersView = useMemo(() => {
+        const itemsMap = Object.fromEntries(
+            getAllItems().map(i => [i.id, i])
+        ) 
+
+        const unitsMap = Object.fromEntries(
+            getAllUnits().map(u => [u.id, u])
+        )
+
+        return getAllOrders().map(order => ({
+            ...order,
+            itemNo: itemsMap[order.itemId]?.id ?? "-",
+            itemName: itemsMap[order.itemId]?.itemName ?? "-",
+            unitName: unitsMap[order.unitId]?.unitName ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex pt-16 space-x-2">
             <Sidebar links={commonLinks} />
@@ -36,14 +55,14 @@ function ItemOrders() {
                                 </thead>
         
                                 <tbody>
-                                    {getAllOrders().map((order) => (
+                                    {itemOrdersView.map((order) => (
                                         <tr key={order.id} className="bg-background hover:bg-accent-soft transition">
                                             <td className="sticky left-0 z-5 bg-background">{order.id}</td>
-                                            <td>{getItemById(order.itemId).id}</td>
-                                            <td>{getItemById(order.itemId).itemName}</td>
+                                            <td>{order.itemNo}</td>
+                                            <td>{order.itemName}</td>
                                             <td>{order.supplier}</td>
                                             <td>{order.qtyOnHand}</td>
-                                            <td>{getUnitById(order.unitId).unitName}</td>
+                                            <td>{order.unitName}</td>
                                             <td>{order.qtyOnSO}</td>
                                             <td>{order.qtyOnPO}</td>
                                             <td>{order.difference}</td>

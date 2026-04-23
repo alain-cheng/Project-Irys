@@ -1,6 +1,13 @@
-import { customers, getCustomerById } from "../../../MockData/customers.js"
+import { useMemo } from "react"
+import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 
 function Customers() {
+
+    const customersView = useMemo(() => {
+        return getAllCustomers().map(c => ({
+            ...c,
+        }))
+    }, [])
 
     return(
         <div className="flex flex-col h-full py-5">
@@ -31,7 +38,7 @@ function Customers() {
 
                         {/* body */}
                         <tbody className="border">
-                            {customers.map((customer) => (
+                            {customersView.map((customer) => (
                                 <tr key={customer.id} className="hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{customer.id}</td>
                                     <td>{customer.name}</td>
