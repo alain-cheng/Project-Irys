@@ -9,12 +9,12 @@ function Customers() {
             {/* table container */}
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background min-w-full">
+                    <table className="min-w-full">
 
                         {/* header */}
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10 border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">ID</th>
+                                <th className="sticky left-0 top-0 z-10">ID</th>
                                 <th>Name</th>
                                 <th>Title</th>
                                 <th>Address</th>
@@ -32,8 +32,8 @@ function Customers() {
                         {/* body */}
                         <tbody className="border">
                             {customers.map((customer) => (
-                                <tr key={customer.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{customer.id}</td>
+                                <tr key={customer.id} className="hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5">{customer.id}</td>
                                     <td>{customer.name}</td>
                                     <td>{customer.title}</td>
                                     <td>{customer.address}</td>

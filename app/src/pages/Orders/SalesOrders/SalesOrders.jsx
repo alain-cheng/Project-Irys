@@ -22,14 +22,13 @@ function SalesOrders () {
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Sales Orders</h1>
 
-            {/* table container */}
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">Item ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">Item ID</th>
                                 <th>Name</th>
                                 <th>Stocks</th>
                                 <th>Bad Stocks</th>
@@ -54,8 +53,8 @@ function SalesOrders () {
 
                         <tbody>
                             {getAllItems().map((item) => (
-                                <tr key={item.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{item.id}</td>
+                                <tr key={item.id} className=" hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5 ">{item.id}</td>
                                     <td>{item.itemName}</td>
                                     <td>{item.stocks}</td>
                                     <td>{item.badStocks}</td>

@@ -7,11 +7,11 @@ function Collections() {
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">ID</th>
                                 <th>Salesman</th>
                                 <th>Invoice No.</th>
                                 <th>Order Date</th>
@@ -24,8 +24,8 @@ function Collections() {
 
                         <tbody>
                             {getAllCollection().map((c) => (
-                                <tr key={c.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{c.id}</td>
+                                <tr key={c.id} className=" hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5 ">{c.id}</td>
                                     <td>{c.salesman}</td>
                                     <td>{c.invoiceId}</td>
                                     <td>{c.orderDate.toLocaleDateString()}</td>

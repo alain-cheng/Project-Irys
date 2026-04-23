@@ -8,11 +8,11 @@ function InvoiceReturns() {
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">ID</th>
                                 <th>Customer</th>
                                 <th>Address</th>
                                 <th>Phone</th>
@@ -32,8 +32,8 @@ function InvoiceReturns() {
 
                         <tbody>
                             {getAllInvoiceReturns().map((ir) => (
-                                <tr key={ir.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{ir.id}</td>
+                                <tr key={ir.id} className=" hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5 ">{ir.id}</td>
                                     <td>{getCustomerById(ir.customerId).name}</td>
                                     <td>{ir.address}</td>
                                     <td>{ir.phone}</td>
