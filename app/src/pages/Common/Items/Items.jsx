@@ -1,13 +1,13 @@
 import { useMemo } from "react"
 
-import { getAllItems } from "../../MockData/items"
-import { getAllUnits, getUnitById, units } from "../../MockData/units"
-import { getAllItemCategories, getItemCategoryById } from "../../MockData/itemCategories"
+import { getAllItems } from "../../../MockData/items"
+import { getAllUnits, getUnitById, units } from "../../../MockData/units"
+import { getAllItemCategories, getItemCategoryById } from "../../../MockData/itemCategories"
 
-import { commonLinks } from "../../routes/commonLinks"
+import { commonLinks } from "../../../routes/commonLinks"
 
-import Sidebar from "../components/Sidebar"
-import Breadcrumb from "../../components/Breadcrumb"
+import Sidebar from "../../components/Sidebar"
+import Breadcrumb from "../../../components/Breadcrumb"
 
 function getAverageCost(item) {
     const prices = [

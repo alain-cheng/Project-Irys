@@ -16,7 +16,6 @@ export const orderLinks = [
         label: "Customers", 
         path: "/orders/customers",
         children: [
-            { label: "List", path: "/orders/customers/list" },
             { label: "Data Entry", path: "/orders/customers/data_entry" },
             { label: "Payment History", path: "/orders/customers/payment_history" },
             { label: "Sales History", path: "/orders/customers/sales_history" },
@@ -69,7 +68,10 @@ export const orderLinks = [
         label: "Items", 
         path: "/items",
         children: [
-
+            { label: "Payment History", path: "/items/payment_history" },
+            { label: "Sales History", path: "/items/sales_history" },
+            { label: "Return History", path: "/items/return_history" },
+            { label: "Audit Trail", path: "/items/audit_trail" },
         ],
         showInSidebar: true,
         showInFlow: true

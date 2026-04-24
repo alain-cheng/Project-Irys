@@ -1,10 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Navigate, BrowserRouter, Routes, Route } from "react-router-dom"
 import Dashboard from "./pages/Dashboard/Dashboard"
 
 import Orders from "./pages/Orders/Orders"
 import OrdersDefault from "./pages/Orders/OrdersDefault"
 import Customers from "./pages/Orders/Customers/Customers"
-import List from "./pages/Orders/Customers/List"
 import DataEntry from "./pages/Orders/Customers/DataEntry"
 import PaymentHistory from "./pages/Orders/Customers/PaymentHistory"
 import SalesHistory from "./pages/Orders/Customers/SalesHistory"
@@ -15,11 +14,13 @@ import CreditReturns from "./pages/Orders/CreditReturns/CreditReturns"
 import Collections from "./pages/Orders/Collections/Collections"
 import InvoiceReturns from "./pages/Orders/InvoiceReturns/InvoiceReturns"
 
-import Items from "./pages/Common/Items"
+import Items from "./pages/Common/Items/Items"
 import ItemOrders from "./pages/Common/ItemOrders"
 
 import Purchases from "./pages/Purchases/Purchases"
 import PurchasesDefault from "./pages/Purchases/PurchasesDefault"
+import Suppliers from "./pages/Purchases/Suppliers/Suppliers"
+import PurchaseOrders from "./pages/Purchases/PurchaseOrders/PurchaseOrders"
 
 import Expenses from "./pages/Expenses/Expenses"
 import ExpensesDefault from "./pages/Expenses/ExpensesDefault"
@@ -42,11 +43,12 @@ function App() {
 
           <Route path="/orders" element={<Orders />}>
             <Route index element={<OrdersDefault/>}/> 
+
             <Route path="customers" element={<Customers />}/>
-             <Route path="customers/list" element={<List />}/>
             <Route path="customers/data_entry" element={<DataEntry />}/>
             <Route path="customers/payment_history" element={<PaymentHistory />}/>
             <Route path="customers/sales_history" element={<SalesHistory />}/>
+
             <Route path="sales_orders" element={<SalesOrders />}/>
             <Route path="invoices" element={<Invoices />}/>
             <Route path="order_payments" element={<OrderPayments />}/>
@@ -61,6 +63,8 @@ function App() {
 
           <Route path="/purchases" element={<Purchases />}>
             <Route index element={<PurchasesDefault/>}/> 
+            <Route path="suppliers" element={<Suppliers />}/>
+            <Route path="po" element={<PurchaseOrders />}/>
           </Route>
 
           <Route path="/expenses" element={<Expenses />}>

@@ -15,6 +15,7 @@ export const pathLabelMap = {
     item_orders: "Item Orders",
 
     purchases: "Purchases",
+    suppliers: "Suppliers",
 
     expenses: "Expenses",
 
