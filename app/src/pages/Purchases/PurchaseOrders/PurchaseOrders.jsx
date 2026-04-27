@@ -36,6 +36,7 @@ function PurchaseOrders () {
                                 <th>Unit Price</th>
                                 <th>Discounts</th>
                                 <th>Amount</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
 
@@ -49,8 +50,9 @@ function PurchaseOrders () {
                                     <td>{po.quantity}</td>
                                     <td>{po.unitName}</td>
                                     <td>{po.unitPrice}</td>
-                                    <td>{formatDiscount(po.discountTypeId)}</td>
+                                    <td>{formatDiscount(po.discountTypeId, po.discounts)}</td>
                                     <td>{po.amount}</td>
+                                    <td>{po.remarks}</td>
                                 </tr>
                             ))}
                         </tbody>

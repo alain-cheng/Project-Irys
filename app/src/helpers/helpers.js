@@ -1,6 +1,6 @@
 import { getDiscountTypeById } from "../MockData/discountTypes"
 
-export default function formatDiscount(id) {
+export default function formatDiscount(id, amount) {
     const type = getDiscountTypeById(id)?.type
 
     if (type === "NET") {
@@ -8,7 +8,7 @@ export default function formatDiscount(id) {
     }
 
     if (type === "Percentage") {
-        return `${po.discounts}%`
+        return `-${amount}%`
     }
 
     return ""

@@ -1,7 +1,7 @@
 export const purchaseOrders = [
     {
-        id: 20001,
-        itemName: "Steel Beam",
+        id: 30001,
+        itemName: "203x133x30 Steel Beam",
         date: new Date("2026-01-31"),
         term: "",
         quantity: 2,
@@ -10,6 +10,7 @@ export const purchaseOrders = [
         discountTypeId: 0,
         discounts: 0,
         amount: 9000.06,
+        remarks: "",
     },
 ]
 

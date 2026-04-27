@@ -21,6 +21,9 @@ import Purchases from "./pages/Purchases/Purchases"
 import PurchasesDefault from "./pages/Purchases/PurchasesDefault"
 import Suppliers from "./pages/Purchases/Suppliers/Suppliers"
 import PurchaseOrders from "./pages/Purchases/PurchaseOrders/PurchaseOrders"
+import Receive from "./pages/Purchases/Receive/Receive"
+import PurchasePayment from "./pages/Purchases/PurchasePayment/PurchasePayment"
+import CreditMemo from "./pages/Purchases/CreditMemo/CreditMemo"
 
 import Expenses from "./pages/Expenses/Expenses"
 import ExpensesDefault from "./pages/Expenses/ExpensesDefault"
@@ -65,6 +68,9 @@ function App() {
             <Route index element={<PurchasesDefault/>}/> 
             <Route path="suppliers" element={<Suppliers />}/>
             <Route path="po" element={<PurchaseOrders />}/>
+            <Route path="receive" element={<Receive />}/>
+            <Route path="purchase_payment" element={<PurchasePayment />}/>
+            <Route path="credit_memo" element={<CreditMemo />}/>
           </Route>
 
           <Route path="/expenses" element={<Expenses />}>

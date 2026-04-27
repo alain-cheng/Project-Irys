@@ -18,7 +18,7 @@ function Suppliers () {
                     <table className="min-w-full">
                         <thead className="sticky top-0 z-10 border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10">Supplier Id</th>
+                                <th className="sticky left-0 top-0 z-10">Supplier ID</th>
                                 <th>Supplier Name</th>
                                 <th>Contact</th>
                                 <th>Title</th>
