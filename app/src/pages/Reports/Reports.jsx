@@ -28,7 +28,7 @@ function Reports() {
 
     return(
         <div className="flex space-x-2">
-            <main className="flex-1 border px-5 py-20">
+            <main className="flex-1 px-5 py-20">
                 <h1 className="text-2xl text-text">Reports</h1>
 
                 <div className="px-5">
@@ -79,7 +79,7 @@ function Reports() {
                         </div>
                     </div>
 
-                    <div className="border w-full h-full bg-background rounded-lg rounded-tl-none">
+                    <div className="border w-full h-full bg-background rounded-lg rounded-tl-none py-2 px-2">
                         <ActiveComponent />
                     </div>
                 </div>
