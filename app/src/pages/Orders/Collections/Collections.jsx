@@ -32,7 +32,7 @@ function Collections() {
 
                         <tbody>
                             {collectionsView.map((c) => (
-                                <tr key={c.id} className=" hover:bg-accent-soft transition">
+                                <tr key={c.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{c.id}</td>
                                     <td>{c.salesman}</td>
                                     <td>{c.invoiceId}</td>

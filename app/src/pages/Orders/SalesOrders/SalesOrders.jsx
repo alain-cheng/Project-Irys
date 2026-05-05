@@ -42,7 +42,7 @@ function SalesOrders () {
 
                         <tbody>
                             {salesOrdersView.map((so) => (
-                                <tr key={so.id} className=" hover:bg-accent-soft transition">
+                                <tr key={so.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{so.id}</td>
                                     <td>{so.itemName}</td>
                                     <td>{so.quantity}</td>

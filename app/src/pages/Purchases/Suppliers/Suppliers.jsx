@@ -33,7 +33,7 @@ function Suppliers () {
 
                         <tbody className="border">
                             {suppliersView.map((supplier) => (
-                                <tr key={supplier.id} className="hover:bg-accent-soft transition">
+                                <tr key={supplier.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{supplier.id}</td>
                                     <td>{supplier.supplierName}</td>
                                     <td>{supplier.contact}</td>

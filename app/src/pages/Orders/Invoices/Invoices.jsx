@@ -52,7 +52,7 @@ function Invoices() {
 
                         <tbody className="border">
                             {invoicesView.map((invoice) => (
-                                <tr key={invoice.id} className=" hover:bg-accent-soft transition">
+                                <tr key={invoice.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{invoice.id}</td>
                                     <td>{invoice.customerName}</td>
                                     <td>{invoice.itemName}</td>

@@ -16,7 +16,7 @@ function InventoryReports() {
             </div>
 
             <select 
-                className="mx-4"
+                className="border mx-4"
                 value={selectedReport}
                 onChange={(e) => setSelectedReport(e.target.value)}
             >

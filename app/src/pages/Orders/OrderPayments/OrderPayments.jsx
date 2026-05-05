@@ -51,7 +51,7 @@ function OrderPayments() {
 
                         <tbody>
                             {paymentsView.map((payment) => (
-                                <tr key={payment.id} className=" hover:bg-accent-soft transition">
+                                <tr key={payment.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{payment.id}</td>
                                     <td>{payment.customerName}</td>
                                     <td>{payment.salesOrderNo}</td>

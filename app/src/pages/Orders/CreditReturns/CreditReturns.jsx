@@ -50,7 +50,7 @@ function CreditReturns() {
 
                         <tbody>
                             {creditMemoView.map((cm) => (
-                                <tr key={cm.id} className=" hover:bg-accent-soft transition">
+                                <tr key={cm.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{cm.id}</td>
                                     <td>{cm.customerName}</td>
                                     <td>{cm.date.toLocaleDateString()}</td>

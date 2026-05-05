@@ -39,7 +39,7 @@ function Customers() {
                         {/* body */}
                         <tbody className="border">
                             {customersView.map((customer) => (
-                                <tr key={customer.id} className="hover:bg-accent-soft transition">
+                                <tr key={customer.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{customer.id}</td>
                                     <td>{customer.name}</td>
                                     <td>{customer.title}</td>

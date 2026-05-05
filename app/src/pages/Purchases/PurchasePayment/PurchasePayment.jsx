@@ -41,7 +41,7 @@ function PurchasePayment () {
 
                         <tbody className="border">
                             {purchasePaymentViews.map((pp) => (
-                                <tr key={pp.id} className="hover:bg-accent-soft transition">
+                                <tr key={pp.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{pp.id}</td>
                                     <td>{pp.drNo}</td>
                                     <td>{pp.invNo}</td>

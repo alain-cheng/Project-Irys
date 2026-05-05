@@ -43,7 +43,7 @@ function CreditMemo () {
 
                         <tbody className="border">
                             {purchaseReturnViews.map((pr) => (
-                                <tr key={pr.id} className="hover:bg-accent-soft transition">
+                                <tr key={pr.id} className=" bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{pr.id}</td>
                                     <td>{pr.itemName}</td>
                                     <td>{pr.quantity}</td>

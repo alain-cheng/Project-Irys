@@ -42,7 +42,7 @@ function PurchaseOrders () {
 
                         <tbody className="border">
                             {poViews.map((po) => (
-                                <tr key={po.id} className="hover:bg-accent-soft transition">
+                                <tr key={po.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{po.id}</td>
                                     <td>{po.itemName}</td>
                                     <td>{po.date.toLocaleDateString()}</td>

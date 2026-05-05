@@ -45,7 +45,7 @@ function InvoiceReturns() {
 
                         <tbody>
                             {invoiceReturnsView.map((ir) => (
-                                <tr key={ir.id} className=" hover:bg-accent-soft transition">
+                                <tr key={ir.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5 ">{ir.id}</td>
                                     <td>{ir.customerName}</td>
                                     <td>{ir.address}</td>

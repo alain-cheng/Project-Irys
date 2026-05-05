@@ -46,7 +46,7 @@ function Receive () {
 
                         <tbody className="border">
                             {receiveViews.map((r) => (
-                                <tr key={r.id} className="hover:bg-accent-soft transition">
+                                <tr key={r.id} className="bg-background hover:bg-accent-soft transition">
                                     <td className="sticky left-0 z-5">{r.id}</td>
                                     <td>{r.productName}</td>
                                     <td>{r.quantity}</td>
