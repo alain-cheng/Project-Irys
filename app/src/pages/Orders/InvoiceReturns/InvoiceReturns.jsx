@@ -1,9 +1,12 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { getAllInvoiceReturns } from "../../../MockData/invoiceReturns"
 import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
 
 function InvoiceReturns() {
+    const navigate = useNavigate()
+
     const invoiceReturnsView = useMemo(() => {
         const customersMap = Object.fromEntries(
             getAllCustomers().map(c => [c.id, c])
@@ -45,7 +48,11 @@ function InvoiceReturns() {
 
                         <tbody>
                             {invoiceReturnsView.map((ir) => (
-                                <tr key={ir.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={ir.id} 
+                                    onClick={() => navigate(`/orders/invoice_returns/${ir.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
                                     <td className="sticky left-0 z-5 ">{ir.id}</td>
                                     <td>{ir.customerName}</td>
                                     <td>{ir.address}</td>

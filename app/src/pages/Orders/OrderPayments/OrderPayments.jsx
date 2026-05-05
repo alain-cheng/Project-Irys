@@ -1,11 +1,13 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { payments, getAllPayments } from "../../../MockData/payments";
 import { getAllCustomers, getCustomerById } from "../../../MockData/customers";
 import { getAllSalesOrder, getSalesOrderById } from "../../../MockData/salesOrder";
 
-
 function OrderPayments() {
+    const navigate = useNavigate()
+
     const paymentsView = useMemo(() => {
         const customersMap = Object.fromEntries(
             getAllCustomers().map(c => [c.id, c])
@@ -51,7 +53,11 @@ function OrderPayments() {
 
                         <tbody>
                             {paymentsView.map((payment) => (
-                                <tr key={payment.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={payment.id} 
+                                    onClick={() => navigate(`/orders/order_payments/${payment.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
                                     <td className="sticky left-0 z-5 ">{payment.id}</td>
                                     <td>{payment.customerName}</td>
                                     <td>{payment.salesOrderNo}</td>

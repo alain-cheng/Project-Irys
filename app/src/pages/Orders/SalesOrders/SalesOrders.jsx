@@ -1,10 +1,12 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { getAllItems, items } from "../../../MockData/items"
 import { getAllUnits, getUnitById } from "../../../MockData/units"
 import { getAllSalesOrder } from "../../../MockData/salesOrder"
 
 function SalesOrders () {
+    const navigate = useNavigate()
 
     const salesOrdersView = useMemo(() => {
         const unitsMap = Object.fromEntries(
@@ -42,7 +44,11 @@ function SalesOrders () {
 
                         <tbody>
                             {salesOrdersView.map((so) => (
-                                <tr key={so.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={so.id} 
+                                    onClick={() => navigate(`/orders/sales_orders/${so.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
                                     <td className="sticky left-0 z-5 ">{so.id}</td>
                                     <td>{so.itemName}</td>
                                     <td>{so.quantity}</td>

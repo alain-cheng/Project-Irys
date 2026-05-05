@@ -1,10 +1,13 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { creditMemo, getAllCreditMemo } from "../../../MockData/creditMemo"
 import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
 import { getAllItems, getItemById } from "../../../MockData/items"
 
 function CreditReturns() {
+    const navigate = useNavigate()
+
     const creditMemoView = useMemo(() => {
         const customersMap = Object.fromEntries(
             getAllCustomers().map(c => [c.id, c])
@@ -50,7 +53,11 @@ function CreditReturns() {
 
                         <tbody>
                             {creditMemoView.map((cm) => (
-                                <tr key={cm.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={cm.id} 
+                                    onClick={() => navigate(`/orders/credit_returns/${cm.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
                                     <td className="sticky left-0 z-5 ">{cm.id}</td>
                                     <td>{cm.customerName}</td>
                                     <td>{cm.date.toLocaleDateString()}</td>

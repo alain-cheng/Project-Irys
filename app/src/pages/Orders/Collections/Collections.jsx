@@ -1,8 +1,11 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { getAllCollection } from "../../../MockData/collection"
 
 function Collections() {
+    const navigate = useNavigate()
+
     const collectionsView = useMemo(() => {
         return getAllCollection().map(c => ({
             ...c,
@@ -32,7 +35,11 @@ function Collections() {
 
                         <tbody>
                             {collectionsView.map((c) => (
-                                <tr key={c.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={c.id} 
+                                    onClick={() => navigate(`/orders/collections/${c.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition"
+                                >
                                     <td className="sticky left-0 z-5 ">{c.id}</td>
                                     <td>{c.salesman}</td>
                                     <td>{c.invoiceId}</td>

@@ -1,7 +1,9 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 
 function Customers() {
+    const navigate = useNavigate()
 
     const customersView = useMemo(() => {
         return getAllCustomers().map(c => ({
@@ -39,7 +41,11 @@ function Customers() {
                         {/* body */}
                         <tbody className="border">
                             {customersView.map((customer) => (
-                                <tr key={customer.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={customer.id} 
+                                    onClick={() => navigate(`/orders/customers/${customer.id}`)} 
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
                                     <td className="sticky left-0 z-5">{customer.id}</td>
                                     <td>{customer.name}</td>
                                     <td>{customer.title}</td>

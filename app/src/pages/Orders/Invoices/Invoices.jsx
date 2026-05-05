@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { invoices, getAllInvoices } from "../../../MockData/invoices"
 import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
@@ -6,6 +7,7 @@ import { getAllItems, getItemById, items } from "../../../MockData/items"
 import { getAllUnits, getUnitById } from "../../../MockData/units"
 
 function Invoices() {
+    const navigate = useNavigate()
 
     const invoicesView = useMemo(() => {
         const customersMap = Object.fromEntries(
@@ -38,7 +40,7 @@ function Invoices() {
 
                         <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 ">ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">Invoice No.</th>
                                 <th>Customer</th>
                                 <th>Item</th>
                                 <th>Quantity</th>
@@ -52,7 +54,11 @@ function Invoices() {
 
                         <tbody className="border">
                             {invoicesView.map((invoice) => (
-                                <tr key={invoice.id} className="bg-background hover:bg-accent-soft transition">
+                                <tr 
+                                    key={invoice.id} 
+                                    onClick={() => navigate(`/orders/invoices/${invoice.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
                                     <td className="sticky left-0 z-5 ">{invoice.id}</td>
                                     <td>{invoice.customerName}</td>
                                     <td>{invoice.itemName}</td>

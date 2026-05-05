@@ -1,18 +1,27 @@
 import { Navigate, BrowserRouter, Routes, Route } from "react-router-dom"
+
+// make sure to add new pages here for routing
 import Dashboard from "./pages/Dashboard/Dashboard"
 
 import Orders from "./pages/Orders/Orders"
 import OrdersDefault from "./pages/Orders/OrdersDefault"
 import Customers from "./pages/Orders/Customers/Customers"
+import CustomerDetails from "./pages/Orders/Customers/CustomerDetails"
 import DataEntry from "./pages/Orders/Customers/DataEntry"
 import PaymentHistory from "./pages/Orders/Customers/PaymentHistory"
 import SalesHistory from "./pages/Orders/Customers/SalesHistory"
 import SalesOrders from "./pages/Orders/SalesOrders/SalesOrders"
+import SalesOrderDetails from "./pages/Orders/SalesOrders/SalesOrderDetails"
 import Invoices from "./pages/Orders/Invoices/Invoices"
+import InvoiceDetails from "./pages/Orders/Invoices/InvoiceDetails"
 import OrderPayments from "./pages/Orders/OrderPayments/OrderPayments"
+import OrderPaymentDetails from "./pages/Orders/OrderPayments/OrderPaymentDetails"
 import CreditReturns from "./pages/Orders/CreditReturns/CreditReturns"
+import CreditReturnDetails from "./pages/Orders/CreditReturns/CreditReturnDetails"
 import Collections from "./pages/Orders/Collections/Collections"
+import CollectionDetails from "./pages/Orders/Collections/CollectionDetails"
 import InvoiceReturns from "./pages/Orders/InvoiceReturns/InvoiceReturns"
+import InvoiceReturnDetails from "./pages/Orders/InvoiceReturns/InvoiceReturnDetails"
 
 import Items from "./pages/Common/Items/Items"
 import ItemOrders from "./pages/Common/ItemOrders"
@@ -48,16 +57,28 @@ function App() {
             <Route index element={<OrdersDefault/>}/> 
 
             <Route path="customers" element={<Customers />}/>
+            <Route path="customers/:customerId" element={<CustomerDetails />}/>
             <Route path="customers/data_entry" element={<DataEntry />}/>
             <Route path="customers/payment_history" element={<PaymentHistory />}/>
             <Route path="customers/sales_history" element={<SalesHistory />}/>
 
             <Route path="sales_orders" element={<SalesOrders />}/>
+            <Route path="sales_orders/:salesOrderId" element={<SalesOrderDetails/>}/>
+
             <Route path="invoices" element={<Invoices />}/>
+            <Route path="invoices/:invoiceId" element={<InvoiceDetails/>}/>
+
             <Route path="order_payments" element={<OrderPayments />}/>
+            <Route path="order_payments/:orderPaymentId" element={<OrderPaymentDetails/>}/>
+
             <Route path="credit_returns" element={<CreditReturns />}/>
+            <Route path="credit_returns/:creditReturnId" element={<CreditReturnDetails />}/>
+
             <Route path="collections" element={<Collections />}/>
+            <Route path="collections/:collectionId" element={<CollectionDetails />}/>
+
             <Route path="invoice_returns" element={<InvoiceReturns />}/>
+            <Route path="invoice_returns/:invoiceReturnId" element={<InvoiceReturnDetails/>}/>
           </Route>
 
           <Route path="/items" element={<Items />} />
