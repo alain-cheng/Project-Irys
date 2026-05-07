@@ -15,7 +15,7 @@ function MenuModal({ onClose }) {
             >
                 <h2 className="text-xl text-accent-strong">Navigate</h2>
 
-                <hr className="my-2"></hr>
+                <hr className="my-2 border border-border-soft"></hr>
 
                 <div className="">
                     <div className="flex">

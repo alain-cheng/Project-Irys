@@ -29,6 +29,7 @@ import ItemOrders from "./pages/Common/ItemOrders"
 import Purchases from "./pages/Purchases/Purchases"
 import PurchasesDefault from "./pages/Purchases/PurchasesDefault"
 import Suppliers from "./pages/Purchases/Suppliers/Suppliers"
+import SupplierDetails from "./pages/Purchases/Suppliers/SupplierDetails"
 import PurchaseOrders from "./pages/Purchases/PurchaseOrders/PurchaseOrders"
 import Receive from "./pages/Purchases/Receive/Receive"
 import PurchasePayment from "./pages/Purchases/PurchasePayment/PurchasePayment"
@@ -88,6 +89,7 @@ function App() {
           <Route path="/purchases" element={<Purchases />}>
             <Route index element={<PurchasesDefault/>}/> 
             <Route path="suppliers" element={<Suppliers />}/>
+            <Route path="suppliers/:supplierId" element={<SupplierDetails/>}/>
             <Route path="po" element={<PurchaseOrders />}/>
             <Route path="receive" element={<Receive />}/>
             <Route path="purchase_payment" element={<PurchasePayment />}/>

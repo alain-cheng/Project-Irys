@@ -3,6 +3,7 @@
 @theme {
   --color-background: #FFFFFF;
   --color-background-light: #F9F9F9;
+  --color-background-darker: #f2f2f2;
   --color-text: #49454F;
   --color-border: #000000;
   --color-border-soft: #E6E6E6; 

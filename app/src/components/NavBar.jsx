@@ -5,7 +5,7 @@ function NavBar() {
     const navigate = useNavigate();
 
     return(
-        <div className="border-b border-border-soft rounded-2xl py-2">
+        <div className="border-b border-border-soft rounded-2xl py-2 shadow-xs">
             <div className="">
                 <NavLink
                     to="/"

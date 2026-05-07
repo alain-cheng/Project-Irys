@@ -11,7 +11,7 @@ function Header() {
 
     return(
         <>
-            <div className="fixed top-0 left-0 flex w-full items-center z-50 h-16 space-x-5 px-2 py-2 border border-border-soft bg-background">
+            <div className="fixed top-0 left-0 flex w-full items-center z-50 h-16 space-x-5 px-2 py-2 border border-border-soft bg-background shadow-xs">
                 {/* Logo Placeholder*/}
                 <div
                     onClick={() => setIsMenuOpen(prev => !prev)}

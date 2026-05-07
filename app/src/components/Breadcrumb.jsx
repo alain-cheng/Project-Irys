@@ -9,7 +9,7 @@ function Breadcrumb({ items }) {
     //console.log("paths: ", paths);
 
     return(
-        <div className="border border-border-soft rounded-lg flex items-center space-x-2 text-text text-sm px-2 py-1 my-2 bg-background">
+        <div className="border border-border-soft rounded-lg flex items-center space-x-2 text-text text-sm px-2 py-1 my-2 bg-background shadow-xs">
             {paths.map((path, i) => {
                 const routeTo = "/" + paths.slice(0, i + 1).join("/")
 
