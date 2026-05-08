@@ -1,5 +1,7 @@
 import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 
+import { getAverageCost } from "../../../helpers/helpers"
 import { getAllItems } from "../../../MockData/items"
 import { getAllUnits, getUnitById, units } from "../../../MockData/units"
 import { getAllItemCategories, getItemCategoryById } from "../../../MockData/itemCategories"
@@ -9,21 +11,9 @@ import { commonLinks } from "../../../routes/commonLinks"
 import Sidebar from "../../components/Sidebar"
 import Breadcrumb from "../../../components/Breadcrumb"
 
-function getAverageCost(item) {
-    const prices = [
-        item.wholesalePrice,
-        item.retail1Price,
-        item.retail2Price,
-        item.purchasePrice,
-        item.specialPrice
-    ].filter(p => typeof p === "number" && p > 0)
-
-    if (prices.length === 0) return 0
-
-    return prices.reduce((sum, p) => sum + p, 0) / prices.length
-}
-
 function Items() {
+    const navigate = useNavigate()
+    
     const itemViews = useMemo(() => {
         const unitsMap = Object.fromEntries(
             getAllUnits().map(u => [u.id, u])
@@ -81,7 +71,11 @@ function Items() {
         
                                 <tbody>
                                     {itemViews.map((item) => (
-                                        <tr key={item.id} className="bg-background hover:bg-accent-soft transition">
+                                        <tr 
+                                            key={item.id} 
+                                            onClick={() => navigate(`/items/${item.id}`)}
+                                            className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                        >
                                             <td className="sticky left-0 z-5 bg-background">{item.id}</td>
                                             <td>{item.itemName}</td>
                                             <td>{item.stocks}</td>

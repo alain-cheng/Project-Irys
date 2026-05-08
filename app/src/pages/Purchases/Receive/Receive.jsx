@@ -4,7 +4,7 @@ import { getAllReceives } from "../../../MockData/receive"
 import { getAllUnits } from "../../../MockData/units"
 import { getAllStatuses } from "../../../MockData/status"
 
-import formatDiscount from "../../../helpers/helpers"
+import { formatDiscount } from "../../../helpers/helpers"
 
 function Receive () {
     const receiveViews = useMemo(() => {

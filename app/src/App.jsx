@@ -24,6 +24,7 @@ import InvoiceReturns from "./pages/Orders/InvoiceReturns/InvoiceReturns"
 import InvoiceReturnDetails from "./pages/Orders/InvoiceReturns/InvoiceReturnDetails"
 
 import Items from "./pages/Common/Items/Items"
+import ItemDetails from "./pages/Common/Items/ItemDetails"
 import ItemOrders from "./pages/Common/ItemOrders"
 
 import Purchases from "./pages/Purchases/Purchases"
@@ -83,6 +84,7 @@ function App() {
           </Route>
 
           <Route path="/items" element={<Items />} />
+          <Route path="/items/:itemId" element={<ItemDetails/>}/>
           
           <Route path="/item_orders" element={<ItemOrders />} />
 

@@ -4,7 +4,7 @@ import { getAllPurchaseOrders } from "../../../MockData/purchaseOrders"
 import { getAllUnits } from "../../../MockData/units"
 import { getAllDiscountTypes } from "../../../MockData/discountTypes"
 
-import formatDiscount from "../../../helpers/helpers"
+import { formatDiscount } from "../../../helpers/helpers"
 
 function PurchaseOrders () {
     const poViews = useMemo(() => {

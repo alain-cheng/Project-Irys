@@ -4,7 +4,7 @@ import { getAllPurchaseReturns } from "../../../MockData/purchaseReturns"
 import { getAllUnits } from "../../../MockData/units"
 import { getAllDiscountTypes } from "../../../MockData/discountTypes"
 
-import formatDiscount from "../../../helpers/helpers"
+import { formatDiscount } from "../../../helpers/helpers"
 
 function CreditMemo () {
     const purchaseReturnViews = useMemo(() => {

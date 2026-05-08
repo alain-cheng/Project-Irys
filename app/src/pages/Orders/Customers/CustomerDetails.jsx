@@ -14,7 +14,7 @@ function CustomerDetails () {
 
     if (!customer) {
         return (
-            <div className="mt-10">
+            <div className="text-text text-sm mt-10">
                 <h1>Error</h1>
                 <p>Customer with the ID No. <b className="text-accent-strong">{customerId}</b> was not found.</p>
             </div>
@@ -48,15 +48,15 @@ function CustomerDetails () {
             <div className="border border-border-soft rounded-lg px-2 py-3 my-3 bg-background shadow-xs flex gap-2">
                 <div className="flex-1">
                     <h3 className="text-accent-strong mb-2">Customer Information</h3>
-                    <table className="border border-border-soft shadow-xs ">
+                    <table className="border border-border-soft shadow-xs">
                         <tbody>
                             {generalFields.map(([label, value], index) => (
                                 <tr
                                     key={label}
                                     className={`${
                                         index % 2 === 0
-                                        ? "bg-background"
-                                        : "bg-background-light"
+                                            ? "bg-background"
+                                            : "bg-background-light"
                                         }
                                     `}
                                 >
