@@ -1,8 +1,12 @@
 import { getAllSalesHistory } from "../../../MockData/salesHistory"
 
+import CustomerNav from "./components/CustomerNav"
+
 function SalesHistory() {
     return(
-        <div className="flex flex-col h-full py-5">
+        <div className="flex flex-col gap-2 h-full">
+            <CustomerNav />
+
             <h1 className="text-2xl text-text mb-5">Sales History</h1>
 
             <div className="flex-1 min-h-0">
@@ -23,8 +27,8 @@ function SalesHistory() {
                         </thead>
 
                         <tbody className="border">
-                            {getAllSalesHistory().map((s) => (
-                                <tr key={s} className="hover:bg-accent-soft transition">
+                            {getAllSalesHistory().map((s, index) => (
+                                <tr key={s} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"} hover:bg-accent-soft transition`}>
                                     <td className="sticky left-0 z-5 ">{s.id}</td>
                                     <td>{s.orderDate.toLocaleDateString()}</td>
                                     <td>{s.orderNumber}</td>

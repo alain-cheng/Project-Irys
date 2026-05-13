@@ -31,22 +31,6 @@ export const payments = [
         paymentMode: "",
         remarks: ""
     },
-    {
-        id: 4003,
-        customerId: 1002,
-        salesOrderId: 2003,
-        collector: "",
-        ciNumber: 0,
-        orderDate: new Date("2026-01-31"),
-        amount: 3200.50,
-        balance: 0,
-        credits: 0,
-        adjustment: 0,
-        wtax: 0,
-        amountApplied: 0,
-        paymentMode: "",
-        remarks: ""
-    }
 ];
 
 // helper functions

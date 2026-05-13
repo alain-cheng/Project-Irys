@@ -100,4 +100,5 @@ td {
   border: 1px solid var(--color-border-soft);
   padding: 0.5rem 0.75rem;
   background-color: inherit;
+  white-space: nowrap;
 }

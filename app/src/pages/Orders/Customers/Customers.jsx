@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
+import CustomerNav from "./components/CustomerNav.jsx"
 
 function Customers() {
     const navigate = useNavigate()
@@ -31,12 +32,14 @@ function Customers() {
     }
 
     return(
-        <div className="flex flex-col h-full py-5">
-            <h1 className="text-2xl text-text mb-5">Customers</h1>
+        <div className="flex flex-col h-full gap-2">
+            <CustomerNav/>
+
+            <h1 className="text-2xl text-text">Customers</h1>
             
             <button
                 onClick={handleAddCustomer}
-                className="border px-3 py-2 mb-3 hover:bg-accent-soft"
+                className="border px-3 hover:bg-accent-soft hidden"
             >
                 +Add
             </button>

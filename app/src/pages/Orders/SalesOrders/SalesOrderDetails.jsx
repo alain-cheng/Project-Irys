@@ -20,7 +20,7 @@ function SalesOrderDetails() {
             <h1 className="text-text">Sales Order</h1>
 
             <p>Sales Order No.: {salesOrder.id}</p>
-            <p>Item Name: {salesOrder.itemName}</p>
+            <p>Item: {salesOrder.itemId}</p>
             <p>Quantity: {salesOrder.quantity}</p>
         </div>
     )

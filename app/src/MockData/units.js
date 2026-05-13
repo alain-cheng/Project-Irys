@@ -1,23 +1,23 @@
 export const units = [
     {
         id: 1,
-        unitName: "pc/pcs"
+        unitName: "PC/s"
     },
     {
         id: 2,
-        unitName: "box/boxes"
+        unitName: "BOX/s"
     },
     {
         id: 3,
-        unitName: "set/sets"
+        unitName: "SET/s"
     },
     {
         id: 4,
-        unitName: "pack/packs"
+        unitName: "PACK/s"
     },
     {
         id: 5,
-        unitName: "kg/kgs"
+        unitName: "KG/s"
     },
     {
         id: 6,
@@ -33,7 +33,11 @@ export const units = [
     },
     {
         id: 9,
-        unitName: "unit/units"
+        unitName: "UNIT/s"
+    },
+    {
+        id:10,
+        unitName: "GAL/s"
     }
 ];
 
