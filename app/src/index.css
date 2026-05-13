@@ -94,6 +94,7 @@ th {
   padding: 0.5rem 0.75rem;
   text-align: left;
   background-color: var(--color-background-light);
+  font-size: 12px;
 }
 
 td {
@@ -101,4 +102,5 @@ td {
   padding: 0.5rem 0.75rem;
   background-color: inherit;
   white-space: nowrap;
+  font-size: 12px;
 }

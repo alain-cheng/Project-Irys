@@ -1,16 +1,35 @@
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
+
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
+
+import { Search } from "lucide-react"
+
 import CustomerNav from "./components/CustomerNav.jsx"
 
 function Customers() {
     const navigate = useNavigate()
 
+    const [searchTerm, setSearchTerm] = useState("")
     const [customersView, setCustomersView] = useState(() => {
         return getAllCustomers().map(c => ({
             ...c,
         }))
     }, [])
+
+    const filteredView = useMemo(() => {
+        const query = searchTerm.toLowerCase().trim()
+
+        if (!query) return customersView
+
+        return customersView.filter(customer =>
+            Object.values(customer).some(value => 
+                String(value)
+                    .toLowerCase()
+                    .includes(query)
+            )
+        )
+    }, [customersView, searchTerm])
 
     const handleAddCustomer = () => {
         const newCustomer = {
@@ -27,7 +46,6 @@ function Customers() {
             creditLimit: 50.50,
             salesman: "Demo"
         }
-
         setCustomersView(prev => [...prev, newCustomer])
     }
 
@@ -43,6 +61,18 @@ function Customers() {
             >
                 +Add
             </button>
+
+            <div className="flex flex-row items-center justify-center">
+                <Search className="w-10" />
+                <input 
+                    type="text"
+                    className="flex-1 px-2 py-1 border border-border-soft bg-background"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search Customer..."
+                />
+            </div>
+            
             {/* table container */}
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
@@ -68,7 +98,7 @@ function Customers() {
 
                         {/* body */}
                         <tbody className="border">
-                            {customersView.map((customer, index) => (
+                            {filteredView.map((customer, index) => (
                                 <tr 
                                     key={customer.id} 
                                     onClick={() => navigate(`/orders/customers/${customer.id}`)} 
