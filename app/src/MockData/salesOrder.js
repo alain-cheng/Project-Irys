@@ -1,6 +1,7 @@
 export const salesOrder = [
     {
         id: 2001,
+        orderNumber: "70001",
         customerId: 1000,
         orderDate: new Date("2026-01-31"),
         itemId: 10001,
@@ -16,6 +17,7 @@ export const salesOrder = [
     },
     {
         id: 2002,
+        orderNumber: "70002",
         customerId: 1000,
         orderDate: new Date("2026-01-31"),
         itemId: 10002,
@@ -31,6 +33,7 @@ export const salesOrder = [
     },
     {
         id: 2003,
+        orderNumber: "70003",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
         itemId: 10003,
@@ -46,6 +49,7 @@ export const salesOrder = [
     },
     {
         id: 2004,
+        orderNumber: "70004",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
         itemId: 10004,
@@ -61,6 +65,7 @@ export const salesOrder = [
     },
     {
         id: 2005,
+        orderNumber: "70005",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
         itemId: 10005,
@@ -73,7 +78,23 @@ export const salesOrder = [
         invoiced: 0,
         onHand: 0,
         closed: false
-    }
+    },
+    {
+        id: 2006,
+        orderNumber: "70006",
+        customerId: 1002,
+        orderDate: new Date("2026-01-31"),
+        itemId: 10003,
+        quantity: 2,
+        unitId: 1,
+        unitPrice: 3200.50,
+        discountTypeId: 0,
+        discounts: 0,
+        amount: 6401.00,
+        invoiced: 0,
+        onHand: 0,
+        closed: false
+    },
 ];
 
 // helper functions
@@ -92,3 +113,11 @@ export const getAllSalesOrder = () => { return salesOrder }
  * @returns a salesOrder if it exists
  */
 export const getSalesOrderById = (id) => salesOrder.find(s => s.id === id)
+
+/**
+ * Retrieves sales order records containing the given customer ID.
+ * 
+ * @param {*} customerId 
+ * @returns 
+ */
+export const getSalesOrderByCustomerId = (customerId) => salesOrder.filter(s => s.customerId === customerId) 

@@ -74,7 +74,7 @@ function SalesOrders () {
 
                         <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 ">S.O. ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">Order Number</th>
                                 <th>Order Date</th>
                                 <th>Customer</th>
                                 <th>Item</th>
@@ -96,7 +96,7 @@ function SalesOrders () {
                                     onClick={() => navigate(`/orders/sales_orders/${so.id}`)}
                                     className="bg-background hover:bg-accent-soft transition cursor-pointer"
                                 >
-                                    <td className="sticky left-0 z-5 ">{so.id}</td>
+                                    <td className="sticky left-0 z-5 ">{so.orderNumber}</td>
                                     <td>{so.orderDate.toLocaleDateString()}</td>
                                     <td>{so.customerName}</td>
                                     <td>{so.itemName}</td>

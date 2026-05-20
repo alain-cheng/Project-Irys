@@ -34,7 +34,7 @@ function OrderPayments() {
 
                         <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 ">Payment No.</th>
+                                <th className="sticky left-0 top-0 z-10 ">Payment ID</th>
                                 <th>Customer</th>
                                 <th>Sales Order No.</th>
                                 <th>Collector</th>

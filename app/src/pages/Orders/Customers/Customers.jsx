@@ -66,7 +66,7 @@ function Customers() {
                 <Search className="w-10" />
                 <input 
                     type="text"
-                    className="flex-1 px-2 py-1 border border-border-soft bg-background"
+                    className="flex-1 px-3 py-1 border border-border-soft rounded-2xl bg-background text-sm"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search Customer..."
