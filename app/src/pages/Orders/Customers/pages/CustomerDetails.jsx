@@ -1,7 +1,7 @@
 import { data, useOutletContext, useParams } from "react-router-dom"
-import { getCustomerById } from "../../../MockData/customers"
+import { getCustomerById } from "../../../../MockData/customers"
 
-import CopyButton from "../../components/CopyButton"
+import CopyButton from "../../../components/CopyButton"
 import { useEffect } from "react"
 
 function CustomerDetails () {

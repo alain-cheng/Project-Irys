@@ -1,6 +1,6 @@
-import { paymentHistory, getAllPaymentHistory } from "../../../MockData/paymentHistory"
+import { paymentHistory, getAllPaymentHistory } from "../../../../MockData/paymentHistory"
 
-import CustomerNav from "./components/CustomerNav"
+import CustomerNav from "../components/CustomerNav"
 
 function PaymentHistory() {
     return(

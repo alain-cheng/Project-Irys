@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react"
 import { useOutletContext } from "react-router-dom"
 
-import { getSalesOrderByCustomerId } from "../../../MockData/salesOrder"
+import { getSalesOrderByCustomerId } from "../../../../MockData/salesOrder"
 
-import { getPaymentBySalesOrderId } from "../../../MockData/payments"
-import { getCustomerById } from "../../../MockData/customers"
+import { getPaymentBySalesOrderId } from "../../../../MockData/payments"
+import { getCustomerById } from "../../../../MockData/customers"
 
 function SalesHistory() {
     const { selectedCustomer } = useOutletContext()
