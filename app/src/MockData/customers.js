@@ -11,7 +11,7 @@ export const customers = [
         fax: 12345,
         tin: 123456,
         creditLimit: 100.45,
-        salesman: ""
+        salesman: "John Doe"
     },
     {
         id: 1001,
@@ -39,7 +39,7 @@ export const customers = [
         fax: 32345,
         tin: 323456,
         creditLimit: 500.75,
-        salesman: ""
+        salesman: "Jane Smith"
     },
     {
         id: 1003,
@@ -67,7 +67,7 @@ export const customers = [
         fax: 52345,
         tin: 523456,
         creditLimit: 320.90,
-        salesman: ""
+        salesman: "Jane Smith"
     },
     {
         id: 1005,
@@ -95,7 +95,7 @@ export const customers = [
         fax: 72345,
         tin: 723456,
         creditLimit: 410.20,
-        salesman: ""
+        salesman: "Mark Lee"
     },
     {
         id: 1007,
@@ -123,7 +123,7 @@ export const customers = [
         fax: 92345,
         tin: 923456,
         creditLimit: 600.00,
-        salesman: ""
+        salesman: "Mark Lee"
     },
     {
         id: 1009,

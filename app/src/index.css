@@ -2,6 +2,8 @@
 
 @theme {
   --color-background: #FFFFFF;
+  --color-background-light: #F9F9F9;
+  --color-background-darker: #f2f2f2;
   --color-text: #49454F;
   --color-border: #000000;
   --color-border-soft: #E6E6E6; 
@@ -50,13 +52,55 @@ h1 {
   letter-spacing: -1.5px;
 }
 
+h2 {
+  font-size: 1.6em;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+h3 {
+  font-size: 1.3em;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+h4 {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+h5 {
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+h6 {
+  font-size: 0.9em;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
+/* Global Styling for all Table Components */
+
 th {
   border: 1px solid var(--color-border-soft);
   padding: 0.5rem 0.75rem;
   text-align: left;
+  background-color: var(--color-background-light);
+  font-size: 12px;
 }
 
 td {
   border: 1px solid var(--color-border-soft);
   padding: 0.5rem 0.75rem;
+  background-color: inherit;
+  white-space: nowrap;
+  font-size: 12px;
 }

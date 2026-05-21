@@ -1,80 +1,113 @@
+import { useMemo, useState } from "react"
+import { useNavigate } from "react-router-dom"
+
 import { getAllItems, items } from "../../../MockData/items"
-import { getItemCategoryById } from "../../../MockData/itemCategories"
-import { getUnitById } from "../../../MockData/units"
+import { getAllUnits, getUnitById } from "../../../MockData/units"
+import { getAllCustomers } from "../../../MockData/customers"
+import { getAllSalesOrder } from "../../../MockData/salesOrder"
 
-function getAverageCost(item) {
-    const prices = [
-        item.wholesalePrice,
-        item.retail1Price,
-        item.retail2Price,
-        item.purchasePrice,
-        item.specialPrice
-    ].filter(p => typeof p === "number" && p > 0)
+import { formatDiscount } from "../../../helpers/helpers"
 
-    if (prices.length === 0) return 0
-
-    return prices.reduce((sum, p) => sum + p, 0) / prices.length
-}
+import StatusLabel from "../../components/StatusLabel"
 
 function SalesOrders () {
+    const navigate = useNavigate()
+
+    const [selectedCustomerId, setSelectedCustomerId] = useState("")
+
+    const [salesOrdersView, setSalesOrdersView] = useState(() => {
+        const unitsMap = Object.fromEntries(
+            getAllUnits().map(u => [u.id, u])
+        )
+
+        const customersMap = Object.fromEntries(
+            getAllCustomers().map(c => [c.id, c])
+        )
+
+        const itemsMap = Object.fromEntries(
+            getAllItems().map(i => [i.id, i])
+        )
+
+        return getAllSalesOrder().map(so => ({
+            ...so,
+            customerName: customersMap[so.customerId]?.name ?? "-",
+            unitName: unitsMap[so.unitId]?.unitName ?? "-",
+            itemName: itemsMap[so.itemId]?.itemName ?? "-",
+        }))
+    }, [])
+
+    const filteredView = useMemo(() => {
+        if (!selectedCustomerId) return salesOrdersView
+
+        return salesOrdersView.filter(so => so.customerId === Number(selectedCustomerId))
+    }, [salesOrdersView, selectedCustomerId])
 
     return(
-        <div className="flex flex-col h-full py-5">
-            <h1 className="text-2xl text-text mb-5">Sales Orders</h1>
+        <div className="flex flex-col gap-2 h-full">
+            <h1 className="text-2xl text-text">Sales Orders</h1>
 
-            {/* table container */}
+            <div className="p-2 border border-border-soft rounded-lg bg-background">
+                <label className="flex items-center gap-2">
+                    <span>Customer:</span>
+
+                    <select
+                        value={selectedCustomerId}
+                        onChange={(e) => setSelectedCustomerId(e.target.value)}
+                        className="px-2 py-1 border border-border-soft"
+                    >
+                        <option value="">All</option>
+                        {getAllCustomers().map(customer => (
+                            <option
+                                key={customer.id}
+                                value={customer.id}
+                            >
+                                {customer.id} - {customer.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+            </div>
+
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">Item ID</th>
-                                <th>Name</th>
-                                <th>Stocks</th>
-                                <th>Bad Stocks</th>
+                                <th className="sticky left-0 top-0 z-10 ">Order Number</th>
+                                <th>Order Date</th>
+                                <th>Customer</th>
+                                <th>Item</th>
+                                <th>Quantity</th>
                                 <th>Unit</th>
-                                <th>Comm</th>
-                                <th>Terms</th>
-                                <th>Loc</th>
-                                <th>Category</th>
-                                <th>Wholesale Price</th>
-                                <th>Wholesale Discount</th>
-                                <th>Retail 1 Price</th>
-                                <th>Retail 1 Discount</th>
-                                <th>Retail 2 Price</th>
-                                <th>Retail 2 Discount</th>
-                                <th>Purchase Price</th>
-                                <th>Purchase Discount</th>
-                                <th>Special Price</th>
-                                <th>Special Discount</th>
-                                <th>Average Cost</th>
+                                <th>Unit Price</th>
+                                <th>Discounts</th>
+                                <th>Amount</th>
+                                <th>Invoiced</th>
+                                <th>On Hand</th>
+                                <th>Closed</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {getAllItems().map((item) => (
-                                <tr key={item.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{item.id}</td>
-                                    <td>{item.itemName}</td>
-                                    <td>{item.stocks}</td>
-                                    <td>{item.badStocks}</td>
-                                    <td>{getUnitById(item.unitId).unitName}</td>
-                                    <td>{item.comm}</td>
-                                    <td>{item.terms}</td>
-                                    <td>{item.loc}</td>
-                                    <td>{getItemCategoryById(item.categoryId).categoryName}</td>
-                                    <td>{item.wholesalePrice.toFixed(2)}</td>
-                                    <td>{item.wholesaleDiscount}</td>
-                                    <td>{item.retail1Price.toFixed(2)}</td>
-                                    <td>{item.retail1Discount}</td>
-                                    <td>{item.retail2Price.toFixed(2)}</td>
-                                    <td>{item.retail2Discount}</td>
-                                    <td>{item.purchasePrice.toFixed(2)}</td>
-                                    <td>{item.purchaseDiscount}</td>
-                                    <td>{item.specialPrice.toFixed(2)}</td>
-                                    <td>{item.specialDiscount}</td>
-                                    <td>{getAverageCost(item).toFixed(2)}</td>
+                            {filteredView.map((so) => (
+                                <tr 
+                                    key={so.id} 
+                                    onClick={() => navigate(`/orders/sales_orders/${so.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
+                                    <td className="sticky left-0 z-5 ">{so.orderNumber}</td>
+                                    <td>{so.orderDate.toLocaleDateString()}</td>
+                                    <td>{so.customerName}</td>
+                                    <td>{so.itemName}</td>
+                                    <td>{so.quantity}</td>
+                                    <td>{so.unitName}</td>
+                                    <td className="text-right">{so.unitPrice.toFixed(2)}</td>
+                                    <td>{formatDiscount(so.discountTypeId, so.discounts)}</td>
+                                    <td className="text-right">{so.amount}</td>
+                                    <td>{so.invoiced}</td>
+                                    <td>{so.onHand}</td>
+                                    <td><StatusLabel status={so.closed}/></td>
                                 </tr>
                             ))}
                         </tbody>

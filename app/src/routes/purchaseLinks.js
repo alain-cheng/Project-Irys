@@ -67,7 +67,10 @@ export const purchasesLinks = [
         label: "Items", 
         path: "/items",
         children: [
-
+            { label: "Payment History", path: "/items/payment_history" },
+            { label: "Sales History", path: "/items/sales_history" },
+            { label: "Return History", path: "/items/return_history" },
+            { label: "Audit Trail", path: "/items/audit_trail" },
         ],
         showInSidebar: true,
         showInFlow: true

@@ -1,18 +1,34 @@
+import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
+
 import { getAllInvoiceReturns } from "../../../MockData/invoiceReturns"
-import { getCustomerById } from "../../../MockData/customers"
+import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
 
 function InvoiceReturns() {
+    const navigate = useNavigate()
+
+    const invoiceReturnsView = useMemo(() => {
+        const customersMap = Object.fromEntries(
+            getAllCustomers().map(c => [c.id, c])
+        )
+
+        return getAllInvoiceReturns().map(ir => ({
+            ...ir,
+            customerName: customersMap[ir.customerId]?.name ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Invoice Returns</h1>
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">ID</th>
                                 <th>Customer</th>
                                 <th>Address</th>
                                 <th>Phone</th>
@@ -31,10 +47,14 @@ function InvoiceReturns() {
                         </thead>
 
                         <tbody>
-                            {getAllInvoiceReturns().map((ir) => (
-                                <tr key={ir.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{ir.id}</td>
-                                    <td>{getCustomerById(ir.customerId).name}</td>
+                            {invoiceReturnsView.map((ir) => (
+                                <tr 
+                                    key={ir.id} 
+                                    onClick={() => navigate(`/orders/invoice_returns/${ir.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
+                                    <td className="sticky left-0 z-5 ">{ir.id}</td>
+                                    <td>{ir.customerName}</td>
                                     <td>{ir.address}</td>
                                     <td>{ir.phone}</td>
                                     <td>{ir.orderNumber}</td>

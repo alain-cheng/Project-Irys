@@ -1,19 +1,40 @@
+import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
+
 import { creditMemo, getAllCreditMemo } from "../../../MockData/creditMemo"
-import { getCustomerById } from "../../../MockData/customers"
-import { getItemById } from "../../../MockData/items"
+import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
+import { getAllItems, getItemById } from "../../../MockData/items"
 
 function CreditReturns() {
+    const navigate = useNavigate()
+
+    const creditMemoView = useMemo(() => {
+        const customersMap = Object.fromEntries(
+            getAllCustomers().map(c => [c.id, c])
+        )
+
+        const itemsMap = Object.fromEntries(
+            getAllItems().map(i => [i.id, i])
+        )
+
+        return getAllCreditMemo().map(cm => ({
+            ...cm,
+            customerName: customersMap[cm.customerId]?.name ?? "-",
+            itemNo: itemsMap[cm.itemId]?.id ?? "-",
+        }))
+    }, [])
+
     return(
         <div className="flex flex-col h-full py-5">
             <h1 className="text-2xl text-text mb-5">Credit Returns</h1>
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
-                    <table className="bg-background">
+                    <table className="min-w-full">
 
-                        <thead className="sticky top-0 z-10 bg-background border">
+                        <thead className="sticky top-0 z-10  border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10 bg-background">ID</th>
+                                <th className="sticky left-0 top-0 z-10 ">ID</th>
                                 <th>Customer</th>
                                 <th>Date</th>
                                 <th>P.O. No.</th>
@@ -31,14 +52,18 @@ function CreditReturns() {
                         </thead>
 
                         <tbody>
-                            {getAllCreditMemo().map((cm) => (
-                                <tr key={cm.id} className="bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5 bg-background">{cm.id}</td>
-                                    <td>{getCustomerById(cm.customerId)?.name ?? "-"}</td>
+                            {creditMemoView.map((cm) => (
+                                <tr 
+                                    key={cm.id} 
+                                    onClick={() => navigate(`/orders/credit_returns/${cm.id}`)}
+                                    className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                >
+                                    <td className="sticky left-0 z-5 ">{cm.id}</td>
+                                    <td>{cm.customerName}</td>
                                     <td>{cm.date.toLocaleDateString()}</td>
                                     <td>{cm.poNumber}</td>
                                     <td>{cm.creditId}</td>
-                                    <td>{getItemById(cm.itemId)?.id ?? "-"}</td>
+                                    <td>{cm.itemNo}</td>
                                     <td>{cm.quantity}</td>
                                     <td>{cm.badQty}</td>
                                     <td>{cm.unitPrice}</td>
