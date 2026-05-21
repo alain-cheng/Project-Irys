@@ -1,22 +1,28 @@
 import { useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useOutletContext } from "react-router-dom"
 
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 
 import { Search } from "lucide-react"
 
-import CustomerNav from "./components/CustomerNav.jsx"
-
 function Customers() {
     const navigate = useNavigate()
+    
+    const {
+        selectedCustomer,
+        setSelectedCustomer
+    } = useOutletContext()
 
     const [searchTerm, setSearchTerm] = useState("")
+
+    // Retrieves and loads all customers from the database
     const [customersView, setCustomersView] = useState(() => {
         return getAllCustomers().map(c => ({
             ...c,
         }))
     }, [])
 
+    // Sets the actual displayed data in the Table while also handling filtering
     const filteredView = useMemo(() => {
         const query = searchTerm.toLowerCase().trim()
 
@@ -50,18 +56,10 @@ function Customers() {
     }
 
     return(
-        <div className="flex flex-col h-full gap-2">
-            <CustomerNav/>
-
+        <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text">Customers</h1>
             
-            <button
-                onClick={handleAddCustomer}
-                className="border px-3 hover:bg-accent-soft hidden"
-            >
-                +Add
-            </button>
-
+            {/* Search bar */}
             <div className="flex flex-row items-center justify-center">
                 <Search className="w-10" />
                 <input 
@@ -101,8 +99,17 @@ function Customers() {
                             {filteredView.map((customer, index) => (
                                 <tr 
                                     key={customer.id} 
-                                    onClick={() => navigate(`/orders/customers/${customer.id}`)} 
-                                    className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"} hover:bg-accent-soft transition cursor-pointer`}
+                                    onClick={() => setSelectedCustomer(prev => prev === customer.id ? 0 : customer.id)}
+                                    onDoubleClick={() => navigate(`/orders/customers/${customer.id}`)} 
+                                    className={`
+                                        ${ selectedCustomer === customer.id
+                                            ? "bg-yellow-200"
+                                            : index % 2 === 0
+                                                ? "bg-background"
+                                                : "bg-background-light"
+                                        }
+                                        hover:bg-accent-soft transition cursor-pointer
+                                    `}
                                 >
                                     <td className="sticky left-0 z-5">{customer.id}</td>
                                     <td>{customer.name}</td>

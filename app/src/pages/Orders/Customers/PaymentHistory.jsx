@@ -5,8 +5,6 @@ import CustomerNav from "./components/CustomerNav"
 function PaymentHistory() {
     return(
         <div className="flex flex-col gap-2 h-full">
-            <CustomerNav />
-
             <h1 className="text-2xl text-text mb-5">Payment History</h1>
 
             <div className="flex-1 min-h-0">

@@ -1,10 +1,12 @@
-import { data, useParams } from "react-router-dom"
+import { data, useOutletContext, useParams } from "react-router-dom"
 import { getCustomerById } from "../../../MockData/customers"
 
 import CopyButton from "../../components/CopyButton"
+import { useEffect } from "react"
 
 function CustomerDetails () {
     const { customerId } = useParams()
+    const { setSelectedCustomer } = useOutletContext()
 
     const customer = getCustomerById(Number(customerId))
 
@@ -20,6 +22,13 @@ function CustomerDetails () {
             </div>
         )
     }
+
+    // Sets the customer to "selected" state when their details page is viewed
+    useEffect(() => {
+        if (customerId) {
+            setSelectedCustomer(Number(customerId))
+        }
+    }, [customerId, setSelectedCustomer])
 
     const generalFields = [
         ["Customer ID", customer.id],

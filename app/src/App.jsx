@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard/Dashboard"
 
 import Orders from "./pages/Orders/Orders"
 import OrdersDefault from "./pages/Orders/OrdersDefault"
+import CustomersLayout from "./pages/Orders/Customers/CustomersLayout"
 import Customers from "./pages/Orders/Customers/Customers"
 import CustomerDetails from "./pages/Orders/Customers/CustomerDetails"
 import DataEntry from "./pages/Orders/Customers/DataEntry"
@@ -45,6 +46,7 @@ import Header from './components/Header'
 import NotFound from "./pages/NotFound"
 
 
+
 function App() {
 
   return (
@@ -58,11 +60,13 @@ function App() {
           <Route path="/orders" element={<Orders />}>
             <Route index element={<OrdersDefault/>}/> 
 
-            <Route path="customers" element={<Customers />}/>
-            <Route path="customers/:customerId" element={<CustomerDetails />}/>
-            <Route path="customers/data_entry" element={<DataEntry />}/>
-            <Route path="customers/payment_history" element={<PaymentHistory />}/>
-            <Route path="customers/sales_history" element={<SalesHistory />}/>
+            <Route path="customers" element={<CustomersLayout />}>
+              <Route index element={<Customers />}/>
+              <Route path=":customerId" element={<CustomerDetails />}/>
+              <Route path="data_entry" element={<DataEntry />}/>
+              <Route path="payment_history" element={<PaymentHistory />}/>
+              <Route path="sales_history" element={<SalesHistory />}/>
+            </Route>
 
             <Route path="sales_orders" element={<SalesOrders />}/>
             <Route path="sales_orders/:salesOrderId" element={<SalesOrderDetails/>}/>
