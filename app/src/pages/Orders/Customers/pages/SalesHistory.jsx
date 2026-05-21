@@ -2,12 +2,13 @@ import { useMemo, useState } from "react"
 import { useOutletContext } from "react-router-dom"
 
 import { getSalesOrderByCustomerId } from "../../../../MockData/salesOrder"
+import { getAllCustomers } from "../../../../MockData/customers"
 
 import { getPaymentBySalesOrderId } from "../../../../MockData/payments"
 import { getCustomerById } from "../../../../MockData/customers"
 
 function SalesHistory() {
-    const { selectedCustomer } = useOutletContext()
+    const { selectedCustomer, setSelectedCustomer } = useOutletContext()
 
     const customer = useMemo(() => {
         if (selectedCustomer) return getCustomerById(selectedCustomer)
@@ -46,8 +47,25 @@ function SalesHistory() {
         <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text ">Sales History</h1>
 
+            <div className="flex">
+                <select 
+                    className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none"
+                    defaultValue={"0"}
+                    onChange={(e) => {
+                        setSelectedCustomer(Number(e.target.value))
+                        e.target.value = "0"
+                    }}
+                >
+                    <option value={0} disabled>Find</option>
+                    {getAllCustomers().map((customer) => (
+                        <option key={customer.id} value={customer.id}>{customer.name}</option>
+                    ))}
+                </select>
+            </div>
+            
+
             {customer && (
-                <div>
+                <div className="px-2 py-1 border rounded-lg text-sm border-border-soft bg-background">
                     <p>Customer: {customer.name}</p>
                 </div>
             )}
