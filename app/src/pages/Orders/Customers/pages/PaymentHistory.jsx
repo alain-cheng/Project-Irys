@@ -1,11 +1,64 @@
-import { paymentHistory, getAllPaymentHistory } from "../../../../MockData/paymentHistory"
+import { useMemo, useState } from "react"
+import { useOutletContext } from "react-router-dom"
+
+import { getAllCustomers, getCustomerById } from "../../../../MockData/customers"
+import { getPaymentsByCustomerId } from "../../../../MockData/payments"
 
 import CustomerNav from "../components/CustomerNav"
 
 function PaymentHistory() {
+    const { selectedCustomer, setSelectedCustomer } = useOutletContext()
+
+    const customer = useMemo(() => {
+        if (selectedCustomer) return getCustomerById(selectedCustomer)
+        
+        return null
+    }, [selectedCustomer])
+
+    const paymentHistoryView = useMemo(() => {
+        if (!selectedCustomer) return []
+
+        const customerPayments = getPaymentsByCustomerId(selectedCustomer)
+
+        return customerPayments.map(payment => {
+            return {
+                paymentDate: payment.paymentDate,
+                paymentId: payment.id,
+                amount: payment.amount,
+                mode: payment.paymentMode,
+                bankName: payment.bankName,
+                checkNo: payment.checkNo,
+                checkDate: payment.checkDate,
+                status: payment.status,
+            }
+        })
+    }, [selectedCustomer])
+
     return(
         <div className="flex flex-col gap-2 h-full">
-            <h1 className="text-2xl text-text mb-5">Payment History</h1>
+            <h1 className="text-2xl text-text">Payment History</h1>
+
+            <div className="flex">
+                <select 
+                    className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none"
+                    defaultValue={"0"}
+                    onChange={(e) => {
+                        setSelectedCustomer(Number(e.target.value))
+                        e.target.value = "0"
+                    }}
+                >
+                    <option value={0} disabled>Find</option>
+                    {getAllCustomers().map((customer) => (
+                        <option key={customer.id} value={customer.id}>{customer.name}</option>
+                    ))}
+                </select>
+            </div>
+
+            {customer && (
+                <div className="px-2 py-1 border rounded-lg text-sm border-border-soft bg-background">
+                    <p>Customer: {customer.name}</p>
+                </div>
+            )}
 
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
@@ -13,9 +66,10 @@ function PaymentHistory() {
 
                         <thead className="sticky top-0 z-10 border">
                             <tr>
-                                <th className="sticky left-0 top-0 z-10">Payment ID</th>
+                                <th className="sticky left-0 top-0 z-10">Payment Date</th>
+                                <th>Payment ID</th>
                                 <th>Amount</th>
-                                <th>Payment Mode</th>
+                                <th>Mode</th>
                                 <th>Bank Name</th>
                                 <th>Check No.</th>
                                 <th>Check Date</th>
@@ -24,15 +78,14 @@ function PaymentHistory() {
                         </thead>
 
                         <tbody className="border">
-                            {getAllPaymentHistory().map((p, index) => (
-                                <tr 
-                                    key={p.id} 
-                                    className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"} hover:bg-accent-soft transition`}>
-                                    <td className="sticky left-0 z-5">{p.paymentId}</td>
-                                    <td>{p.amount}</td>
-                                    <td>{p.paymentMode}</td>
+                            {paymentHistoryView.map((p, index) => (
+                                <tr key={index} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"} hover:bg-accent-soft transition`}>
+                                    <td className="sticky left-0 z-5">{p.paymentDate.toLocaleDateString()}</td>
+                                    <td>{p.paymentId}</td>
+                                    <td>{p.amount.toFixed(2)}</td>
+                                    <td>{p.mode}</td>
                                     <td>{p.bankName}</td>
-                                    <td>{p.checkNumber}</td>
+                                    <td>{p.checkNo}</td>
                                     <td>{p.checkDate.toLocaleDateString()}</td>
                                     <td>{p.status}</td>
                                 </tr>

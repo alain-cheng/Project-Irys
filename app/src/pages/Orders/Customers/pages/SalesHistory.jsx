@@ -45,7 +45,7 @@ function SalesHistory() {
 
     return(
         <div className="flex flex-col gap-2 h-full">
-            <h1 className="text-2xl text-text ">Sales History</h1>
+            <h1 className="text-2xl text-text">Sales History</h1>
 
             <div className="flex">
                 <select 
