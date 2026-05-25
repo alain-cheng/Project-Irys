@@ -1,14 +1,17 @@
 import { useMemo, useState } from "react"
 import { useOutletContext } from "react-router-dom"
 
+import { getAllCustomers, getCustomerById } from "../../../../MockData/customers"
 import { getSalesOrderByCustomerId } from "../../../../MockData/salesOrder"
-import { getAllCustomers } from "../../../../MockData/customers"
-
+import { getSalesOrderItemsBySOId } from "../../../../MockData/salesOrderItems"
 import { getPaymentBySalesOrderId } from "../../../../MockData/payments"
-import { getCustomerById } from "../../../../MockData/customers"
+
+import { getOrderTotalAmount } from "../../../../helpers/helpers"
 
 function SalesHistory() {
     const { selectedCustomer, setSelectedCustomer } = useOutletContext()
+
+    
 
     const customer = useMemo(() => {
         if (selectedCustomer) return getCustomerById(selectedCustomer)
@@ -24,7 +27,7 @@ function SalesHistory() {
         return customerOrders.map(order => {
             const payment = getPaymentBySalesOrderId(order.id) ?? { 
                 // if unpaid order
-                balance: order.amount,
+                balance: 0.00, //order.amount
                 amount: 0.00,
                 adjustment: 0.00,
             }
@@ -32,7 +35,7 @@ function SalesHistory() {
             return {
                 orderDate: order.orderDate.toLocaleDateString(),
                 orderNumber: order.orderNumber,
-                amount: order.amount,
+                amount: getOrderTotalAmount(order),
                 balance: payment.balance,
                 amountPaid: payment.amount,
                 adjustments: payment.adjustment,
