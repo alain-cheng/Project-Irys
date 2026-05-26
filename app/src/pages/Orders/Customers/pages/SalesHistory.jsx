@@ -5,13 +5,15 @@ import { getAllCustomers, getCustomerById } from "../../../../MockData/customers
 import { getSalesOrderByCustomerId } from "../../../../MockData/salesOrder"
 import { getSalesOrderItemsBySOId } from "../../../../MockData/salesOrderItems"
 import { getPaymentBySalesOrderId } from "../../../../MockData/payments"
+import { getAllItems } from "../../../../MockData/items"
+import { getAllUnits } from "../../../../MockData/units"
 
-import { getOrderTotalAmount } from "../../../../helpers/helpers"
+import { formatDiscount, getOrderTotalAmount } from "../../../../helpers/helpers"
 
 function SalesHistory() {
     const { selectedCustomer, setSelectedCustomer } = useOutletContext()
 
-    
+    const [selectedRow, setSelectedRow] = useState(null) // value based on salesOrder.id
 
     const customer = useMemo(() => {
         if (selectedCustomer) return getCustomerById(selectedCustomer)
@@ -33,6 +35,7 @@ function SalesHistory() {
             }
 
             return {
+                id: order.id,
                 orderDate: order.orderDate.toLocaleDateString(),
                 orderNumber: order.orderNumber,
                 amount: getOrderTotalAmount(order),
@@ -41,10 +44,27 @@ function SalesHistory() {
                 adjustments: payment.adjustment,
                 returns: "0.00", //
                 // status: order.closed ? "Closed" : "Open",
-                // items
             }
         })
     }, [selectedCustomer])
+
+    const salesHistoryItemsView = useMemo(() => {
+        if (!selectedRow) return []
+
+        const itemsMap = Object.fromEntries(
+            getAllItems().map(i => [i.id, i])
+        )
+
+        const unitsMap = Object.fromEntries(
+            getAllUnits().map(u => [u.id, u])
+        )
+
+        return getSalesOrderItemsBySOId(selectedRow).map(itemOrder => ({
+            ...itemOrder,
+            itemName: itemsMap[itemOrder.itemId].itemName ?? "-",
+            unit: unitsMap[itemsMap[itemOrder.itemId].unitId].unitName ?? "-",
+        }))
+    })
 
     return(
         <div className="flex flex-col gap-2 h-full">
@@ -73,7 +93,7 @@ function SalesHistory() {
                 </div>
             )}
 
-            <div className="flex-1 min-h-0">
+            <div className="min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
                     <table className="min-w-full">
 
@@ -91,7 +111,19 @@ function SalesHistory() {
 
                         <tbody className="border">
                             {salesHistoryView.map((s, index) => (
-                                <tr key={index} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"} hover:bg-accent-soft transition`}>
+                                <tr 
+                                    key={s.id} 
+                                    onClick={() => setSelectedRow(prev => prev === s.id ? 0 : s.id)}
+                                    className={`
+                                        ${ selectedRow === s.id
+                                            ? "bg-yellow-200"
+                                            : index % 2 === 0 
+                                                ? "bg-background" 
+                                                : "bg-background-light"
+                                        } 
+                                        hover:bg-accent-soft transition cursor-pointer
+                                    `}
+                                >
                                     <td className="sticky left-0 z-5 ">{s.orderDate}</td>
                                     <td>{s.orderNumber}</td>
                                     <td>{s.amount.toFixed(2)}</td>
@@ -99,6 +131,46 @@ function SalesHistory() {
                                     <td>{s.amountPaid.toFixed(2)}</td>
                                     <td>{s.adjustments.toFixed(2)}</td>
                                     <td>{s.returns}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div className="min-h-0">
+                <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
+                    <table className="min-w-full">
+
+                        <thead className="sticky top-0 z-10 border">
+                            <tr>
+                                <th className="sticky left-0 top-0 z-10 ">Item Name</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                                <th>Unit Price</th>
+                                <th>Discounts</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody className="border">
+                            {salesHistoryItemsView.map((itemOrder, index) => (
+                                <tr 
+                                    key={itemOrder.id}
+                                    className={`
+                                        ${ index % 2 === 0 
+                                                ? "bg-background" 
+                                                : "bg-background-light"
+                                        } 
+                                        hover:bg-accent-soft transition
+                                    `}
+                                >
+                                    <td className="sticky left-0 z-5 ">{itemOrder.itemName}</td>
+                                    <td>{itemOrder.quantity}</td>
+                                    <td>{itemOrder.unit}</td>
+                                    <td>{itemOrder.unitPrice}</td>
+                                    <td>{formatDiscount(itemOrder.discountTypeId, itemOrder.discounts)}</td>
+                                    <td>{itemOrder.amount}</td>
                                 </tr>
                             ))}
                         </tbody>
