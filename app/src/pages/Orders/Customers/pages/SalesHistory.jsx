@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useOutletContext } from "react-router-dom"
 
 import { getAllCustomers, getCustomerById } from "../../../../MockData/customers"
@@ -29,11 +29,11 @@ function SalesHistory() {
         return customerOrders.map(order => {
             const payment = getPaymentBySalesOrderId(order.id) ?? { 
                 // if unpaid order
-                balance: 0.00, //order.amount
+                balance: getOrderTotalAmount(order),
                 amount: 0.00,
                 adjustment: 0.00,
             }
-
+            
             return {
                 id: order.id,
                 orderDate: order.orderDate.toLocaleDateString(),
@@ -42,7 +42,7 @@ function SalesHistory() {
                 balance: payment.balance,
                 amountPaid: payment.amount,
                 adjustments: payment.adjustment,
-                returns: "0.00", //
+                returns: 0.00, //
                 // status: order.closed ? "Closed" : "Open",
             }
         })
@@ -64,7 +64,30 @@ function SalesHistory() {
             itemName: itemsMap[itemOrder.itemId].itemName ?? "-",
             unit: unitsMap[itemsMap[itemOrder.itemId].unitId].unitName ?? "-",
         }))
-    })
+    }, [selectedRow])
+
+    const {
+        totalAmount,
+        totalBalance,
+        totalPaid,
+        totalAdjustments,
+        totalReturns,
+    } = useMemo(() => {
+        return salesHistoryView.reduce((acc, s) => {
+            acc.totalAmount += s.amount
+            acc.totalBalance += s.balance
+            acc.totalPaid += s.amountPaid
+            acc.totalAdjustments += s.adjustments
+            acc.totalReturns += s.returns
+            return acc
+        }, {
+            totalAmount: 0,
+            totalBalance: 0,
+            totalPaid: 0,
+            totalAdjustments: 0,
+            totalReturns: 0,
+        })
+    }, [salesHistoryView])
 
     return(
         <div className="flex flex-col gap-2 h-full">
@@ -134,6 +157,20 @@ function SalesHistory() {
                                 </tr>
                             ))}
                         </tbody>
+                        
+                        {salesHistoryView.length !== 0 && (
+                            <tfoot>
+                                <tr>
+                                    <td className="font-bold">Total</td>
+                                    <td></td>
+                                    <td>{totalAmount.toFixed(2)}</td>
+                                    <td>{totalBalance.toFixed(2)}</td>
+                                    <td>{totalPaid.toFixed(2)}</td>
+                                    <td>{totalAdjustments.toFixed(2)}</td>
+                                    <td>{totalReturns.toFixed(2)}</td>
+                                </tr>
+                            </tfoot>
+                        )}
                     </table>
                 </div>
             </div>

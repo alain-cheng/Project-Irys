@@ -46,7 +46,7 @@ export function getAverageCost(item) {
  * Retrieves the total cost of a sales order
  * 
  * @param {*} order - the sales order object
- * @returns totalAmount - sum of all item price cost
+ * @returns sum of all item price cost
  */
 export function getOrderTotalAmount(order) {
     let totalAmount = 0.00
