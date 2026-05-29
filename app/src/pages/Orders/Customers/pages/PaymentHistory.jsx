@@ -34,13 +34,17 @@ function PaymentHistory() {
         })
     }, [selectedCustomer])
 
+    const totalAmount = useMemo(() => {
+        return paymentHistoryView.reduce((sum, p) => sum += p.amount, 0)
+    }, [paymentHistoryView])
+
     return(
         <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text">Payment History</h1>
 
             <div className="flex">
                 <select 
-                    className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none"
+                    className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none cursor-pointer"
                     defaultValue={"0"}
                     onChange={(e) => {
                         setSelectedCustomer(Number(e.target.value))
@@ -56,7 +60,7 @@ function PaymentHistory() {
 
             {customer && (
                 <div className="px-2 py-1 border rounded-lg text-sm border-border-soft bg-background">
-                    <p>Customer: {customer.name}</p>
+                    <p className="text-text">Customer: {customer.name}</p>
                 </div>
             )}
 
@@ -79,7 +83,7 @@ function PaymentHistory() {
 
                         <tbody className="border">
                             {paymentHistoryView.map((p, index) => (
-                                <tr key={index} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"} hover:bg-accent-soft transition`}>
+                                <tr key={index} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"}`}>
                                     <td className="sticky left-0 z-5">{p.paymentDate.toLocaleDateString()}</td>
                                     <td>{p.paymentId}</td>
                                     <td>{p.amount.toFixed(2)}</td>
@@ -91,6 +95,21 @@ function PaymentHistory() {
                                 </tr>
                             ))}
                         </tbody>
+                        
+                        {paymentHistoryView.length !== 0 && (
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td className="font-bold">Total</td>
+                                    <td>{totalAmount}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        )}
                     </table>
                 </div>
             </div>

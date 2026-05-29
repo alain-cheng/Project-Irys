@@ -95,7 +95,7 @@ function SalesHistory() {
 
             <div className="flex">
                 <select 
-                    className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none"
+                    className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none cursor-pointer"
                     defaultValue={"0"}
                     onChange={(e) => {
                         setSelectedCustomer(Number(e.target.value))
@@ -111,8 +111,10 @@ function SalesHistory() {
             
 
             {customer && (
-                <div className="px-2 py-1 border rounded-lg text-sm border-border-soft bg-background">
+                <div className="px-2 py-1 border rounded-lg text-sm text-text border-border-soft bg-background">
                     <p>Customer: {customer.name}</p>
+                    {/* <p>Address: {[customer.address, customer.city, customer.province].filter(Boolean).join(", ")}</p>
+                    <p>Phone: {customer.phone}</p> */}
                 </div>
             )}
 
@@ -129,6 +131,7 @@ function SalesHistory() {
                                 <th>Amount Paid</th>
                                 <th>Adjustments</th>
                                 <th>Returns</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
 
@@ -154,6 +157,7 @@ function SalesHistory() {
                                     <td>{s.amountPaid.toFixed(2)}</td>
                                     <td>{s.adjustments.toFixed(2)}</td>
                                     <td>{s.returns}</td>
+                                    <td></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -168,6 +172,7 @@ function SalesHistory() {
                                     <td>{totalPaid.toFixed(2)}</td>
                                     <td>{totalAdjustments.toFixed(2)}</td>
                                     <td>{totalReturns.toFixed(2)}</td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         )}
@@ -199,7 +204,6 @@ function SalesHistory() {
                                                 ? "bg-background" 
                                                 : "bg-background-light"
                                         } 
-                                        hover:bg-accent-soft transition
                                     `}
                                 >
                                     <td className="sticky left-0 z-5 ">{itemOrder.itemName}</td>

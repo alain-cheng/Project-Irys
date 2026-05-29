@@ -3,28 +3,34 @@ import { useNavigate } from "react-router-dom"
 
 import { getAllItems, items } from "../../../MockData/items"
 import { getAllUnits, getUnitById } from "../../../MockData/units"
-import { getAllCustomers } from "../../../MockData/customers"
+import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
 import { getAllSalesOrder } from "../../../MockData/salesOrder"
 import { getAllSalesOrderItems, getSalesOrderItemsBySOId } from "../../../MockData/salesOrderItems"
 
 import { formatDiscount } from "../../../helpers/helpers"
 
 import StatusLabel from "../../components/StatusLabel"
+import { getAllStatuses, getStatusById } from "../../../MockData/status"
 
 function SalesOrders () {
     const navigate = useNavigate()
 
     const [selectedCustomerId, setSelectedCustomerId] = useState("")
-    const [selectedSalesOrder, setSelectedSalesOrder] = useState(null)
+    const [selectedSalesOrder, setSelectedSalesOrder] = useState(null) // selected SO Object
 
     const [salesOrdersView, setSalesOrdersView] = useState(() => {
         const customersMap = Object.fromEntries(
             getAllCustomers().map(c => [c.id, c])
         )
 
+        const statusesMap = Object.fromEntries(
+            getAllStatuses().map(s => [s.id, s])
+        )
+
         return getAllSalesOrder().map(so => ({
             ...so,
             customerName: customersMap[so.customerId]?.name ?? "-",
+            status: statusesMap[so.statusId]?.statusName ?? "-",
         }))
     }, [])
 
@@ -46,18 +52,22 @@ function SalesOrders () {
             getAllUnits().map(u => [u.id, u])
         )
 
-        return getSalesOrderItemsBySOId(selectedSalesOrder).map(soi => ({
+        return getSalesOrderItemsBySOId(selectedSalesOrder.id).map(soi => ({
             ...soi,
             itemName: itemsMap[soi.itemId].itemName ?? "-",
             unit: unitsMap[itemsMap[soi.itemId].unitId].unitName ?? "-",
         }))
     }, [selectedSalesOrder])
 
+    const customer = useMemo(() => {
+        return getCustomerById(Number(selectedCustomerId))
+    }, [selectedCustomerId])
+
     return(
         <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text">Sales Orders</h1>
 
-            <div className="p-2 border border-border-soft rounded-lg bg-background">
+            <div className="flex flex-col gap-2 p-2 border border-border-soft rounded-lg bg-background">
                 <label className="flex items-center gap-2">
                     <span>Customer:</span>
 
@@ -77,6 +87,14 @@ function SalesOrders () {
                         ))}
                     </select>
                 </label>
+                
+                {customer && (
+                    <div className="flex space-x-2">
+                        <div>Address:</div>
+                        <div>{[customer.address, customer.city, customer.province].filter(Boolean).join(", ")}</div>
+                    </div>
+                )}
+                
             </div>
 
             <div className="min-h-0">
@@ -88,6 +106,7 @@ function SalesOrders () {
                                 <th className="sticky left-0 top-0 z-10 ">Order Number</th>
                                 <th>Order Date</th>
                                 <th>Customer</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
 
@@ -95,10 +114,10 @@ function SalesOrders () {
                             {filteredView.map((so, index) => (
                                 <tr 
                                     key={so.id} 
-                                    onClick={() => setSelectedSalesOrder(prev => prev === so.id ? 0 : so.id)}
+                                    onClick={() => setSelectedSalesOrder(prev => prev?.id === so.id ? null : so)}
                                     onDoubleClick={() => navigate(`/orders/sales_orders/${so.id}`)}
                                     className={`
-                                        ${ selectedSalesOrder === so.id
+                                        ${ selectedSalesOrder?.id === so.id
                                             ? "bg-yellow-200"
                                             : index % 2 === 0
                                                 ? "bg-background"
@@ -110,6 +129,7 @@ function SalesOrders () {
                                     <td className="sticky left-0 z-5">{so.orderNumber}</td>
                                     <td className="">{so.orderDate.toLocaleDateString()}</td>
                                     <td className="">{so.customerName}</td>
+                                    <td>{so.status.toLocaleUpperCase()}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -161,6 +181,22 @@ function SalesOrders () {
                     </table>    
                 </div>
             </div>
+
+            {selectedSalesOrder && (
+                <div>
+                    <button
+                        className="
+                            px-1 py-2 border border-border-soft bg-background cursor-pointer 
+                            disabled:opacity-50 
+                            disabled:cursor-not-allowed
+                        "
+                        onClick={() => console.log("Creating invoice...")}
+                        disabled={!(selectedSalesOrder?.status?.toLowerCase() === "open")}
+                    >
+                        Create Invoice
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

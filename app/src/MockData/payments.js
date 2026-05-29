@@ -27,7 +27,7 @@ export const payments = [
         ciNumber: 0,
         orderDate: new Date("2026-01-31"),
         paymentDate: new Date("2026-02-01"),
-        amount: 1500.00,
+        amount: 3200.50,
         balance: 0.00,
         credits: 0,
         adjustment: 0.00,
@@ -40,7 +40,7 @@ export const payments = [
         status: "CLEARED"
     },
     {
-        id: 4002,
+        id: 4003,
         customerId: 1001,
         salesOrderId: 2004,
         collector: "John Doe",

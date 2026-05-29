@@ -7,6 +7,10 @@ export const status = [
         id: 1,
         statusName: "Open",
     },
+    {
+        id: 2,
+        statusName: "Cancelled",
+    }
 ]
 
 export const getAllStatuses = () => { return status }
