@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
 import { invoices, getAllInvoices } from "../../../MockData/invoices"
-import { getAllSalesOrder } from "../../../MockData/salesOrder"
+import { getAllSalesOrder, getSalesOrderById } from "../../../MockData/salesOrder"
 import { getAllStatuses } from "../../../MockData/status"
 import { getAllCustomers, getCustomerById } from "../../../MockData/customers"
 import { getAllItems } from "../../../MockData/items"
@@ -16,10 +16,23 @@ function Invoices() {
     const [searchParams, setSearchParams] = useSearchParams()
     const salesOrderId = searchParams.get("salesOrderId")
 
-    const [selectedEntry, setSelectedEntry] = useState(null) // Sales Order Entry
     const [isOpenModal, setIsOpenModal] = useState(false) 
-    const [currCustomer, setCurrCustomer] = useState(null)
 
+    // sets the current sales order to work on
+    const salesOrder = useMemo(() => {
+        if (!salesOrderId) return null
+
+        return getSalesOrderById(Number(salesOrderId))
+    }, [salesOrderId])
+
+    // sets the customer in focus
+    const customer = useMemo(() => {
+        if (!salesOrder) return null
+
+        return getCustomerById(salesOrder.customerId)
+    }, [salesOrder])
+
+    // to select other sales order entries available to work on
     const findEntriesView = useMemo(() => {
         const statusesMap = Object.fromEntries(
             getAllStatuses().map(s => [s.id, s])
@@ -37,8 +50,9 @@ function Invoices() {
             }))
     }, [])
 
+    // displays items ordered part of the sales order
     const itemsView = useMemo(() => {
-        if (!selectedEntry) return []
+        if (!salesOrder) return []
 
         const itemsMap = Object.fromEntries(
             getAllItems().map(i => [i.id, i])
@@ -48,19 +62,12 @@ function Invoices() {
             getAllUnits().map(u => [u.id, u])
         )
 
-        return getSalesOrderItemsBySOId(selectedEntry?.id).map(itemOrder => ({
+        return getSalesOrderItemsBySOId(salesOrder?.id).map(itemOrder => ({
             ...itemOrder,
             itemName: itemsMap[itemOrder.itemId]?.itemName ?? "-",
             unit: unitsMap[itemsMap[itemOrder.itemId]?.unitId].unitName ?? "-",
         }))
-    }, [selectedEntry])
-
-    // Sets the current customer focus when an unprocessed valid order entry is selected from the list 
-    useEffect(() => {
-        if (!selectedEntry) return
-
-        setCurrCustomer(getCustomerById(selectedEntry?.customerId))
-    }, [selectedEntry])
+    }, [salesOrder])
 
     return (
         <div className="flex flex-col h-full py-5">
@@ -91,11 +98,11 @@ function Invoices() {
                                     <tr
                                         key={entry.id}
                                         onClick={() => {
-                                            setSelectedEntry(prev => prev?.id === entry.id ? null : entry)
                                             setIsOpenModal(false)
+                                            navigate(`/orders/invoices?salesOrderId=${entry?.id}`)
                                         }}
                                         className={`
-                                            ${ selectedEntry?.id === entry.id
+                                            ${ Number(salesOrderId) === entry.id
                                                 ? "bg-yellow-200"
                                                 : index % 2 === 0
                                                     ? "bg-background"
@@ -125,7 +132,7 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
-                            value={currCustomer?.name}
+                            value={customer?.name}
                         />
                     </div>
 
@@ -135,9 +142,9 @@ function Invoices() {
                             className="flex-1 px-1 border"
                             rows={2}
                             value={[
-                                currCustomer?.address, 
-                                currCustomer?.city, 
-                                currCustomer?.province
+                                customer?.address, 
+                                customer?.city, 
+                                customer?.province
                             ].filter(Boolean).join(", ")}
                         />
                     </div>
@@ -156,7 +163,7 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
-                            value={currCustomer?.salesman}
+                            value={customer?.salesman}
                         />
                     </div>
                 </div>
@@ -168,7 +175,7 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
-                            value={selectedEntry?.orderNumber}
+                            value={salesOrder?.orderNumber}
                         />
                     </div>
 
@@ -186,7 +193,7 @@ function Invoices() {
                             <input
                                 className="flex-1 px-1 border"
                                 type="date"
-                                value={selectedEntry?.orderDate?.toISOString().split("T")[0] || ""}
+                                value={salesOrder?.orderDate?.toISOString().split("T")[0] || ""}
                             />
                         </div>
                     </div>
