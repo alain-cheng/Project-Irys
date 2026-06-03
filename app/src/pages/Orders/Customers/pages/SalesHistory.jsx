@@ -209,9 +209,9 @@ function SalesHistory() {
                                     <td className="sticky left-0 z-5 ">{itemOrder.itemName}</td>
                                     <td>{itemOrder.quantity}</td>
                                     <td>{itemOrder.unit}</td>
-                                    <td>{itemOrder.unitPrice}</td>
+                                    <td>{itemOrder.unitPrice.toFixed(2)}</td>
                                     <td>{formatDiscount(itemOrder.discountTypeId, itemOrder.discounts)}</td>
-                                    <td>{itemOrder.amount}</td>
+                                    <td>{itemOrder.amount.toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>

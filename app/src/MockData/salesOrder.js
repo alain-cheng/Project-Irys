@@ -66,4 +66,4 @@ export const getSalesOrderById = (id) => salesOrder.find(s => s.id === id)
  * @param {*} customerId 
  * @returns 
  */
-export const getSalesOrderByCustomerId = (customerId) => salesOrder.filter(s => s.customerId === customerId) 
+export const getSalesOrderByCustomerId = (customerId) => salesOrder.filter(s => s.customerId === customerId)

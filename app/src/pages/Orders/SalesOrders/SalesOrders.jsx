@@ -190,7 +190,7 @@ function SalesOrders () {
                             disabled:opacity-50 
                             disabled:cursor-not-allowed
                         "
-                        onClick={() => console.log("Creating invoice...")}
+                        onClick={() => navigate(`/orders/invoices?salesOrderId=${selectedSalesOrder?.id}`)}
                         disabled={!(selectedSalesOrder?.status?.toLowerCase() === "open")}
                     >
                         Create Invoice
