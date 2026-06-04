@@ -9,7 +9,7 @@ import { getAllItems } from "../../../MockData/items"
 import { getSalesOrderItemsBySOId } from "../../../MockData/salesOrderItems"
 import { getAllUnits } from "../../../MockData/units"
 
-import { formatDiscount } from "../../../helpers/helpers"
+import { formatDiscount, getOrderTotalAmount } from "../../../helpers/helpers"
 
 function Invoices() {
     const navigate = useNavigate()
@@ -17,6 +17,39 @@ function Invoices() {
     const salesOrderId = searchParams.get("salesOrderId")
 
     const [isOpenModal, setIsOpenModal] = useState(false) 
+    const [invoiceDraft, setInvoiceDraft] = useState({
+        invoiceNumber: "",
+        poNumber: "",
+        customerName: "",
+        customerId: null,
+        address: "",
+        collectorId: null,
+        collector: "",
+        salesperson: "",
+        dueDate: "",
+        drNumber: 0,
+        salesOrderId: null,
+        orderNumber: "",
+        orderDate: "",
+        term: "",
+        via: "",
+        isCancelled: false,
+        isNoComm: false,
+        isCommPaid: false,
+        isHeavy: false,
+        user: null,
+        driver: "",
+        helper: "",
+        truck: "",
+        adjustments: 0.00,
+        rebates: 0.00,
+        creditsApplied: 0.00,
+        returns: 0.00,
+        amountPaid: 0.00,
+        balance: 0.00,
+        total: 0.00,
+        isDraft: true,
+    })
 
     // sets the current sales order to work on
     const salesOrder = useMemo(() => {
@@ -69,8 +102,50 @@ function Invoices() {
         }))
     }, [salesOrder])
 
+    useEffect(() => {
+        if (!salesOrder || !customer) return
+
+        setInvoiceDraft({
+            invoiceNumber: "",
+            poNumber: "",
+            customerName: customer.name,
+            customerId: customer.id,
+            address: [
+                customer.address,
+                customer.city,
+                customer.province
+            ].filter(Boolean).join(", "),
+            collectorId: null,
+            collector: "",
+            salesperson: "",
+            dueDate: "",
+            drNumber: 0,
+            salesOrderId: salesOrder.id,
+            orderNumber: salesOrder.orderNumber,
+            orderDate: salesOrder.orderDate,
+            term: "",
+            via: "",
+            isCancelled: false,
+            isNoComm: false,
+            isCommPaid: false,
+            isHeavy: false,
+            user: null,
+            driver: "",
+            helper: "",
+            truck: "",
+            adjustments: 0.00,
+            rebates: 0.00,
+            creditsApplied: 0.00,
+            returns: 0.00,
+            amountPaid: 0.00,
+            balance: 0.00,
+            total: getOrderTotalAmount(salesOrder),
+            isDraft: true,
+        })
+    }, [salesOrder, customer])
+
     return (
-        <div className="flex flex-col h-full py-5">
+        <div className="flex flex-col gap-2 h-full py-5">
             <h1 className="text-2xl text-text mb-5">Invoices</h1>
 
             <div className="relative">
@@ -124,7 +199,7 @@ function Invoices() {
             </div>
             
             {/* FORM CONTENTS */}
-            <div className="flex gap-2 px-2 py-1 border border-border-soft bg-background">
+            <div className="flex gap-2 px-2 py-1 text-sm border border-border-soft bg-background">
                 {/* LEFT */}
                 <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-3">
@@ -132,7 +207,13 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
-                            value={customer?.name}
+                            value={invoiceDraft?.customerName ?? ""}
+                            onChange={(e) => 
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    customerName: e.target.value
+                                }))
+                            }
                         />
                     </div>
 
@@ -141,11 +222,13 @@ function Invoices() {
                         <textarea
                             className="flex-1 px-1 border"
                             rows={2}
-                            value={[
-                                customer?.address, 
-                                customer?.city, 
-                                customer?.province
-                            ].filter(Boolean).join(", ")}
+                            value={invoiceDraft?.address ?? ""}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    address: e.target.value
+                                }))
+                            }
                         />
                     </div>
 
@@ -154,6 +237,13 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.collector ?? ""}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    collector: e.target.value
+                                }))
+                            }
                         />
 
                     </div>
@@ -163,7 +253,13 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
-                            value={customer?.salesman}
+                            value={invoiceDraft?.salesperson ?? ""}
+                            onChange={(e) => 
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    salesperson: e.target.value
+                                }))
+                            }
                         />
                     </div>
                 </div>
@@ -175,7 +271,13 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
-                            value={salesOrder?.orderNumber}
+                            value={invoiceDraft?.orderNumber ?? ""}
+                            onChange={(e) => 
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    orderNumber: e.target.value
+                                }))
+                            }
                         />
                     </div>
 
@@ -185,6 +287,12 @@ function Invoices() {
                             <input
                                 className="flex-1 px-1 border"
                                 type="date"
+                                onChange={(e) => 
+                                    setInvoiceDraft(prev => ({
+                                        ...prev,
+                                        dueDate: e.target.value
+                                    }))
+                                }
                             />
                         </div>
                         
@@ -193,7 +301,12 @@ function Invoices() {
                             <input
                                 className="flex-1 px-1 border"
                                 type="date"
-                                value={salesOrder?.orderDate?.toISOString().split("T")[0] || ""}
+                                onChange={(e) =>
+                                    setInvoiceDraft(prev => ({
+                                        ...prev,
+                                        orderDate: e.target.value
+                                    }))
+                                }
                             />
                         </div>
                     </div>
@@ -203,12 +316,26 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.drNumber}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    drNumber: e.target.value
+                                }))
+                            }
                         />
 
                         <label className="w-25 text-right shrink-0">Invoice No.</label>
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.invoiceNumber}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    invoiceNumber: e.target.value
+                                }))
+                            }
                         />
                     </div>
 
@@ -217,12 +344,26 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.salesOrderId}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    salesOrderId: e.target.value
+                                }))
+                            }
                         />
 
                         <label className="w-25 text-right shrink-0">P.O. No.</label>
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.poNumber}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    poNumber: e.target.value
+                                }))
+                            }
                         />
                     </div>
 
@@ -231,6 +372,13 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.term}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    term: e.target.value
+                                }))
+                            }
                         />
                     </div>
 
@@ -239,6 +387,13 @@ function Invoices() {
                         <input
                             className="flex-1 px-1 border"
                             type="text"
+                            value={invoiceDraft?.via}
+                            onChange={(e) => 
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    via: e.target.value
+                                }))
+                            }
                         />
                     </div>
                 </div>
@@ -273,6 +428,177 @@ function Invoices() {
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            <div className="text-sm border border-border-soft bg-background">
+                <div className="flex space-x-2 text-[12px] items-center">
+                    <div className="flex flex-col items-center">
+                        <label>User</label>
+                        <input
+                            className="flex-1 px-1 border"
+                            type="text"
+                            value={invoiceDraft?.user}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    user: e.target.value
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Driver</label>
+                        <input
+                            className="flex-1 px-1 border"
+                            type="text"
+                            value={invoiceDraft?.driver}
+                            onChange={(e) => 
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    driver: e.target.value
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Helper</label>
+                        <input
+                            className="flex-1 px-1 border"
+                            type="text"
+                            value={invoiceDraft?.helper}
+                            onChange={(e) => 
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    helper: e.target.value
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Truck</label>
+                        <input
+                            className="flex-1 px-1 border"
+                            type="text"
+                            value={invoiceDraft?.truck}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    truck: e.target.value
+                                }))
+                            }
+                        />
+                    </div>
+                </div>
+
+                <div className="flex space-x-2 text-[12px] items-center">
+                    <div className="flex flex-col items-center">
+                        <label>Adjustments</label>
+                        <input
+                            className="w-20 flex-1 px-1 border"
+                            type="number"
+                            placeholder="0.00"
+                            value={invoiceDraft?.adjustments}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    adjustments: parseFloat(e.target.value)
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Rebates</label>
+                        <input
+                            className="w-20 flex-1 px-1 border"
+                            type="number"
+                            placeholder="0.00"
+                            value={invoiceDraft?.rebates}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    rebates: parseFloat(e.target.value)
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Credits Applied</label>
+                        <input
+                            className="w-20 flex-1 px-1 border"
+                            type="number"
+                            placeholder="0.00"
+                            value={invoiceDraft?.creditsApplied}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    creditsApplied: parseFloat(e.target.value)
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Inv. Returns</label>
+                        <input
+                            className="w-20 flex-1 px-1 border"
+                            type="number"
+                            placeholder="0.00"
+                            value={invoiceDraft?.returns}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    returns: parseFloat(e.target.value)
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Amount Paid</label>
+                        <input
+                            className="w-20 flex-1 px-1 border"
+                            type="number"
+                            placeholder="0.00"
+                            value={invoiceDraft?.amountPaid}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    amountPaid: parseFloat(e.target.value)
+                                }))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <label>Balance</label>
+                        <input
+                            className="w-20 flex-1 px-1 border"
+                            type="number"
+                            placeholder="0.00"
+                            value={invoiceDraft?.balance}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    balance: parseFloat(e.target.value)
+                                }))
+                            }
+                        />
+                    </div>
+                </div>
+
+                <div className="">
+                    <div>
+                        <label>Total</label>
+                        <div className="w-25 px-2 py-1 text-right border">
+                            {invoiceDraft?.total}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
