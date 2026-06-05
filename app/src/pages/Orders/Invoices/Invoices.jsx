@@ -21,14 +21,14 @@ function Invoices() {
         invoiceNumber: "",
         poNumber: "",
         customerName: "",
-        customerId: null,
+        customerId: "",
         address: "",
-        collectorId: null,
+        collectorId: "",
         collector: "",
         salesperson: "",
         dueDate: "",
         drNumber: 0,
-        salesOrderId: null,
+        salesOrderId: "",
         orderNumber: "",
         orderDate: "",
         term: "",
@@ -37,7 +37,7 @@ function Invoices() {
         isNoComm: false,
         isCommPaid: false,
         isHeavy: false,
-        user: null,
+        user: "",
         driver: "",
         helper: "",
         truck: "",
@@ -115,7 +115,7 @@ function Invoices() {
                 customer.city,
                 customer.province
             ].filter(Boolean).join(", "),
-            collectorId: null,
+            collectorId: "",
             collector: "",
             salesperson: "",
             dueDate: "",
@@ -129,7 +129,7 @@ function Invoices() {
             isNoComm: false,
             isCommPaid: false,
             isHeavy: false,
-            user: null,
+            user: "",
             driver: "",
             helper: "",
             truck: "",
@@ -144,13 +144,18 @@ function Invoices() {
         })
     }, [salesOrder, customer])
 
+    // useEffect(() => {
+    //     if (!invoiceDraft) return
+    //     console.log(invoiceDraft)
+    // }, [invoiceDraft])
+
     return (
         <div className="flex flex-col gap-2 h-full py-5">
             <h1 className="text-2xl text-text mb-5">Invoices</h1>
 
             <div className="relative">
                 <button
-                    className="px-2 py-1 border border-border-soft"
+                    className="px-2 py-1 border border-border-soft bg-background"
                     onClick={() => setIsOpenModal(prev => !prev)}
                 >
                     Find
@@ -203,7 +208,7 @@ function Invoices() {
                 {/* LEFT */}
                 <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-3">
-                        <label className="w-25 text-right shrink-0">Customer</label>
+                        <label className="w-15 text-right shrink-0">Customer</label>
                         <input
                             className="flex-1 px-1 border"
                             type="text"
@@ -218,9 +223,9 @@ function Invoices() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <label className="w-25 text-right shrink-0">Address</label>
+                        <label className="w-15 text-right shrink-0">Address</label>
                         <textarea
-                            className="flex-1 px-1 border"
+                            className="flex-1 px-1 resize-none border"
                             rows={2}
                             value={invoiceDraft?.address ?? ""}
                             onChange={(e) =>
@@ -232,10 +237,54 @@ function Invoices() {
                         />
                     </div>
 
+                    <div className="flex justify-end gap-5 text-[12px]">
+                        <div className="flex gap-1">
+                            <input 
+                                type="checkbox"
+                                checked={invoiceDraft?.isCancelled}
+                                onChange={(e) =>
+                                    setInvoiceDraft(prev => ({
+                                        ...prev,
+                                        isCancelled: e.target.checked
+                                    }))
+                                }
+                            />
+                            <label>Cancelled</label>
+                        </div>
+                        
+                        <div className="flex gap-1">
+                            <input 
+                                type="checkbox"
+                                checked={invoiceDraft?.isNoComm}
+                                onChange={(e) =>
+                                    setInvoiceDraft(prev => ({
+                                        ...prev,
+                                        isNoComm: e.target.checked
+                                    }))
+                                }
+                            />
+                            <label>No Comm.</label>
+                        </div>
+                        
+                        <div className="flex gap-1">
+                            <input 
+                                type="checkbox"
+                                checked={invoiceDraft?.isCommPaid}
+                                onChange={(e) =>
+                                    setInvoiceDraft(prev => ({
+                                        ...prev,
+                                        isCommPaid: e.target.checked
+                                    }))
+                                }
+                            />
+                            <label>Comm. Paid</label>
+                        </div>
+                    </div>
+
                     <div className="flex items-center gap-3">
-                        <label className="w-25 text-right shrink-0">Collector</label>
+                        <label className="w-15 text-right shrink-0">Collector</label>
                         <input
-                            className="flex-1 px-1 border"
+                            className="w-10 flex-1 px-1 border"
                             type="text"
                             value={invoiceDraft?.collector ?? ""}
                             onChange={(e) =>
@@ -246,10 +295,22 @@ function Invoices() {
                             }
                         />
 
+                        <label className="w-15 text-right shrink-0">Coll ID</label>
+                        <input
+                            className="w-10 flex-1 px-1 border"
+                            type="text"
+                            value={invoiceDraft?.collectorId ?? ""}
+                            onChange={(e) =>
+                                setInvoiceDraft(prev => ({
+                                    ...prev,
+                                    collectorId: e.target.value
+                                }))
+                            }
+                        />
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <label className="w-25 text-right shrink-0">Salesperson</label>
+                        <label className="w-15 text-right shrink-0">Salesman</label>
                         <input
                             className="flex-1 px-1 border"
                             type="text"
@@ -261,6 +322,20 @@ function Invoices() {
                                 }))
                             }
                         />
+
+                        <div className="flex gap-1 justify-end text-[12px]">
+                            <input
+                                type="checkbox"
+                                checked={invoiceDraft?.isHeavy}
+                                onChange={(e) =>
+                                    setInvoiceDraft(prev => ({
+                                        ...prev,
+                                        isHeavy: e.target.checked
+                                    }))
+                                }
+                            />
+                            <label>Heavy</label>
+                        </div>
                     </div>
                 </div>
                 
@@ -281,7 +356,7 @@ function Invoices() {
                         />
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex gap-3 items-center justify-between">
                         <div className="flex items-center gap-3">
                             <label className="w-25 text-right shrink-0">Due Date</label>
                             <input
@@ -429,8 +504,9 @@ function Invoices() {
                     </tbody>
                 </table>
             </div>
-
-            <div className="text-sm border border-border-soft bg-background">
+            
+            {/* FOOT */}
+            <div className="px-2 py-1 text-sm border border-border-soft bg-background">
                 <div className="flex space-x-2 text-[12px] items-center">
                     <div className="flex flex-col items-center">
                         <label>User</label>
@@ -598,6 +674,50 @@ function Invoices() {
                             {invoiceDraft?.total}
                         </div>
                     </div>
+                </div>
+
+                <div className="py-1 flex gap-3">
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Print Invoice
+                    </button>
+
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Payments
+                    </button>
+
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Returns
+                    </button>
+
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Adj. & Rebates
+                    </button>
+
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Remarks
+                    </button>
+
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Commission
+                    </button>
+
+                    <button 
+                        className={`px-2 py-1 border text-[12px] hover:bg-accent-soft cursor-pointer`}
+                    >
+                        Packing List
+                    </button>
                 </div>
             </div>
         </div>
