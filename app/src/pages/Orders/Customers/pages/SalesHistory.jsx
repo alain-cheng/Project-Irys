@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useOutletContext } from "react-router-dom"
+import { Funnel } from "lucide-react"
 
 import { getAllCustomers, getCustomerById } from "../../../../MockData/customers"
 import { getSalesOrderByCustomerId } from "../../../../MockData/salesOrder"
@@ -10,10 +11,19 @@ import { getAllUnits } from "../../../../MockData/units"
 
 import { formatDiscount, getOrderTotalAmount } from "../../../../helpers/helpers"
 
+import SalesHistoryFilter from "./components/SalesHistoryFilter"
+import Tooltip from "../../../components/Tooltip"
+import useSalesHistoryFilter from "./hooks/useSalesHistoryFilter"
+
 function SalesHistory() {
     const { selectedCustomer, setSelectedCustomer } = useOutletContext()
 
     const [selectedRow, setSelectedRow] = useState(null) // value based on salesOrder.id
+    const [isFilterOpen, setIsFilterOpen] = useState(false)
+    const { 
+        paymentStatus, 
+        setPaymentStatus 
+    } = useSalesHistoryFilter() // filter states
 
     const customer = useMemo(() => {
         if (selectedCustomer) return getCustomerById(selectedCustomer)
@@ -26,27 +36,37 @@ function SalesHistory() {
 
         const customerOrders = getSalesOrderByCustomerId(selectedCustomer)
 
-        return customerOrders.map(order => {
-            const payment = getPaymentBySalesOrderId(order.id) ?? { 
-                // if unpaid order
-                balance: getOrderTotalAmount(order),
-                amount: 0.00,
-                adjustment: 0.00,
-            }
-            
-            return {
-                id: order.id,
-                orderDate: order.orderDate.toLocaleDateString(),
-                orderNumber: order.orderNumber,
-                amount: getOrderTotalAmount(order),
-                balance: payment.balance,
-                amountPaid: payment.amount,
-                adjustments: payment.adjustment,
-                returns: 0.00, //
-                // status: order.closed ? "Closed" : "Open",
-            }
-        })
-    }, [selectedCustomer])
+        return customerOrders
+            .map(order => {
+                const payment = getPaymentBySalesOrderId(order.id) ?? { 
+                    // if unpaid order
+                    balance: getOrderTotalAmount(order),
+                    amount: 0.00,
+                    adjustment: 0.00,
+                }
+                
+                return {
+                    id: order.id,
+                    orderDate: order.orderDate.toLocaleDateString(),
+                    orderNumber: order.orderNumber,
+                    amount: getOrderTotalAmount(order),
+                    balance: payment.balance,
+                    amountPaid: payment.amount,
+                    adjustments: payment.adjustment,
+                    returns: 0.00, //
+                    // status: order.closed ? "Closed" : "Open",
+                }
+            })
+            .filter(entry => {
+                if (paymentStatus === "all") return true
+
+                if (paymentStatus === "unpaid_sales") {
+                    return entry.amountPaid === 0
+                }
+
+                return true
+            })
+    }, [selectedCustomer, paymentStatus])
 
     const salesHistoryItemsView = useMemo(() => {
         if (!selectedRow) return []
@@ -93,7 +113,14 @@ function SalesHistory() {
         <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text">Sales History</h1>
 
-            <div className="flex">
+            <SalesHistoryFilter
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+                paymentStatus={paymentStatus}
+                setPaymentStatus={setPaymentStatus}
+            />
+
+            <div className="flex space-x-2 items-center">
                 <select 
                     className="w-15 px-2 py-1 text-center text-sm border border-border-soft appearance-none cursor-pointer"
                     defaultValue={"0"}
@@ -107,6 +134,17 @@ function SalesHistory() {
                         <option key={customer.id} value={customer.id}>{customer.name}</option>
                     ))}
                 </select>
+
+                <div className="relative group h-full">
+                    <button 
+                        className="px-2 py-1 h-full border border-border-soft cursor-pointer"
+                        onClick={() => setIsFilterOpen(true)}
+                    >
+                        <Funnel size={16} />
+                    </button>
+
+                    <Tooltip text="Filters" />
+                </div>
             </div>
             
 
