@@ -90,6 +90,58 @@ export const salesOrderItems = [
         onHand: 0,
         closed: false
     },
+    {
+        id: 8,
+        salesOrderId: 2007,
+        itemId: 10004,
+        quantity: 1,
+        unitPrice: 1850.75,
+        discountTypeId: 0,
+        discounts: 0,
+        amount: 1850.75,
+        invoiced: 0,
+        onHand: 0,
+        closed: true
+    },
+    {
+        id: 9,
+        salesOrderId: 2007,
+        itemId: 10005,
+        quantity: 2,
+        unitPrice: 1450.00,
+        discountTypeId: 0,
+        discounts: 0,
+        amount: 2900.00,
+        invoiced: 0,
+        onHand: 0,
+        closed: true
+    },
+    {
+        id: 10,
+        salesOrderId: 2008,
+        itemId: 10001,
+        quantity: 2,
+        unitPrice: 250.31,
+        discountTypeId: 0,
+        discounts: 0,
+        amount: 500.62,
+        invoiced: 0,
+        onHand: 0,
+        closed: true
+    },
+    {
+        id: 11,
+        salesOrderId: 2008,
+        itemId: 10002,
+        quantity: 1,
+        unitPrice: 750.00,
+        discountTypeId: 0,
+        discounts: 0,
+        amount: 750.00,
+        invoiced: 0,
+        onHand: 0,
+        closed: true
+    },
 ];
 
 // helpers

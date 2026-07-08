@@ -34,6 +34,18 @@ export const payments = [
         checkDate: new Date("2026-02-01"),
         bankName: "BDO",
         status: "CLEARED"
+    },
+    {
+        id: 4004,
+        customerId: 1003,
+        paymentDate: new Date("2026-07-08"),
+        collector: "John Doe",
+        paymentMode: "Check",
+        ciNumber: 0,
+        checkNo: "00001234566",
+        checkDate: new Date("2026-07-08"),
+        bankName: "BDO",
+        status: "CLEARED"
     }
 ];
 
