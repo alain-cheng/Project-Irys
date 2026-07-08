@@ -25,7 +25,25 @@ export const appliedPayments = [
         adjustment: 0.00,
         credits: 0.00,
         wtax: 0.00,
-    }
+    },
+    {
+        id: 4,
+        paymentId: 4004,
+        salesOrderId: 2007,
+        amountApplied: 4750.75,
+        adjustment: 0.00,
+        credits: 0.00,
+        wtax: 0.00,
+    },
+    {
+        id: 5,
+        paymentId: 4004,
+        salesOrderId: 2008,
+        amountApplied: 1250.62,
+        adjustment: 0.00,
+        credits: 0.00,
+        wtax: 0.00,
+    },
 ]
 
 // helpers
