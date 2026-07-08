@@ -23,7 +23,7 @@ export const salesOrderItems = [
         amount: 1500.00,
         invoiced: 0.00,
         onHand: 0.00,
-        closed: false
+        closed: true
     },
     {
         id: 3,
@@ -62,7 +62,7 @@ export const salesOrderItems = [
         amount: 5552.25,
         invoiced: 0,
         onHand: 0,
-        closed: false
+        closed: true
     },
     {
         id: 6,

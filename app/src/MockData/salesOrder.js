@@ -4,7 +4,7 @@ export const salesOrder = [
         orderNumber: "70001",
         customerId: 1000,
         orderDate: new Date("2026-01-31"),
-        statusId:  1,
+        statusId:  0,
     },
     {
         id: 2002,
@@ -25,7 +25,7 @@ export const salesOrder = [
         orderNumber: "70004",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
-        statusId:  1,
+        statusId:  0,
     },
     {
         id: 2005,

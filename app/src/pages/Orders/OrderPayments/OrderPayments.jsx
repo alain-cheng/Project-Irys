@@ -107,75 +107,79 @@ function OrderPayments() {
                         </div>
                     )}
                 </div>
-
                 
+                <div className="flex gap-2 py-2 border border-border-soft">
+                    <div className="flex flex-col flex-1 gap-3">
+                        <div className="flex items-center gap-3">
+                            <label className="w-20 text-right shrink-0">Payment ID</label>
+                            <input
+                                className="px-1 w-20 border"
+                                type="text"
+                                value={payment?.id ?? "-"}
+                                disabled
+                            />
+                        </div>
 
-                <div className="flex items-center gap-3">
-                    <label className="w-20 text-right shrink-0">Payment ID</label>
-                    <input
-                        className="px-1 w-20 border"
-                        type="text"
-                        value={payment?.id ?? "-"}
-                        disabled
-                    />
-                </div>
+                        <div className="flex items-center gap-3">
+                            <label className="w-20 text-right shrink-0">Date</label>
+                            <input
+                                className="px-1 w-20 border"
+                                type="text"
+                                value={payment?.paymentDate.toLocaleDateString() ?? "-"}
+                                disabled
+                            />
+                        </div>
 
-                <div className="flex items-center gap-3">
-                    <label className="w-20 text-right shrink-0">Date</label>
-                    <input
-                        className="px-1 w-20 border"
-                        type="text"
-                        value={payment?.paymentDate.toLocaleDateString() ?? "-"}
-                        disabled
-                    />
-                </div>
+                        <div className="flex items-center gap-3">
+                            <label className="w-20 text-right shrink-0">Remarks</label>
+                            <textarea
+                                className="px-1 resize-none border w-full"
+                                rows={2}
+                            />
+                        </div>
+                    </div>
 
-                <div className="flex items-center gap-3">
-                    <label className="w-20 text-right shrink-0">Remarks</label>
-                    <textarea
-                        className="px-1 resize-none border"
-                        rows={2}
-                    />
-                </div>
+                    <div className="flex flex-col flex-1 gap-3">
+                        <div className="flex items-center gap-3">
+                            <label className="w-15 text-right shrink-0">Customer</label>
+                            <input
+                                className="px-1 w-60 border"
+                                type="text"
+                                value={customer?.name ?? "-"}
+                                disabled
+                            />
+                        </div>
 
-                <div className="flex items-center gap-3">
-                    <label className="w-15 text-right shrink-0">Customer</label>
-                    <input
-                        className="px-1 w-60 border"
-                        type="text"
-                        value={customer?.name ?? "-"}
-                        disabled
-                    />
-                </div>
+                        <div className="flex items-center gap-3">
+                            <label className="w-15 text-right shrink-0">Collector</label>
+                            <input
+                                className="px-1 w-60 border"
+                                type="text"
+                                value={payment?.collector ?? "-"}
+                                disabled
+                            />
+                        </div>
 
-                <div className="flex items-center gap-3">
-                    <label className="w-15 text-right shrink-0">Collector</label>
-                    <input
-                        className="px-1 w-60 border"
-                        type="text"
-                        value={payment?.collector ?? "-"}
-                        disabled
-                    />
-                </div>
+                        <div className="flex items-center gap-3">
+                            <label className="w-25 text-right shrink-0">Payment Mode</label>
+                            <input
+                                className="px-1 w-25 border"
+                                type="text"
+                                value={payment?.paymentMode ?? "-"}
+                                disabled
+                            />
+                        </div>
 
-                <div className="flex items-center gap-3">
-                    <label className="w-25 text-right shrink-0">Payment Mode</label>
-                    <input
-                        className="px-1 w-25 border"
-                        type="text"
-                        value={payment?.paymentMode ?? "-"}
-                        disabled
-                    />
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <label className="w-25 text-right shrink-0">Amount Paid</label>
-                    <input
-                        className="w-30 text-right font-bold border"
-                        type="number"
-                        value={amountPaid.toFixed(2)}
-                        disabled
-                    />
+                        <div className="flex items-center gap-3">
+                            <label className="w-25 text-right shrink-0">Amount Paid</label>
+                            <input
+                                className="w-30 text-right font-bold border"
+                                type="number"
+                                value={amountPaid.toFixed(2)}
+                                disabled
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
