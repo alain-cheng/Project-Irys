@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { payments, getAllPayments, getPaymentsByCustomerId, getPaymentById } from "../../../MockData/payments";
 import { getAllCustomers, getCustomerById } from "../../../MockData/customers";
 import { getAllSalesOrder,  getSalesOrderById } from "../../../MockData/salesOrder";
-import { getAppliedPaymentsByPaymentID } from "../../../MockData/appliedPayments";
+import { getAppliedPaymentsByPaymentID, getAppliedPaymentsBySalesOrderID } from "../../../MockData/appliedPayments";
 
 import { getOrderTotalAmount } from "../../../helpers/helpers";
 
@@ -42,13 +42,23 @@ function OrderPayments() {
             getAllSalesOrder().map(so => [so.id, so])
         )
 
-        return getAppliedPaymentsByPaymentID(paymentId).map(payment => ({
-            ...payment,
-            orderNumber: salesOrdersMap[payment.salesOrderId]?.orderNumber ?? "-",
-            orderDate: salesOrdersMap[payment.salesOrderId]?.orderDate ?? "-",
-            amount: getOrderTotalAmount(getSalesOrderById(payment.salesOrderId)),
-            balance: 0.00, // to be computed from totalAmount - totalPaid
-        }))
+        return getAppliedPaymentsByPaymentID(paymentId).map(payment => {
+            const salesOrder = getSalesOrderById(payment.salesOrderId)
+            
+            const totalAmount = getOrderTotalAmount(salesOrder)
+
+            const totalPaid = getAppliedPaymentsBySalesOrderID(payment.salesOrderId)
+                .reduce((sum, p) => sum + p.amountApplied, 0)
+
+            return {
+                ...payment,
+                orderNumber: salesOrdersMap[payment.salesOrderId]?.orderNumber ?? "-",
+                orderDate: salesOrdersMap[payment.salesOrderId]?.orderDate ?? "-",
+                amount: totalAmount,
+                balance: totalAmount - totalPaid
+            }
+            
+        })
     }, [payment])
 
     const amountPaid = useMemo(() => {
@@ -193,7 +203,7 @@ function OrderPayments() {
                                 <th>CI No.</th>
                                 <th>Order Date</th>
                                 <th>Amount</th>
-                                <th>Balance</th>
+                                <th>Current Balance</th>
                                 <th>Credits</th>
                                 <th>Adjustment</th>
                                 <th>W/Tax</th>
@@ -210,7 +220,7 @@ function OrderPayments() {
                                     <td className="sticky left-0 z-5 ">{payment.orderNumber}</td>
                                     <td>{payment.ciNumber}</td>
                                     <td>{payment.orderDate.toLocaleDateString()}</td>
-                                    <td>{payment.amount}</td>
+                                    <td>{payment.amount.toFixed(2)}</td>
                                     <td>{payment.balance.toFixed(2)}</td>
                                     <td>{payment.credits.toFixed(2)}</td>
                                     <td>{payment.adjustment.toFixed(2)}</td>

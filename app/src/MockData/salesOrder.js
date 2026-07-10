@@ -55,6 +55,13 @@ export const salesOrder = [
         orderDate: new Date("2026-07-05"),
         statusId:  0,
     },
+    {
+        id: 2009,
+        orderNumber: "70009",
+        customerId: 1004,
+        orderDate: new Date("2026-01-12"),
+        statusId:  0,
+    }
 ];
 
 // helper functions
