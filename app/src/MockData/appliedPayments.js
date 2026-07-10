@@ -44,13 +44,40 @@ export const appliedPayments = [
         credits: 0.00,
         wtax: 0.00,
     },
+    {
+        id: 6,
+        paymentId: 4005,
+        salesOrderId: 2009,
+        amountApplied: 7250.00,
+        adjustment: 0.00,
+        credits: 0.00,
+        wtax: 0.00,
+    },
+    {
+        id: 7,
+        paymentId: 4006,
+        salesOrderId: 2009,
+        amountApplied: 7250.00,
+        adjustment: 0.00,
+        credits: 0.00,
+        wtax: 0.00,
+    },
 ]
 
 // helpers
 
 /**
+ * Method for retrieving records belonging to the same payment transaction.
  * 
  * @param {*} paymentId 
- * @returns 
+ * @returns
  */
 export const getAppliedPaymentsByPaymentID = (paymentId) => appliedPayments.filter(ap => ap.paymentId === paymentId)
+
+/**
+ * Method for retrieving records that paid for the same order.
+ * 
+ * @param {*} salesOrderId 
+ * @returns 
+ */
+export const getAppliedPaymentsBySalesOrderID = (salesOrderId) => appliedPayments.filter(ap => ap.salesOrderId === salesOrderId)

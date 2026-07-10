@@ -142,6 +142,19 @@ export const salesOrderItems = [
         onHand: 0,
         closed: true
     },
+    {
+        id: 12,
+        salesOrderId: 2009,
+        itemId: 10005,
+        quantity: 10,
+        unitPrice: 1450.00,
+        discountTypeId: 0,
+        discounts: 0,
+        amount: 14500.00,
+        invoiced: 0,
+        onHand: 0,
+        closed: true
+    },
 ];
 
 // helpers

@@ -16,7 +16,6 @@ import SalesOrderDetails from "./pages/Orders/SalesOrders/SalesOrderDetails"
 import Invoices from "./pages/Orders/Invoices/Invoices"
 import InvoiceDetails from "./pages/Orders/Invoices/InvoiceDetails"
 import OrderPayments from "./pages/Orders/OrderPayments/OrderPayments"
-import OrderPaymentDetails from "./pages/Orders/OrderPayments/OrderPaymentDetails"
 import CreditReturns from "./pages/Orders/CreditReturns/CreditReturns"
 import CreditReturnDetails from "./pages/Orders/CreditReturns/CreditReturnDetails"
 import Collections from "./pages/Orders/Collections/Collections"
@@ -75,7 +74,6 @@ function App() {
             <Route path="invoices/:invoiceId" element={<InvoiceDetails/>}/>
 
             <Route path="order_payments" element={<OrderPayments />}/>
-            <Route path="order_payments/:orderPaymentId" element={<OrderPaymentDetails/>}/>
 
             <Route path="credit_returns" element={<CreditReturns />}/>
             <Route path="credit_returns/:creditReturnId" element={<CreditReturnDetails />}/>
