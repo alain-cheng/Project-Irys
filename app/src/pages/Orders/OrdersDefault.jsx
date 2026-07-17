@@ -7,7 +7,6 @@ function OrdersDefault() {
         <>
             <h1 className="text-2xl text-text mb-5">Orders</h1>
 
-            {/* to consider using React Flow for the flowchart-style UI */}
             <div className="flex items-center gap-5">
                 <Node 
                     icon={orderLinks[0].icon}  

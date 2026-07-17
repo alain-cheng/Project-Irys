@@ -10,6 +10,7 @@
 
   --color-accent: #FFDE67;
   --color-accent-soft: #FFF5D1;
+  --color-accent-light: #FFEAAD;
   --color-accent-strong: #DB9729;
 }
 
@@ -93,7 +94,7 @@ th {
   border: 1px solid var(--color-border-soft);
   padding: 0.5rem 0.75rem;
   text-align: left;
-  background-color: var(--color-background-light);
+  background-color: var(--color-background-darker);
   font-size: 12px;
 }
 
@@ -103,4 +104,9 @@ td {
   background-color: inherit;
   white-space: nowrap;
   font-size: 12px;
+}
+
+tfoot {
+  border: 1px solid var(--color-border-soft);
+  background-color: var(--color-background-darker);
 }

@@ -4,97 +4,64 @@ export const salesOrder = [
         orderNumber: "70001",
         customerId: 1000,
         orderDate: new Date("2026-01-31"),
-        itemId: 10001,
-        quantity: 5,
-        unitId: 1,
-        unitPrice: 250.31,
-        discountTypeId: 0,
-        discounts: 0,
-        amount: 1251.55,                    // quantity * unitPrice - discounts ?
-        invoiced: 0,
-        onHand: 0,
-        closed: true
+        statusId:  0,
     },
     {
         id: 2002,
         orderNumber: "70002",
         customerId: 1000,
         orderDate: new Date("2026-01-31"),
-        itemId: 10002,
-        quantity: 2,
-        unitId: 1,
-        unitPrice: 750.00,
-        discountTypeId: 0,
-        discounts: 0,
-        amount: 1500.00,
-        invoiced: 0,
-        onHand: 0,
-        closed: true
+        statusId:  0,
     },
     {
         id: 2003,
         orderNumber: "70003",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
-        itemId: 10003,
-        quantity: 1,
-        unitId: 1,
-        unitPrice: 3200.50,
-        discountTypeId: 0,
-        discounts: 0,
-        amount: 3200.50,
-        invoiced: 0,
-        onHand: 0,
-        closed: true
+        statusId:  0,
     },
     {
         id: 2004,
         orderNumber: "70004",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
-        itemId: 10004,
-        quantity: 3,
-        unitId: 1,
-        unitPrice: 1850.75,
-        discountTypeId: 0,
-        discounts: 0,
-        amount: 5552.25,
-        invoiced: 0,
-        onHand: 0,
-        closed: false
+        statusId:  0,
     },
     {
         id: 2005,
         orderNumber: "70005",
         customerId: 1001,
         orderDate: new Date("2026-01-31"),
-        itemId: 10005,
-        quantity: 4,
-        unitId: 1,
-        unitPrice: 1450.00,
-        discountTypeId: 0,
-        discounts: 0,
-        amount: 5800.00,
-        invoiced: 0,
-        onHand: 0,
-        closed: false
+        statusId:  1,
     },
     {
         id: 2006,
         orderNumber: "70006",
         customerId: 1002,
         orderDate: new Date("2026-01-31"),
-        itemId: 10003,
-        quantity: 2,
-        unitId: 1,
-        unitPrice: 3200.50,
-        discountTypeId: 0,
-        discounts: 0,
-        amount: 6401.00,
-        invoiced: 0,
-        onHand: 0,
-        closed: false
+        statusId:  1,
     },
+    {
+        id: 2007,
+        orderNumber: "70007",
+        customerId: 1003,
+        orderDate: new Date("2026-07-05"),
+        statusId:  0,
+    },
+    {
+        id: 2008,
+        orderNumber: "70008",
+        customerId: 1003,
+        orderDate: new Date("2026-07-05"),
+        statusId:  0,
+    },
+    {
+        id: 2009,
+        orderNumber: "70009",
+        customerId: 1004,
+        orderDate: new Date("2026-01-12"),
+        statusId:  0,
+    }
 ];
 
 // helper functions
@@ -120,4 +87,4 @@ export const getSalesOrderById = (id) => salesOrder.find(s => s.id === id)
  * @param {*} customerId 
  * @returns 
  */
-export const getSalesOrderByCustomerId = (customerId) => salesOrder.filter(s => s.customerId === customerId) 
+export const getSalesOrderByCustomerId = (customerId) => salesOrder.filter(s => s.customerId === customerId)

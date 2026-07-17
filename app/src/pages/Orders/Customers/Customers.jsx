@@ -1,22 +1,33 @@
-import { useMemo, useState } from "react"
+import { use, useMemo, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
+import { Plus, Search } from "lucide-react"
 
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 
-import { Search } from "lucide-react"
+import Tooltip from "../../components/Tooltip.jsx"
+import CustomerDataEntry from "./components/CustomerDataEntry.jsx"
+import Toast from "../../components/Toast.jsx"
+
+import useToast from "../../components/hooks/useToast.js"
 
 function Customers() {
     const navigate = useNavigate()
-    
+
     const {
         selectedCustomer,
         setSelectedCustomer
     } = useOutletContext()
 
+    ///////////////////////////
+    /////     STATES      /////
+    ///////////////////////////
     const [searchTerm, setSearchTerm] = useState("")
-
-    // Retrieves and loads all customers from the database
-    const [customersView, setCustomersView] = useState(() => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const { // Toast controller
+        toast,
+        showToast,
+    } = useToast()
+    const [customersView, setCustomersView] = useState(() => { // Retrieves and loads customers from the database
         return getAllCustomers().map(c => ({
             ...c,
         }))
@@ -37,39 +48,50 @@ function Customers() {
         )
     }, [customersView, searchTerm])
 
-    const handleAddCustomer = () => {
-        const newCustomer = {
-            id: Date.now(),
-            name: "New Customer",
-            title: "Mr.",
-            address: "Somewhere",
-            city: "City",
-            province: "Province",
-            zipCode: 1234,
-            phone: "639000000000",
-            fax: "0000",
-            tin: "0000000",
-            creditLimit: 50.50,
-            salesman: "Demo"
-        }
-        setCustomersView(prev => [...prev, newCustomer])
-    }
-
     return(
         <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text">Customers</h1>
+
+            {toast && (
+                <Toast message={toast.message} type={toast.type} />
+            )}
+
+            <CustomerDataEntry 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSuccess={showToast}
+            />
             
-            {/* Search bar */}
-            <div className="flex flex-row items-center justify-center">
-                <Search className="w-10" />
-                <input 
-                    type="text"
-                    className="flex-1 px-3 py-1 border border-border-soft rounded-2xl bg-background text-sm"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search Customer..."
-                />
+            {/* Toolbar */}
+            <div
+                className="flex gap-3 items-center"
+            >
+                {/* Add Customer */}
+                <div className="relative group">
+                    <button
+                        className="px-2 py-1 rounded-lg bg-accent-light cursor-pointer"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        <Plus className="text-accent-strong"/>
+                    </button>
+
+                    <Tooltip text="Add New Customer" />
+                </div>
+                
+
+                {/* Search bar */}
+                <div className="relative flex flex-row items-center justify-center">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <input 
+                        type="text"
+                        className="flex-1 pl-10 py-2 border border-border-soft rounded-lg bg-background text-sm"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search Customer..."
+                    />
+                </div>
             </div>
+            
             
             {/* table container */}
             <div className="flex-1 min-h-0">
