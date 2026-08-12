@@ -1,3 +1,4 @@
+// Child of payments object
 export const appliedPayments = [
     {
         id: 1,
