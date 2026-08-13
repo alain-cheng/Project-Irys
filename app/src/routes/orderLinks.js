@@ -7,7 +7,8 @@ import {
     Box, 
     ListTodo, 
     Boxes, 
-    Undo 
+    Undo, 
+    Undo2
 } from "lucide-react"
 
 export const orderLinks = [
@@ -97,7 +98,7 @@ export const orderLinks = [
         showInFlow: true
     },
     { 
-        icon: Undo, 
+        icon: Undo2, 
         label: "Invoice Returns", 
         path: "/orders/invoice_returns",
         children: [

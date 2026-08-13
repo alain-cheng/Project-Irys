@@ -1,5 +1,4 @@
-// This is for CreditMemo.jsx. will update naming convention later to avoid confusion
-export const purchaseReturns = [
+export const purchaseCreditMemo = [
     {
         id: 60001,
         supplier: "",
@@ -20,6 +19,6 @@ export const purchaseReturns = [
     },
 ]
 
-export const getAllPurchaseReturns = () => { return purchaseReturns }
+export const getAllPurchaseCreditMemo = () => { return purchaseCreditMemo }
 
-export const getPurchaseReturnById = (id) => purchaseReturns.find(pr => pr.id === id)
+export const getPurchaseCreditMemoById = (id) => purchaseCreditMemo.find(pcm => pcm.id === id)

@@ -97,8 +97,8 @@ export const purchasesLinks = [
     },
     { 
         icon: Undo2, 
-        label: "Purchase Return", 
-        path: "/purchases/purchase_return",
+        label: "Returns", 
+        path: "/purchases/returns",
         children: [
 
         ],

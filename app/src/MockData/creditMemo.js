@@ -1,4 +1,4 @@
-// For Orders Tab, also known as Credit Returns (a similar Credit Memo under Purchases Tab is named as Purchase Returns)
+// Displayed as Credit Returns in the UI under Orders tab (a similar object under Purchases Tab is named as Purchase Returns)
 export const creditMemo = [
     {
         id: 5001,
