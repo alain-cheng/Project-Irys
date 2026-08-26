@@ -1,3 +1,4 @@
+// Credit memo for Purchase tab
 export const purchaseCreditMemo = [
     {
         id: 60001,
