@@ -3,8 +3,10 @@ import { useOutletContext } from "react-router-dom"
 
 import { getAllCustomers, getCustomerById } from "../../../../MockData/customers"
 import { getPaymentsByCustomerId } from "../../../../MockData/payments"
+import { getAppliedPaymentsByPaymentID } from "../../../../MockData/appliedPayments"
 
 import CustomerNav from "../components/CustomerNav"
+
 
 function PaymentHistory() {
     const { selectedCustomer, setSelectedCustomer } = useOutletContext()
@@ -21,10 +23,20 @@ function PaymentHistory() {
         const customerPayments = getPaymentsByCustomerId(selectedCustomer)
 
         return customerPayments.map(payment => {
+
+            const appliedPayments = getAppliedPaymentsByPaymentID(payment.id).map(ap => {
+                return {
+                    amountApplied: ap.amountApplied,
+                    adjustment: ap.adjustment,
+                    credits: ap.credits,
+                    wtax: ap.wtax,
+                }
+            })
+
             return {
                 paymentDate: payment.paymentDate,
                 paymentId: payment.id,
-                amount: payment.amount,
+                amount: appliedPayments.reduce((sum, ap) => sum += ap.amountApplied, 0),
                 mode: payment.paymentMode,
                 bankName: payment.bankName,
                 checkNo: payment.checkNo,
@@ -82,18 +94,26 @@ function PaymentHistory() {
                         </thead>
 
                         <tbody className="border">
-                            {paymentHistoryView.map((p, index) => (
-                                <tr key={index} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"}`}>
-                                    <td className="sticky left-0 z-5">{p.paymentDate.toLocaleDateString()}</td>
-                                    <td>{p.paymentId}</td>
-                                    <td>{p.amount.toFixed(2)}</td>
-                                    <td>{p.mode}</td>
-                                    <td>{p.bankName}</td>
-                                    <td>{p.checkNo}</td>
-                                    <td>{p.checkDate.toLocaleDateString()}</td>
-                                    <td>{p.status}</td>
+                            {paymentHistoryView.length > 0 ? (
+                                paymentHistoryView.map((p, index) => (
+                                    <tr key={index} className={`${index % 2 === 0 ? "bg-background" : "bg-background-light"}`}>
+                                        <td className="sticky left-0 z-5">{p.paymentDate.toLocaleDateString()}</td>
+                                        <td>{p.paymentId}</td>
+                                        <td>{p.amount.toFixed(2)}</td>
+                                        <td>{p.mode}</td>
+                                        <td>{p.bankName}</td>
+                                        <td>{p.checkNo}</td>
+                                        <td>{p.checkDate.toLocaleDateString()}</td>
+                                        <td>{p.status}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr className="bg-background">
+                                    <td colSpan={8} className="text-center">
+                                        No payment records found for this customer.
+                                    </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                         
                         {paymentHistoryView.length !== 0 && (
@@ -101,7 +121,7 @@ function PaymentHistory() {
                                 <tr>
                                     <td></td>
                                     <td className="font-bold">Total</td>
-                                    <td>{totalAmount}</td>
+                                    <td>{totalAmount.toFixed(2)}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

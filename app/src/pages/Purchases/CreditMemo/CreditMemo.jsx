@@ -1,20 +1,20 @@
 import { useMemo } from "react"
 
-import { getAllPurchaseReturns } from "../../../MockData/purchaseReturns"
+import { getAllPurchaseCreditMemo } from "../../../MockData/purchaseCreditMemo"
 import { getAllUnits } from "../../../MockData/units"
 import { getAllDiscountTypes } from "../../../MockData/discountTypes"
 
 import { formatDiscount } from "../../../helpers/helpers"
 
 function CreditMemo () {
-    const purchaseReturnViews = useMemo(() => {
+    const purchaseCreditMemoViews = useMemo(() => {
         const unitsMap = Object.fromEntries(
             getAllUnits().map(u => [u.id, u])
         )
 
-        return getAllPurchaseReturns().map(pr => ({
-            ...pr,
-            unitName: unitsMap[pr.unitId]?.unitName ?? "-",
+        return getAllPurchaseCreditMemo().map(pcm => ({
+            ...pcm,
+            unitName: unitsMap[pcm.unitId]?.unitName ?? "-",
         }))
     }, [])
 
@@ -42,19 +42,19 @@ function CreditMemo () {
                         </thead>
 
                         <tbody className="border">
-                            {purchaseReturnViews.map((pr) => (
-                                <tr key={pr.id} className=" bg-background hover:bg-accent-soft transition">
-                                    <td className="sticky left-0 z-5">{pr.id}</td>
-                                    <td>{pr.itemName}</td>
-                                    <td>{pr.quantity}</td>
-                                    <td>{pr.badStocks}</td>
-                                    <td>{pr.unitName}</td>
-                                    <td>{pr.unitPrice.toFixed(2)}</td>
-                                    <td>{formatDiscount(pr.discountTypeId, pr.discounts)}</td>
-                                    <td>{pr.amount.toFixed(2)}</td>
-                                    <td>{pr.replaced}</td>
-                                    <td>{pr.amountReplaced.toFixed(2)}</td>
-                                    <td>{pr.remarks}</td>
+                            {purchaseCreditMemoViews.map((pcm) => (
+                                <tr key={pcm.id} className=" bg-background hover:bg-accent-soft transition">
+                                    <td className="sticky left-0 z-5">{pcm.id}</td>
+                                    <td>{pcm.itemName}</td>
+                                    <td>{pcm.quantity}</td>
+                                    <td>{pcm.badStocks}</td>
+                                    <td>{pcm.unitName}</td>
+                                    <td>{pcm.unitPrice.toFixed(2)}</td>
+                                    <td>{formatDiscount(pcm.discountTypeId, pcm.discounts)}</td>
+                                    <td>{pcm.amount.toFixed(2)}</td>
+                                    <td>{pcm.replaced}</td>
+                                    <td>{pcm.amountReplaced.toFixed(2)}</td>
+                                    <td>{pcm.remarks}</td>
                                 </tr>
                             ))}
                         </tbody>
