@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="SqlServer" database="SqlServer" id="7c602b43-4db2-43a9-8302-0ab5fb29e865" >
+	<schema name="dbo" catalogname="IRYS" >
+		<table name="Customers" prior="Custo" >
+			<column name="CustomerId" type="int" mandatory="y" />
+			<column name="CompanyName" type="varchar" length="255" />
+			<index name="pk_Customers" unique="PRIMARY_KEY" >
+				<column name="CustomerId" />
+			</index>
+		</table>
+	</schema>
+	<diagram_group name="Default" id="fe0d8bec-698b-4671-8e02-58f1a36b3397" >
+		<diagram name="Main Diagram" id="cd4e7939-0271-4533-8d44-416b1751978f" joined_routing="y" show_column_type="y" show_relation="columns" >
+			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="323" y="171" />
+			<callout x="57" y="57" pointer="Round" >
+				<comment><![CDATA[Create new tables by right-clicking the diagram.
+Double-click the table headers, columns, or foreign keys to edit.
+The schema and tables will be saved to the model file.]]></comment>
+			</callout>
+			<script name="Customers" id="d94ce1c4-8d0c-475a-9674-bc32a4543594" language="SQL" >
+				<string><![CDATA[CREATE  TABLE IRYS.dbo.Customers ( 
+	CustomerId           int      NOT NULL,
+	CompanyName          varchar(255)      NULL,
+	CONSTRAINT pk_Customers PRIMARY KEY  ( CustomerId ) 
+ );
+GO
+
+]]></string>
+			</script>
+		</diagram>
+	</diagram_group>
+</project>
