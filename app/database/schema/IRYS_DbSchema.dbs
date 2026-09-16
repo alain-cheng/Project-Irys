@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="SqlServer" database="SqlServer" id="7c602b43-4db2-43a9-8302-0ab5fb29e865" >
+	<schema name="dbo" catalogname="IRYS" >
+		<table name="CustomerArea" prior="CustArea" >
+			<comment><![CDATA[Legacy.dbo.CUSTAREA > IRYS.dbo.CustomerArea
+
+---
+
+Dropped Cols:
+Legacy.dbo.CUSTAREA.AREACODE0
+Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
+			<column name="AreaCode" type="int" mandatory="y" />
+			<column name="AreaName" type="varchar" length="50" mandatory="y" />
+			<index name="pk_CustomerArea" unique="PRIMARY_KEY" >
+				<column name="AreaCode" />
+			</index>
+		</table>
+		<table name="Customers" prior="Custo" >
+			<column name="CustomerId" type="int" mandatory="y" />
+			<column name="CompanyName" type="varchar" length="255" />
+			<column name="ContactName" type="varchar" length="100" />
+			<column name="ContactTitle" type="varchar" length="50" />
+			<column name="Address" type="varchar" length="255" />
+			<column name="City" type="varchar" length="50" />
+			<column name="Province" type="varchar" length="50" />
+			<column name="ZipCode" type="varchar" length="10" />
+			<column name="Phone" type="varchar" length="30" />
+			<column name="Fax" type="varchar" length="20" />
+			<column name="Alarm" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="EmployeeId" type="int" />
+			<column name="PriceLvl" type="int" mandatory="y" >
+				<defo><![CDATA[1]]></defo>
+				<comment><![CDATA[TBD]]></comment>
+			</column>
+			<column name="CreditLimit" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Balance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Credit" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="InvBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+				<comment><![CDATA[TBD]]></comment>
+			</column>
+			<column name="TIN" type="varchar" length="20" />
+			<column name="AreaCode" type="int" />
+			<column name="CustomerCode" type="varchar" length="15" />
+			<column name="CustomerArea" type="varchar" length="8" />
+			<column name="CustomerAgent" type="varchar" length="12" />
+			<column name="AgentName" type="varchar" length="20" />
+			<column name="CustomerType" type="varchar" length="20" />
+			<column name="StartDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="SmCode" type="varchar" length="2" >
+				<comment><![CDATA[TBD]]></comment>
+			</column>
+			<column name="Term" type="varchar" length="1" />
+			<column name="TermCode" type="varchar" length="6" />
+			<column name="PType" type="varchar" length="1" />
+			<column name="Remarks" type="varchar(max)" />
+			<index name="pk_Customers" unique="PRIMARY_KEY" >
+				<column name="CustomerId" />
+			</index>
+			<fk name="fk_customers_employee" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="EmployeeId" pk="EmployeeId" />
+			</fk>
+			<fk name="fk_customers_customerarea" to_schema="IRYS.dbo" to_table="CustomerArea" >
+				<fk_column name="AreaCode" pk="AreaCode" />
+			</fk>
+		</table>
+		<table name="Employees" prior="Employee" >
+			<comment><![CDATA[Legacy.dbo.EMPLOYEES > IRYS.dbo.Employee
+
+---
+
+Dropped Cols:
+Legacy.dbo.EMPLOYEES.NICKNAME1
+Legacy.dbo.EMPLOYEES.USERNAME
+Legacy.dbo.EMPLOYEES.PASSWORD
+Legacy.dbo.EMPLOYEES.AGCODE
+Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
+			<column name="EmployeeId" type="int" mandatory="y" />
+			<column name="FirstName" type="varchar" length="50" />
+			<column name="MiddleName" type="varchar" length="20" />
+			<column name="LastName" type="varchar" length="50" />
+			<column name="NickName" type="varchar" length="50" />
+			<column name="Position" type="varchar" length="50" />
+			<column name="Address" type="varchar" length="255" />
+			<column name="City" type="varchar" length="50" />
+			<column name="Province" type="varchar" length="50" />
+			<column name="ZipCode" type="varchar" length="10" />
+			<column name="Phone" type="varchar" length="30" />
+			<column name="BirthDate" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<column name="Sex" type="varchar" length="1" mandatory="y" >
+				<defo><![CDATA['M']]></defo>
+			</column>
+			<column name="DateHired" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="SSS" type="varchar" length="15" />
+			<column name="GroupId" type="int" mandatory="y" >
+				<defo><![CDATA[1]]></defo>
+			</column>
+			<column name="AgentType" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<index name="pk_Employee" unique="PRIMARY_KEY" >
+				<column name="EmployeeId" />
+			</index>
+		</table>
+		<table name="Users" prior="U" >
+			<comment><![CDATA[NEW TABLE]]></comment>
+			<column name="UserId" type="int" mandatory="y" />
+			<column name="EmployeeId" type="int" />
+			<column name="Username" type="varchar" length="255" mandatory="y" />
+			<column name="PasswordHash" type="varchar" length="255" mandatory="y" />
+			<index name="pk_Users" unique="PRIMARY_KEY" >
+				<column name="UserId" />
+			</index>
+			<fk name="fk_users_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="EmployeeId" pk="EmployeeId" />
+			</fk>
+		</table>
+	</schema>
+	<diagram_group name="Default" id="fe0d8bec-698b-4671-8e02-58f1a36b3397" >
+		<diagram name="Main Diagram" id="cd4e7939-0271-4533-8d44-416b1751978f" joined_routing="y" show_column_type="y" show_relation="columns" >
+			<entity schema="IRYS.dbo" name="CustomerArea" color="C1D8EE" x="57" y="608" />
+			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="342" y="266" />
+			<entity schema="IRYS.dbo" name="Employees" color="C1D8EE" x="722" y="266" />
+			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="722" y="760" />
+			<callout x="133" y="95" pointer="Round" >
+				<comment><![CDATA[Create new tables by right-clicking the diagram.
+Double-click the table headers, columns, or foreign keys to edit.
+The schema and tables will be saved to the model file.]]></comment>
+			</callout>
+			<group name="GroupName" color="C4E0F9" >
+				<entity schema="IRYS.dbo" name="CustomerArea" />
+				<entity schema="IRYS.dbo" name="Customers" />
+				<entity schema="IRYS.dbo" name="Employees" />
+				<entity schema="IRYS.dbo" name="Users" />
+			</group>
+			<script name="Customers" id="d94ce1c4-8d0c-475a-9674-bc32a4543594" language="SQL" >
+				<string><![CDATA[CREATE  TABLE IRYS.dbo.Customers ( 
+	CustomerId           int      NOT NULL,
+	CompanyName          varchar(255)      NULL,
+	CONSTRAINT pk_Customers PRIMARY KEY  ( CustomerId ) 
+ );
+GO
+
+]]></string>
+			</script>
+		</diagram>
+	</diagram_group>
+</project>
