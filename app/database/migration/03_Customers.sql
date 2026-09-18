@@ -2,7 +2,7 @@ USE IRYS;
 GO
 INSERT INTO dbo.Customers
 (
-	CustomerId,
+	Id,
 	CompanyName,
 	ContactName,
 	ContactTitle,

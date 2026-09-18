@@ -2,7 +2,7 @@ USE IRYS;
 GO
 INSERT INTO dbo.Employees
 (
-	EmployeeId,
+	Id,
 	FirstName,
 	MiddleName,
 	LastName,
