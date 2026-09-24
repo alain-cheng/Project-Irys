@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="SqlServer" database="SqlServer" id="7c602b43-4db2-43a9-8302-0ab5fb29e865" >
 	<schema name="dbo" catalogname="IRYS" >
+		<table name="AccountClasses" prior="AccountClass" >
+			<column name="AccountClass" prior="Id" type="int" mandatory="y" />
+			<column name="AccountDescription" type="varchar" length="255" />
+			<column name="OpeningBalance" prior="OpenBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CurrentBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ClassDescription" type="varchar" length="255" />
+			<index name="pk_AccountClass" unique="PRIMARY_KEY" >
+				<column name="AccountClass" />
+			</index>
+		</table>
+		<table name="Accounts" prior="Acco" >
+			<comment><![CDATA[Legacy.dbo.ACCOUNTS > IRYS.dbo.Accounts
+
+---
+
+Altered Cols:
+ACCOUNTS.ACCT_NO > Accounts.Id
+
+Dropped Cols:
+ACCOUNTS.SUB  			// redundant]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="AccountClass" type="int" mandatory="y" />
+			<column name="SubAccountOf" type="int" />
+			<column name="AccountName" type="varchar" length="255" mandatory="y" />
+			<column name="Description" type="varchar(max)" />
+			<column name="OpeningBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CurrentBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<index name="pk_Accounts" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_accounts_accountclasses" to_schema="IRYS.dbo" to_table="AccountClasses" >
+				<fk_column name="AccountClass" pk="AccountClass" />
+			</fk>
+			<fk name="fk_accounts_accounts" to_schema="IRYS.dbo" to_table="Accounts" >
+				<fk_column name="SubAccountOf" pk="Id" />
+			</fk>
+		</table>
+		<table name="Banks" prior="Tbl" >
+			<column name="Id" type="int" mandatory="y" />
+			<column name="BankName" type="varchar" length="255" mandatory="y" />
+			<column name="ContactName" type="varchar" length="100" />
+			<column name="ContactTitle" type="varchar" length="50" />
+			<column name="Address" type="varchar" length="255" />
+			<column name="Province" type="varchar" length="50" />
+			<column name="City" type="varchar" length="50" />
+			<column name="ZipCode" type="varchar" length="10" />
+			<column name="Phone" type="varchar" length="30" />
+			<column name="BankCode" type="varchar" length="8" />
+			<index name="pk_Banks" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
 		<table name="CustomerArea" prior="CustArea" >
 			<comment><![CDATA[Legacy.dbo.CUSTAREA > IRYS.dbo.CustomerArea
 
@@ -140,7 +200,7 @@ Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
 
 ---
 
-Alters Cols:
+Altered Cols:
 LEGACY.dbo.PAYMENTS.MODE > IRYS.dbo.Payments.PaymentModeId
 LEGACY.dbo.PAYMENTS.STATUS > IRYS.dbo.Payments.PayStatusId
 
@@ -276,6 +336,19 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
+		<table name="Units" prior="Unit" >
+			<comment><![CDATA[Legacy.dbo.UNIT > IRYS.dbo.Units
+
+---
+
+Alterd Cols:
+UNIT.UNITCODE > Units.Id]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="UnitName" type="varchar" length="25" mandatory="y" />
+			<index name="pk_Unit" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
 		<table name="Users" prior="U" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="UserId" type="int" mandatory="y" />
@@ -289,18 +362,48 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 				<fk_column name="EmployeeId" pk="Id" />
 			</fk>
 		</table>
+		<table name="Vendors" prior="Vendo" >
+			<column name="Id" type="int" mandatory="y" />
+			<column name="VendorName" type="varchar" length="255" />
+			<column name="ContactName" type="varchar" length="100" />
+			<column name="ContactTitle" type="varchar" length="50" />
+			<column name="Address" type="varchar" length="255" />
+			<column name="City" type="varchar" length="50" />
+			<column name="Province" type="varchar" length="50" />
+			<column name="ZipCode" type="varchar" length="10" />
+			<column name="Phone" type="varchar" length="30" />
+			<column name="FAX" type="varchar" length="20" />
+			<column name="TIN" type="varchar" length="20" />
+			<index name="pk_Vendors" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="Warehouses" prior="Warehousw" >
+			<column name="Id" type="int" mandatory="y" />
+			<column name="WarehouseName" type="varchar" length="255" />
+			<column name="WarehouseDescription" type="varchar(max)" />
+			<index name="pk_Warehouses" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
 	</schema>
 	<diagram_group name="Default" id="fe0d8bec-698b-4671-8e02-58f1a36b3397" >
 		<diagram name="Main Diagram" id="cd4e7939-0271-4533-8d44-416b1751978f" joined_routing="y" show_column_type="y" show_relation="columns" >
-			<entity schema="IRYS.dbo" name="CustomerArea" color="C1D8EE" x="76" y="817" />
+			<entity schema="IRYS.dbo" name="AccountClasses" color="DDEEC1" x="1482" y="969" />
+			<entity schema="IRYS.dbo" name="Accounts" color="C4E0F9" x="1463" y="741" />
+			<entity schema="IRYS.dbo" name="Banks" color="C4E0F9" x="1900" y="114" />
+			<entity schema="IRYS.dbo" name="CustomerArea" color="DDEEC1" x="76" y="817" />
 			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="361" y="475" />
 			<entity schema="IRYS.dbo" name="Employees" color="C1D8EE" x="741" y="475" />
-			<entity schema="IRYS.dbo" name="PayStatuses" color="C4E0F9" x="57" y="228" />
-			<entity schema="IRYS.dbo" name="PaymentModes" color="C4E0F9" x="57" y="95" />
+			<entity schema="IRYS.dbo" name="PayStatuses" color="DDEEC1" x="57" y="228" />
+			<entity schema="IRYS.dbo" name="PaymentModes" color="DDEEC1" x="57" y="95" />
 			<entity schema="IRYS.dbo" name="Payments" color="C4E0F9" x="380" y="95" />
 			<entity schema="IRYS.dbo" name="SupplierPayments" color="C4E0F9" x="760" y="95" />
 			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="1102" y="114" />
+			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="1919" y="874" />
 			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="741" y="969" />
+			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="1900" y="418" />
+			<entity schema="IRYS.dbo" name="Warehouses" color="C4E0F9" x="1843" y="722" />
 			<group name="GroupName" color="C4E0F9" >
 				<entity schema="IRYS.dbo" name="CustomerArea" />
 				<entity schema="IRYS.dbo" name="Customers" />

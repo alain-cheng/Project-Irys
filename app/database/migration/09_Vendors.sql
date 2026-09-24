@@ -1,0 +1,31 @@
+-- LEGACY.dbo.VENDORS > IRYS.dbo.Vendors
+USE IRYS;
+GO
+INSERT INTO dbo.Vendors
+(
+	Id,
+	VendorName,
+	ContactName,
+	ContactTitle,
+	Address,
+	City,
+	Province,
+	ZipCode,
+	Phone,
+	FAX,
+	TIN
+)
+SELECT
+	TRY_CONVERT(INT, v.VENDORID),
+	NULLIF(LTRIM(RTRIM(v.VENDORNAME)), ''),
+	NULLIF(LTRIM(RTRIM(v.CONTNAME)), ''),
+	NULLIF(LTRIM(RTRIM(v.CONTTITLE)), ''),
+	NULLIF(LTRIM(RTRIM(CAST(v.ADDRESS AS VARCHAR(MAX)))), ''),
+	NULLIF(LTRIM(RTRIM(v.CITY)), ''),
+	NULLIF(LTRIM(RTRIM(v.PROVINCE)), ''),
+	NULLIF(LTRIM(RTRIM(v.ZIPCODE)), ''),
+	NULLIF(LTRIM(RTRIM(v.PHONE)), ''),
+	NULLIF(LTRIM(RTRIM(v.FAX)), ''),
+	NULLIF(LTRIM(RTRIM(v.TIN)), '')
+FROM FoxProLegacy.dbo.VENDORS AS v;
+GO
