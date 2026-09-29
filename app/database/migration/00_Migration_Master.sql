@@ -13,3 +13,4 @@
 :r .\11_Banks.sql
 :r .\12_AccountClasses.sql
 :r .\13_Accounts.sql
+:r .\14_Terms.sql

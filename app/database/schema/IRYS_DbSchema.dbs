@@ -2,15 +2,16 @@
 <project name="SqlServer" database="SqlServer" id="7c602b43-4db2-43a9-8302-0ab5fb29e865" >
 	<schema name="dbo" catalogname="IRYS" >
 		<table name="AccountClasses" prior="AccountClass" >
+			<comment><![CDATA[LEGACY.dbo.ACCTCLASS > IRYS.dbo.AccountClasses]]></comment>
 			<column name="AccountClass" prior="Id" type="int" mandatory="y" />
-			<column name="AccountDescription" type="varchar" length="255" />
+			<column name="AccountDescription" type="varchar(max)" />
 			<column name="OpeningBalance" prior="OpenBalance" type="float" mandatory="y" >
 				<defo><![CDATA[0]]></defo>
 			</column>
 			<column name="CurrentBalance" type="float" mandatory="y" >
 				<defo><![CDATA[0]]></defo>
 			</column>
-			<column name="ClassDescription" type="varchar" length="255" />
+			<column name="ClassDescription" prior="Description" type="varchar(max)" />
 			<index name="pk_AccountClass" unique="PRIMARY_KEY" >
 				<column name="AccountClass" />
 			</index>
@@ -179,6 +180,210 @@ Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
+		<table name="OrderStatuses" prior="OrderStatu" >
+			<comment><![CDATA[NEW TABLE]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="StatusName" type="varchar" length="20" mandatory="y" />
+			<index name="pk_OrderStatuses" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="Orders" prior="Tbl" >
+			<comment><![CDATA[LEGACY.dbo.ORDERS > IRYS.dbo.Orders
+
+---
+
+Altered Cols:
+ORDERS.STATUS > Orders.OrderStatusId
+ORDERS.PMODE > Orders.PaymentModeId		// do not transfer, init as NULL
+
+Dropped Cols:
+ORDERS.CUSCODE
+ORDERS.SMCODE
+ORDERS.TERMS
+ORDERS.NTRANS
+ORDERS.PYMNT_TYPE
+ORDERS.COMMREM
+ORDERS.COMM_AMT_P
+ORDERS.COLL_PERC
+ORDERS.TMPCOLL
+
+Remarks:
+- ORDERS.USERS > Orders.Users will all be turned into NULL
+- ORDERS.WHOUSEID > Orders.WarehouseId will all be NULL]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="CustomerId" type="int" >
+				<comment><![CDATA[Should not allow NULL inserts in the Application Layer]]></comment>
+			</column>
+			<column name="InvoiceNumber" type="varchar" length="100" />
+			<column name="EmployeeId" type="int" />
+			<column name="OrderDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="DeliveryDate" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<column name="isPaid" prior="Paid" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="DueDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="TermCode" type="int" >
+				<defo><![CDATA[4]]></defo>
+			</column>
+			<column name="Total" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="DeliveredBy" type="int" />
+			<column name="PackedBy" type="int" />
+			<column name="OrderStatusId" prior="StatusId" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Balance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Salesman" type="int" />
+			<column name="User" type="int" />
+			<column name="Returns" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="AmountPaid" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="BIR" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ShipperId" type="int" />
+			<column name="Adjust" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="OrderProfit" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="OrderFree" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SalesOrderId" type="int" />
+			<column name="CreditsApplied" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Consign" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="DRNumber" type="varchar" length="10" />
+			<column name="Commission" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SINumber" type="varchar" length="30" />
+			<column name="SIDate" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<column name="SICustomer" type="varchar" length="15" />
+			<column name="SITerms" type="varchar" length="7" />
+			<column name="SIBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SINetAmount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SIAgent" type="varchar" length="12" />
+			<column name="PONumber" type="varchar" length="100" />
+			<column name="BeginningBalance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ReferenceNumber" type="varchar" length="100" />
+			<column name="WTax" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Cancelled" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="WarehouseId" type="int" />
+			<column name="Rebate" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CommissionPaid" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CommissionDate" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<column name="NoCommission" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CommissionAmount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CommissionFixed" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Collector" type="int" />
+			<column name="isCommissionComputable" type="bit" />
+			<column name="DatePaid" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<column name="CollectedAmount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isHeavy" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ERR" type="int" />
+			<column name="PaymentModeId" type="int" />
+			<column name="Driver" type="int" />
+			<column name="Helper" type="int" />
+			<column name="Truck" type="varchar" length="15" />
+			<column name="Notes" type="varchar(max)" />
+			<column name="PackList" type="varchar(max)" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="AdjustmentRemarks" type="varchar(max)" />
+			<index name="pk_Orders" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_orders_customers" to_schema="IRYS.dbo" to_table="Customers" >
+				<fk_column name="CustomerId" pk="Id" />
+			</fk>
+			<fk name="fk_orders_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="EmployeeId" pk="Id" />
+			</fk>
+			<fk name="fk_orders_terms" to_schema="IRYS.dbo" to_table="Terms" >
+				<fk_column name="TermCode" pk="TermCode" />
+			</fk>
+			<fk name="fk_orders_orderstatuses" to_schema="IRYS.dbo" to_table="OrderStatuses" >
+				<fk_column name="OrderStatusId" pk="Id" />
+			</fk>
+			<fk name="fk_ordersSalesman_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="Salesman" pk="Id" />
+			</fk>
+			<fk name="fk_orders_shippers" to_schema="IRYS.dbo" to_table="Shippers" >
+				<fk_column name="ShipperId" pk="Id" />
+			</fk>
+			<fk name="fk_orders_salesorders" to_schema="IRYS.dbo" to_table="SalesOrders" >
+				<fk_column name="SalesOrderId" pk="Id" />
+			</fk>
+			<fk name="fk_orders_warehouses" to_schema="IRYS.dbo" to_table="Warehouses" >
+				<fk_column name="WarehouseId" pk="Id" />
+			</fk>
+			<fk name="fk_ordersCollector_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="Collector" pk="Id" />
+			</fk>
+			<fk name="fk_ordersERR_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="ERR" pk="Id" />
+			</fk>
+			<fk name="fk_orders_paymentmodes" to_schema="IRYS.dbo" to_table="PaymentModes" >
+				<fk_column name="PaymentModeId" pk="Id" />
+			</fk>
+			<fk name="fk_ordersDriver_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="Driver" pk="Id" />
+			</fk>
+			<fk name="fk_ordersHelper_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="Helper" pk="Id" />
+			</fk>
+			<fk name="fk_orders_users" to_schema="IRYS.dbo" to_table="Users" >
+				<fk_column name="User" pk="UserId" />
+			</fk>
+		</table>
 		<table name="PayStatuses" prior="PayStatus" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="Id" type="int" mandatory="y" />
@@ -248,6 +453,65 @@ LEGACY.dbo.PAYMENTS.USER]]></comment>
 			<fk name="fk_payments_employees" to_schema="IRYS.dbo" to_table="Employees" >
 				<fk_column name="EmployeeId" pk="Id" />
 			</fk>
+		</table>
+		<table name="SalesOrders" prior="SalesOrder" >
+			<comment><![CDATA[LEGACY.dbo.SALESORDERS > IRYS.dbo.SalesOrders]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="CustomerId" type="int" />
+			<column name="OrderDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="Remarks" type="varchar(max)" />
+			<column name="OrderStatusId" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Total" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Salesman" type="int" />
+			<column name="PONumber" type="varchar" length="100" />
+			<column name="TermCode" type="int" />
+			<column name="ShipperId" type="int" />
+			<column name="User" type="int" />
+			<column name="EmployeeId" type="int" />
+			<column name="Notes" type="varchar(max)" />
+			<index name="pk_SalesOrders" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_salesorders_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="EmployeeId" pk="Id" />
+			</fk>
+			<fk name="fk_salesordersSalesman_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="Salesman" pk="Id" />
+			</fk>
+			<fk name="fk_salesorders_customers" to_schema="IRYS.dbo" to_table="Customers" >
+				<fk_column name="CustomerId" pk="Id" />
+			</fk>
+			<fk name="fk_salesorders_users" to_schema="IRYS.dbo" to_table="Users" >
+				<fk_column name="User" pk="UserId" />
+			</fk>
+			<fk name="fk_salesorders_terms" to_schema="IRYS.dbo" to_table="Terms" >
+				<fk_column name="TermCode" pk="TermCode" />
+			</fk>
+			<fk name="fk_salesorders_shippers" to_schema="IRYS.dbo" to_table="Shippers" >
+				<fk_column name="ShipperId" pk="Id" />
+			</fk>
+			<fk name="fk_salesorders_orderstatuses" to_schema="IRYS.dbo" to_table="OrderStatuses" >
+				<fk_column name="OrderStatusId" pk="Id" />
+			</fk>
+		</table>
+		<table name="Shippers" prior="Shippe" >
+			<column name="Id" type="int" mandatory="y" />
+			<column name="ShipperName" type="varchar" length="255" mandatory="y" />
+			<column name="ContactName" type="varchar" length="100" />
+			<column name="Address" type="varchar" length="255" />
+			<column name="City" type="varchar" length="50" />
+			<column name="Province" type="varchar" length="50" />
+			<column name="ZipCode" type="varchar" length="15" />
+			<column name="Phone" type="varchar" length="30" />
+			<index name="pk_Shippers" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
 		</table>
 		<table name="SupplierPayments" prior="SupplierPayment" >
 			<comment><![CDATA[LEGACY.dbo.PAYMENT2 > IRYS.dbo.SupplierPayments
@@ -336,6 +600,31 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
+		<table name="Terms" prior="Tbl" >
+			<comment><![CDATA[LEGACY.dbo.TERMS > IRYS.dbo.Terms
+
+---
+
+Dropped Cols:
+TERMS.TERMDESC1
+TERMS.TERMCODE1]]></comment>
+			<column name="TermCode" type="int" mandatory="y" />
+			<column name="DiscDate" type="date" />
+			<column name="DueDate" type="date" />
+			<column name="Discount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Charge" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="TermDescription" type="varchar(max)" />
+			<column name="TermDays" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<index name="pk_Terms" unique="PRIMARY_KEY" >
+				<column name="TermCode" />
+			</index>
+		</table>
 		<table name="Units" prior="Unit" >
 			<comment><![CDATA[Legacy.dbo.UNIT > IRYS.dbo.Units
 
@@ -389,31 +678,42 @@ UNIT.UNITCODE > Units.Id]]></comment>
 	</schema>
 	<diagram_group name="Default" id="fe0d8bec-698b-4671-8e02-58f1a36b3397" >
 		<diagram name="Main Diagram" id="cd4e7939-0271-4533-8d44-416b1751978f" joined_routing="y" show_column_type="y" show_relation="columns" >
-			<entity schema="IRYS.dbo" name="AccountClasses" color="DDEEC1" x="1482" y="969" />
-			<entity schema="IRYS.dbo" name="Accounts" color="C4E0F9" x="1463" y="741" />
-			<entity schema="IRYS.dbo" name="Banks" color="C4E0F9" x="1900" y="114" />
-			<entity schema="IRYS.dbo" name="CustomerArea" color="DDEEC1" x="76" y="817" />
-			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="361" y="475" />
-			<entity schema="IRYS.dbo" name="Employees" color="C1D8EE" x="741" y="475" />
-			<entity schema="IRYS.dbo" name="PayStatuses" color="DDEEC1" x="57" y="228" />
-			<entity schema="IRYS.dbo" name="PaymentModes" color="DDEEC1" x="57" y="95" />
-			<entity schema="IRYS.dbo" name="Payments" color="C4E0F9" x="380" y="95" />
-			<entity schema="IRYS.dbo" name="SupplierPayments" color="C4E0F9" x="760" y="95" />
-			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="1102" y="114" />
-			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="1919" y="874" />
-			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="741" y="969" />
-			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="1900" y="418" />
-			<entity schema="IRYS.dbo" name="Warehouses" color="C4E0F9" x="1843" y="722" />
+			<entity schema="IRYS.dbo" name="AccountClasses" color="DDEEC1" x="2622" y="1083" />
+			<entity schema="IRYS.dbo" name="Accounts" color="C4E0F9" x="2584" y="874" />
+			<entity schema="IRYS.dbo" name="Banks" color="C4E0F9" x="2812" y="95" />
+			<entity schema="IRYS.dbo" name="CustomerArea" color="DDEEC1" x="418" y="855" />
+			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="779" y="513" />
+			<entity schema="IRYS.dbo" name="Employees" color="C1D8EE" x="1292" y="513" />
+			<entity schema="IRYS.dbo" name="OrderStatuses" color="DDEEC1" x="1634" y="1159" />
+			<entity schema="IRYS.dbo" name="Orders" color="C1D8EE" x="1273" y="1159" />
+			<entity schema="IRYS.dbo" name="PayStatuses" color="DDEEC1" x="76" y="1577" />
+			<entity schema="IRYS.dbo" name="PaymentModes" color="DDEEC1" x="57" y="1786" />
+			<entity schema="IRYS.dbo" name="Payments" color="C4E0F9" x="456" y="1558" />
+			<entity schema="IRYS.dbo" name="SalesOrders" color="C1D8EE" x="1615" y="1862" />
+			<entity schema="IRYS.dbo" name="Shippers" color="C1D8EE" x="1900" y="1539" />
+			<entity schema="IRYS.dbo" name="SupplierPayments" color="C4E0F9" x="456" y="1178" />
+			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="76" y="1178" />
+			<entity schema="IRYS.dbo" name="Terms" color="DDEEC1" x="1881" y="1311" />
+			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="2831" y="855" />
+			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="1634" y="494" />
+			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="2812" y="399" />
+			<entity schema="IRYS.dbo" name="Warehouses" color="C4E0F9" x="798" y="1919" />
 			<group name="GroupName" color="C4E0F9" >
 				<entity schema="IRYS.dbo" name="CustomerArea" />
 				<entity schema="IRYS.dbo" name="Customers" />
 				<entity schema="IRYS.dbo" name="Employees" />
+				<entity schema="IRYS.dbo" name="OrderStatuses" />
+				<entity schema="IRYS.dbo" name="Orders" />
 				<entity schema="IRYS.dbo" name="PayStatuses" />
 				<entity schema="IRYS.dbo" name="PaymentModes" />
 				<entity schema="IRYS.dbo" name="Payments" />
+				<entity schema="IRYS.dbo" name="SalesOrders" />
+				<entity schema="IRYS.dbo" name="Shippers" />
 				<entity schema="IRYS.dbo" name="SupplierPayments" />
 				<entity schema="IRYS.dbo" name="Suppliers" />
+				<entity schema="IRYS.dbo" name="Terms" />
 				<entity schema="IRYS.dbo" name="Users" />
+				<entity schema="IRYS.dbo" name="Warehouses" />
 			</group>
 			<script name="Customers" id="d94ce1c4-8d0c-475a-9674-bc32a4543594" language="SQL" >
 				<string><![CDATA[CREATE  TABLE IRYS.dbo.Customers ( 
