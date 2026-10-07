@@ -62,6 +62,188 @@ ACCOUNTS.SUB  			// redundant]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
+		<table name="BillDetails" prior="BillDetail" >
+			<comment><![CDATA[LEGACY.dbo.BILLDETAILS > IRYS.dbo.BillDetails]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="BillId" type="int" />
+			<column name="AccountId" type="int" />
+			<column name="Amount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Remarks" type="varchar(max)" />
+			<index name="pk_BillDetails" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_billdetails_bills" to_schema="IRYS.dbo" to_table="Bills" >
+				<fk_column name="BillId" pk="Id" />
+			</fk>
+			<fk name="fk_billdetails_accounts" to_schema="IRYS.dbo" to_table="Accounts" >
+				<fk_column name="AccountId" pk="Id" />
+			</fk>
+		</table>
+		<table name="BillOfMaterials" prior="BillOfMateri" >
+			<comment><![CDATA[LEGACY.dbo.BILLOFMAT > IRYS.dbo.BillOfMaterials
+
+---
+
+Dropped Cols:
+BILLOFMAT.ITEMCODE1]]></comment>
+			<column name="ItemCode" type="int" mandatory="y" />
+			<column name="Quantity" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<fk name="fk_billofmaterials_items" to_schema="IRYS.dbo" to_table="Items" >
+				<fk_column name="ItemCode" pk="ItemCode" />
+			</fk>
+		</table>
+		<table name="BillPaymentDetails" prior="BillPaymentDetail" >
+			<comment><![CDATA[LEGACY.dbo.BILLPYMNTDET > IRYS.dbo.BillPaymentDetails]]></comment>
+			<column name="PaymentId" type="int" />
+			<column name="BillId" type="int" />
+			<column name="Amount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<fk name="fk_billpaymentdetails_payments" to_schema="IRYS.dbo" to_table="Payments" >
+				<fk_column name="PaymentId" pk="Id" />
+			</fk>
+			<fk name="fk_billpaymentdetails_bills" to_schema="IRYS.dbo" to_table="Bills" >
+				<fk_column name="BillId" pk="Id" />
+			</fk>
+		</table>
+		<table name="BillPayments" prior="BillPayment" >
+			<comment><![CDATA[LEGACY.dbo.BILLPYMNT > IRYS.dbo.BillPayments
+
+---
+
+Altered Cols:
+BILLPYMNT.STATUS > BillPayments.BillStatusId
+
+Dropped Cols:
+BILLPYMNT.CV]]></comment>
+			<column name="PaymentId" type="int" />
+			<column name="VendorId" type="int" />
+			<column name="PaymentModeId" type="int" mandatory="y" >
+				<defo><![CDATA[1]]></defo>
+			</column>
+			<column name="Amount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PayDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="ReferenceNumber" type="varchar" length="100" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="BillStatusId" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<fk name="fk_billpayments_payments" to_schema="IRYS.dbo" to_table="Payments" >
+				<fk_column name="PaymentId" pk="Id" />
+			</fk>
+			<fk name="fk_billpayments_vendors" to_schema="IRYS.dbo" to_table="Vendors" >
+				<fk_column name="VendorId" pk="Id" />
+			</fk>
+			<fk name="fk_billpayments_paymentmodes" to_schema="IRYS.dbo" to_table="PaymentModes" >
+				<fk_column name="PaymentModeId" pk="Id" />
+			</fk>
+			<fk name="fk_billpayments_billstatus" to_schema="IRYS.dbo" to_table="BillStatus" >
+				<fk_column name="BillStatusId" pk="Id" />
+			</fk>
+		</table>
+		<table name="BillStatus" prior="BillSta" >
+			<comment><![CDATA[NEW TABLE]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="StatusName" type="varchar" length="20" mandatory="y" />
+			<index name="pk_BillStatus" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="Bills" prior="B" >
+			<comment><![CDATA[LEGACY.dbo.BILLS > IRYS.dbo.Bills
+
+---
+
+Altered Cols:
+BILLS.STATUS > Bills.BillStatusId]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="BillDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="DueDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="VendorId" type="int" />
+			<column name="Amount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="InvoiceNumber" type="varchar" length="100" />
+			<column name="TermCode" type="int" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="isPaid" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="BillStatusId" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Balance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="AmountPaid" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PaymentType" type="varchar" length="20" />
+			<index name="pk_Bills" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_bills_vendors" to_schema="IRYS.dbo" to_table="Vendors" >
+				<fk_column name="VendorId" pk="Id" />
+			</fk>
+			<fk name="fk_bills_billstatus" to_schema="IRYS.dbo" to_table="BillStatus" >
+				<fk_column name="BillStatusId" pk="Id" />
+			</fk>
+			<fk name="fk_bills_terms" to_schema="IRYS.dbo" to_table="Terms" >
+				<fk_column name="TermCode" pk="TermCode" />
+			</fk>
+		</table>
+		<table name="Categories" prior="Categor" >
+			<comment><![CDATA[LEGACY.dbo.CATEGORY > IRYS.dbo.Categories]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="CategoryName" type="varchar" length="255" mandatory="y" />
+			<column name="Description" type="varchar(max)" />
+			<index name="pk_Categories" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="CollectionDetails" prior="CollectionDetail" >
+			<comment><![CDATA[LEGACY.dbo.COLLDETAILS > IRYS.dbo.CollectionDetails]]></comment>
+			<column name="CollectionId" type="int" />
+			<column name="OrderId" type="int" />
+			<fk name="fk_collectiondetails_collections" to_schema="IRYS.dbo" to_table="Collections" >
+				<fk_column name="CollectionId" pk="Id" />
+			</fk>
+			<fk name="fk_collectiondetails_orders" to_schema="IRYS.dbo" to_table="Orders" >
+				<fk_column name="OrderId" pk="Id" />
+			</fk>
+		</table>
+		<table name="Collections" prior="Collection" >
+			<comment><![CDATA[LEGACY.dbo.COLLECTIONS > IRYS.dbo.Collections]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="CollectionDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="EmployeeId" type="int" />
+			<column name="ReferenceNumber" type="varchar" length="100" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="Salesman" type="int" />
+			<index name="pk_Collections" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_collections_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="EmployeeId" pk="Id" />
+			</fk>
+			<fk name="fk_collectionsSalesman_employees" to_schema="IRYS.dbo" to_table="Employees" >
+				<fk_column name="Salesman" pk="Id" />
+			</fk>
+		</table>
 		<table name="CustomerArea" prior="CustArea" >
 			<comment><![CDATA[Legacy.dbo.CUSTAREA > IRYS.dbo.CustomerArea
 
@@ -138,6 +320,41 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 				<fk_column name="AreaCode" pk="AreaCode" />
 			</fk>
 		</table>
+		<table name="DefectDetails" prior="DefectDeta" >
+			<comment><![CDATA[LEGACY.dbo.DEFECTSDET > IRYS.dbo.DefectDetails]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="DefectId" type="int" mandatory="y" />
+			<column name="ItemCode" type="int" mandatory="y" />
+			<column name="Quantity" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<index name="pk_DefectDetails" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_defectdetails_defects" to_schema="IRYS.dbo" to_table="Defects" >
+				<fk_column name="DefectId" pk="Id" />
+			</fk>
+			<fk name="fk_defectdetails_items" to_schema="IRYS.dbo" to_table="Items" >
+				<fk_column name="ItemCode" pk="ItemCode" />
+			</fk>
+		</table>
+		<table name="Defects" prior="Tbl" >
+			<comment><![CDATA[LEGACY.dbo.DEFECTS > IRYS.dbo.Defects]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="DefectDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="ReferenceNumber" type="varchar" length="100" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="TransactionType" type="int" />
+			<column name="WarehouseId" type="int" />
+			<index name="pk_Defects" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_defects_warehouses" to_schema="IRYS.dbo" to_table="Warehouses" >
+				<fk_column name="WarehouseId" pk="Id" />
+			</fk>
+		</table>
 		<table name="Employees" prior="Employee" >
 			<comment><![CDATA[Legacy.dbo.EMPLOYEES > IRYS.dbo.Employee
 
@@ -179,6 +396,302 @@ Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
 			<index name="pk_Employee" unique="PRIMARY_KEY" >
 				<column name="Id" />
 			</index>
+		</table>
+		<table name="ItemGroups" prior="ItemGrou" >
+			<comment><![CDATA[LEGACY.dbo.ITEMGRP > IRYS.dbo.ItemGroups
+
+---
+
+Dropped Cols:
+ITEMGRP.CATDESCRIP]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="ItemGroupDescription" type="varchar" length="255" mandatory="y" />
+			<column name="PhotoFile" type="varchar" length="2083" />
+			<column name="CategoryId" type="int" />
+			<index name="pk_ItemGroups" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="ItemLocations" prior="ItemLoca" >
+			<comment><![CDATA[LEGAYC.dbo.ITEMLOC > IRYS.dbo.ItemLocations]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="LocationName" type="varchar(max)" mandatory="y" />
+			<index name="pk_ItemLocations" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="ItemSuppliers" prior="ItemSuppl" >
+			<comment><![CDATA[LEGACY.dbo.ITEMSUPPLIER > IRYS.dbo.ItemSuppliers]]></comment>
+			<column name="ItemCode" type="int" />
+			<column name="SupplierId" type="int" />
+			<fk name="fk_itemsuppliers_suppliers" to_schema="IRYS.dbo" to_table="Suppliers" >
+				<fk_column name="SupplierId" pk="Id" />
+			</fk>
+			<fk name="fk_itemsuppliers_items" to_schema="IRYS.dbo" to_table="Items" >
+				<fk_column name="ItemCode" pk="ItemCode" />
+			</fk>
+		</table>
+		<table name="Items" prior="Tbl" >
+			<comment><![CDATA[LEGACY.dbo.ITEMS > IRYS.dbo.Items
+
+---
+
+Dropped Cols:
+ITEMS.ITMCODE		// duplicate col
+ITEMS.ITMGRP]]></comment>
+			<column name="ItemCode" type="int" mandatory="y" />
+			<column name="ItemName" type="varchar" length="255" mandatory="y" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="ItemGroupId" type="int" />
+			<column name="UnitsInStock" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ReturnStocks" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="UnitCode" type="int" />
+			<column name="BasePrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc1" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc2" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc3" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc4" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc5" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc6" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc7" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc8" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc9" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc10" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDiscId" type="varchar" length="20" mandatory="y" />
+			<column name="SellingPrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Price" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc1" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc2" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc3" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc4" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc5" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc6" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc7" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc8" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc9" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1Disc10" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R1DiscId" type="varchar" length="20" mandatory="y" />
+			<column name="R1SPrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Price" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc1" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc2" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc3" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc4" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc5" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc6" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc7" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc8" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc9" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2Disc10" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="R2DiscId" type="varchar" length="20" mandatory="y" />
+			<column name="SPPrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc1" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc2" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc3" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc4" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc5" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc6" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc7" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc8" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc9" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDisc10" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SPDiscId" type="varchar" length="20" mandatory="y" />
+			<column name="PUnitPrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc1" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc2" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc3" type="int" />
+			<column name="PDisc4" type="int" />
+			<column name="PDisc5" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc6" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc7" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc8" prior="PDic8" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc9" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc10" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDiscId" type="varchar" length="20" mandatory="y" />
+			<column name="PurchasePrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="RetailPrice" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="CategoryId" type="int" />
+			<column name="ReorderLevel" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isDiscontinued" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="OnSOrder" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="OnPOrder" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SupplierId" type="int" />
+			<column name="AverageCost" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PhotoFile" type="varchar" length="2083" />
+			<column name="isEdited" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isReorderActive" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ItemCommission" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PTermCode" type="int" />
+			<column name="Pack" type="varchar" length="10" />
+			<column name="isInventoryAdjust" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ItemLocationId" type="int" />
+			<column name="TempAverageCost" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isKit" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="TermCode" type="int" />
+			<index name="pk_Items" unique="PRIMARY_KEY" >
+				<column name="ItemCode" />
+			</index>
+			<fk name="fk_items_itemgroups" to_schema="IRYS.dbo" to_table="ItemGroups" >
+				<fk_column name="ItemGroupId" pk="Id" />
+			</fk>
+			<fk name="fk_items_units" to_schema="IRYS.dbo" to_table="Units" >
+				<fk_column name="UnitCode" pk="UnitCode" />
+			</fk>
+			<fk name="fk_items_categories" to_schema="IRYS.dbo" to_table="Categories" >
+				<fk_column name="CategoryId" pk="Id" />
+			</fk>
+			<fk name="fk_items_suppliers" to_schema="IRYS.dbo" to_table="Suppliers" >
+				<fk_column name="SupplierId" pk="Id" />
+			</fk>
+			<fk name="fk_items_itemlocations" to_schema="IRYS.dbo" to_table="ItemLocations" >
+				<fk_column name="ItemLocationId" pk="Id" />
+			</fk>
+			<fk name="fk_itemsptermcode_terms" to_schema="IRYS.dbo" to_table="Terms" >
+				<fk_column name="PTermCode" pk="TermCode" />
+			</fk>
+			<fk name="fk_items_terms" to_schema="IRYS.dbo" to_table="Terms" >
+				<fk_column name="TermCode" pk="TermCode" />
+			</fk>
 		</table>
 		<table name="OrderStatuses" prior="OrderStatu" >
 			<comment><![CDATA[NEW TABLE]]></comment>
@@ -454,6 +967,145 @@ LEGACY.dbo.PAYMENTS.USER]]></comment>
 				<fk_column name="EmployeeId" pk="Id" />
 			</fk>
 		</table>
+		<table name="PurchaseOrders" prior="PurchaseOr" >
+			<column name="Id" type="int" mandatory="y" />
+			<index name="pk_PurchaseOrders" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="PurchaseStatuses" prior="PurchaseStatus" >
+			<comment><![CDATA[NEW TABLE]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="StatusName" type="varchar" length="20" mandatory="y" />
+			<index name="pk_PurchaseStatuses" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="Purchases" prior="Purch" >
+			<comment><![CDATA[LEGACY.dbo.PURCHASES > IRYS.dbo.Purchases
+
+---
+
+Altered Cols:
+PURCHASES.STATUS > Purchases.PurchaseStatusId
+
+Dropped Cols:
+PURCHASES.PYMNT_TYPE]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="SupplierId" type="int" />
+			<column name="PONumber" type="varchar" length="100" />
+			<column name="EmployeeId" type="int" />
+			<column name="OrderDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="DeliveryDate" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<column name="isPaid" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="DueDate" type="date" mandatory="y" >
+				<defo><![CDATA[getdate()]]></defo>
+			</column>
+			<column name="TermCode" type="int" />
+			<column name="Amount" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isPosted" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PurchaseStatusId" type="int" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Returns" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Balance" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="AmountPaid" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="Adjust" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="AdjustRemarks" type="varchar(max)" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="InvoiceNumber" type="varchar" length="100" />
+			<column name="isBIR" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PurchaseOrderId" type="int" />
+			<column name="CreditsApplied" type="float" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isConsign" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="DRNumber" type="varchar" length="10" />
+			<column name="RRNumber" type="varchar" length="8" />
+			<column name="RRDate" type="date" mandatory="y" >
+				<defo><![CDATA['1899-12-30']]></defo>
+			</column>
+			<index name="pk_Purchases" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="SalesOrderDetails" prior="SalesOrderDet" >
+			<comment><![CDATA[LEGACY.dbo.S_ORDERDETAILS > IRYS.dbo.SalesOrderDetails]]></comment>
+			<column name="Id" type="int" mandatory="y" />
+			<column name="SalesOrderId" type="int" />
+			<column name="Quantity" type="int" mandatory="y" />
+			<column name="ItemCode" type="int" />
+			<column name="UnitPrice" type="float" mandatory="y" />
+			<column name="Amount" type="float" />
+			<column name="Invoiced" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="isClosed" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc1" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc2" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc3" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc4" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc5" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc6" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc7" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc8" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc9" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDisc10" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="SDiscId" type="varchar" length="20" mandatory="y" />
+			<index name="pk_SalesOrderDetails" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_salesorderdetails_items" to_schema="IRYS.dbo" to_table="Items" >
+				<fk_column name="ItemCode" pk="ItemCode" />
+			</fk>
+			<fk name="fk_salesorderdetails_salesorders" to_schema="IRYS.dbo" to_table="SalesOrders" >
+				<fk_column name="SalesOrderId" pk="Id" />
+			</fk>
+		</table>
 		<table name="SalesOrders" prior="SalesOrder" >
 			<comment><![CDATA[LEGACY.dbo.SALESORDERS > IRYS.dbo.SalesOrders]]></comment>
 			<column name="Id" type="int" mandatory="y" />
@@ -600,6 +1252,33 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
+		<table name="TempSalesOrders" prior="TempSalesOrde" >
+			<column name="Id" type="int" mandatory="y" />
+			<column name="SalesOrderId" type="int" />
+			<column name="CustomerId" type="int" />
+			<column name="OrderDate" type="date" />
+			<column name="Remarks" type="varchar(max)" />
+			<column name="OrderStatusId" type="int" />
+			<column name="Total" type="float" />
+			<column name="Salesman" type="int" />
+			<column name="PONumber" type="varchar" length="100" />
+			<column name="TermCode" type="int" />
+			<index name="pk_TempSalesOrders" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<fk name="fk_tempsalesorders_salesorders" to_schema="IRYS.dbo" to_table="SalesOrders" >
+				<fk_column name="SalesOrderId" pk="Id" />
+			</fk>
+			<fk name="fk_tempsalesorders_customers" to_schema="IRYS.dbo" to_table="Customers" >
+				<fk_column name="CustomerId" pk="Id" />
+			</fk>
+			<fk name="fk_tempsalesorders" to_schema="IRYS.dbo" to_table="OrderStatuses" >
+				<fk_column name="OrderStatusId" pk="Id" />
+			</fk>
+			<fk name="fk_tempsalesorders_terms" to_schema="IRYS.dbo" to_table="Terms" >
+				<fk_column name="TermCode" pk="TermCode" />
+			</fk>
+		</table>
 		<table name="Terms" prior="Tbl" >
 			<comment><![CDATA[LEGACY.dbo.TERMS > IRYS.dbo.Terms
 
@@ -632,10 +1311,10 @@ TERMS.TERMCODE1]]></comment>
 
 Alterd Cols:
 UNIT.UNITCODE > Units.Id]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="UnitCode" prior="Id" type="int" mandatory="y" />
 			<column name="UnitName" type="varchar" length="25" mandatory="y" />
 			<index name="pk_Unit" unique="PRIMARY_KEY" >
-				<column name="Id" />
+				<column name="UnitCode" />
 			</index>
 		</table>
 		<table name="Users" prior="U" >
@@ -678,27 +1357,105 @@ UNIT.UNITCODE > Units.Id]]></comment>
 	</schema>
 	<diagram_group name="Default" id="fe0d8bec-698b-4671-8e02-58f1a36b3397" >
 		<diagram name="Main Diagram" id="cd4e7939-0271-4533-8d44-416b1751978f" joined_routing="y" show_column_type="y" show_relation="columns" >
-			<entity schema="IRYS.dbo" name="AccountClasses" color="DDEEC1" x="2622" y="1083" />
-			<entity schema="IRYS.dbo" name="Accounts" color="C4E0F9" x="2584" y="874" />
-			<entity schema="IRYS.dbo" name="Banks" color="C4E0F9" x="2812" y="95" />
-			<entity schema="IRYS.dbo" name="CustomerArea" color="DDEEC1" x="418" y="855" />
-			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="779" y="513" />
-			<entity schema="IRYS.dbo" name="Employees" color="C1D8EE" x="1292" y="513" />
-			<entity schema="IRYS.dbo" name="OrderStatuses" color="DDEEC1" x="1634" y="1159" />
-			<entity schema="IRYS.dbo" name="Orders" color="C1D8EE" x="1273" y="1159" />
-			<entity schema="IRYS.dbo" name="PayStatuses" color="DDEEC1" x="76" y="1577" />
-			<entity schema="IRYS.dbo" name="PaymentModes" color="DDEEC1" x="57" y="1786" />
-			<entity schema="IRYS.dbo" name="Payments" color="C4E0F9" x="456" y="1558" />
-			<entity schema="IRYS.dbo" name="SalesOrders" color="C1D8EE" x="1615" y="1862" />
-			<entity schema="IRYS.dbo" name="Shippers" color="C1D8EE" x="1900" y="1539" />
-			<entity schema="IRYS.dbo" name="SupplierPayments" color="C4E0F9" x="456" y="1178" />
-			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="76" y="1178" />
-			<entity schema="IRYS.dbo" name="Terms" color="DDEEC1" x="1881" y="1311" />
-			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="2831" y="855" />
-			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="1634" y="494" />
-			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="2812" y="399" />
-			<entity schema="IRYS.dbo" name="Warehouses" color="C4E0F9" x="798" y="1919" />
+			<entity schema="IRYS.dbo" name="AccountClasses" color="DDEEC1" x="2318" y="760" />
+			<entity schema="IRYS.dbo" name="Accounts" color="C4E0F9" x="2223" y="551" />
+			<entity schema="IRYS.dbo" name="Banks" color="C4E0F9" x="2812" y="114" />
+			<entity schema="IRYS.dbo" name="BillDetails" color="C1D8EE" x="3306" y="532" />
+			<entity schema="IRYS.dbo" name="BillOfMaterials" color="C1D8EE" x="3306" y="893" />
+			<entity schema="IRYS.dbo" name="BillPaymentDetails" color="C1D8EE" x="3306" y="1026" />
+			<entity schema="IRYS.dbo" name="BillPayments" color="C1D8EE" x="3306" y="1197" />
+			<entity schema="IRYS.dbo" name="BillStatus" color="DDEEC1" x="3306" y="722" />
+			<entity schema="IRYS.dbo" name="Bills" color="C4E0F9" x="2964" y="551" />
+			<entity schema="IRYS.dbo" name="Categories" color="DDEEC1" x="1710" y="3287" />
+			<entity schema="IRYS.dbo" name="CollectionDetails" color="E4C1EE" x="285" y="2850" />
+			<entity schema="IRYS.dbo" name="Collections" color="C1D8EE" x="247" y="3135" />
+			<entity schema="IRYS.dbo" name="CustomerArea" color="DDEEC1" x="418" y="912" />
+			<entity schema="IRYS.dbo" name="Customers" color="C1D8EE" x="779" y="570" />
+			<entity schema="IRYS.dbo" name="DefectDetails" color="C1D8EE" x="1672" y="2869" />
+			<entity schema="IRYS.dbo" name="Defects" color="C1D8EE" x="1957" y="2850" />
+			<entity schema="IRYS.dbo" name="Employees" color="C1D8EE" x="1292" y="570" />
+			<entity schema="IRYS.dbo" name="ItemGroups" color="C1D8EE" x="1672" y="2660" />
+			<entity schema="IRYS.dbo" name="ItemLocations" color="C1D8EE" x="1691" y="3553" />
+			<entity schema="IRYS.dbo" name="ItemSuppliers" color="E4C1EE" x="1007" y="2831" />
+			<entity schema="IRYS.dbo" name="Items" color="C1D8EE" x="1311" y="2603" >
+				<column name="ItemCode" />
+				<column name="ItemName" />
+				<column name="Remarks" />
+				<column name="ItemGroupId" />
+				<column name="UnitsInStock" />
+				<column name="ReturnStocks" />
+				<column name="UnitCode" />
+				<column name="BasePrice" />
+				<column name="SDisc1" />
+				<column name="SDisc2" />
+				<column name="SDisc3" />
+				<column name="SDiscId" />
+				<column name="SellingPrice" />
+				<column name="R1Price" />
+				<column name="R1Disc1" />
+				<column name="R1Disc2" />
+				<column name="R1Disc3" />
+				<column name="R1DiscId" />
+				<column name="R1SPrice" />
+				<column name="R2Price" />
+				<column name="R2Disc1" />
+				<column name="R2Disc2" />
+				<column name="R2Disc3" />
+				<column name="R2DiscId" />
+				<column name="SPPrice" />
+				<column name="SPDisc1" />
+				<column name="SPDisc2" />
+				<column name="SPDisc3" />
+				<column name="SPDiscId" />
+				<column name="PUnitPrice" />
+				<column name="PDisc1" />
+				<column name="PDisc2" />
+				<column name="PDisc3" />
+				<column name="PDiscId" />
+				<column name="PurchasePrice" />
+				<column name="RetailPrice" />
+				<column name="CategoryId" />
+				<column name="ReorderLevel" />
+				<column name="isDiscontinued" />
+				<column name="OnSOrder" />
+				<column name="OnPOrder" />
+				<column name="SupplierId" />
+				<column name="AverageCost" />
+				<column name="PhotoFile" />
+				<column name="isEdited" />
+				<column name="isReorderActive" />
+				<column name="ItemCommission" />
+				<column name="PTermCode" />
+				<column name="Pack" />
+				<column name="isInventoryAdjust" />
+				<column name="ItemLocationId" />
+				<column name="TempAverageCost" />
+				<column name="isKit" />
+				<column name="TermCode" />
+			</entity>
+			<entity schema="IRYS.dbo" name="OrderStatuses" color="DDEEC1" x="1634" y="1216" />
+			<entity schema="IRYS.dbo" name="Orders" color="C1D8EE" x="1273" y="1216" />
+			<entity schema="IRYS.dbo" name="PayStatuses" color="DDEEC1" x="57" y="1672" />
+			<entity schema="IRYS.dbo" name="PaymentModes" color="DDEEC1" x="57" y="1843" />
+			<entity schema="IRYS.dbo" name="Payments" color="C4E0F9" x="456" y="1615" />
+			<entity schema="IRYS.dbo" name="PurchaseOrders" color="C1D8EE" x="2736" y="3249" />
+			<entity schema="IRYS.dbo" name="PurchaseStatuses" color="DDEEC1" x="2622" y="2736" />
+			<entity schema="IRYS.dbo" name="Purchases" color="C1D8EE" x="3078" y="2717" />
+			<entity schema="IRYS.dbo" name="SalesOrderDetails" color="C1D8EE" x="1976" y="2090" />
+			<entity schema="IRYS.dbo" name="SalesOrders" color="C1D8EE" x="1615" y="1919" />
+			<entity schema="IRYS.dbo" name="Shippers" color="C1D8EE" x="76" y="2299" />
+			<entity schema="IRYS.dbo" name="SupplierPayments" color="C4E0F9" x="456" y="1235" />
+			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="76" y="1235" />
+			<entity schema="IRYS.dbo" name="TempSalesOrders" color="C4E0F9" x="2413" y="1919" />
+			<entity schema="IRYS.dbo" name="Terms" color="DDEEC1" x="1634" y="1387" />
+			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="874" y="2603" />
+			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="1634" y="551" />
+			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="2508" y="95" />
+			<entity schema="IRYS.dbo" name="Warehouses" color="C4E0F9" x="2318" y="1634" />
 			<group name="GroupName" color="C4E0F9" >
+				<entity schema="IRYS.dbo" name="AccountClasses" />
+				<entity schema="IRYS.dbo" name="Accounts" />
+				<entity schema="IRYS.dbo" name="Banks" />
 				<entity schema="IRYS.dbo" name="CustomerArea" />
 				<entity schema="IRYS.dbo" name="Customers" />
 				<entity schema="IRYS.dbo" name="Employees" />
@@ -711,8 +1468,11 @@ UNIT.UNITCODE > Units.Id]]></comment>
 				<entity schema="IRYS.dbo" name="Shippers" />
 				<entity schema="IRYS.dbo" name="SupplierPayments" />
 				<entity schema="IRYS.dbo" name="Suppliers" />
+				<entity schema="IRYS.dbo" name="TempSalesOrders" />
 				<entity schema="IRYS.dbo" name="Terms" />
+				<entity schema="IRYS.dbo" name="Units" />
 				<entity schema="IRYS.dbo" name="Users" />
+				<entity schema="IRYS.dbo" name="Vendors" />
 				<entity schema="IRYS.dbo" name="Warehouses" />
 			</group>
 			<script name="Customers" id="d94ce1c4-8d0c-475a-9674-bc32a4543594" language="SQL" >
