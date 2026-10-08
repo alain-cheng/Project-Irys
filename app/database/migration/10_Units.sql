@@ -1,0 +1,12 @@
+USE IRYS;
+GO
+INSERT INTO dbo.Units
+(
+	Id,
+	UnitName
+)
+SELECT
+	TRY_CONVERT(INT, u.UNITCODE),
+	LTRIM(RTRIM(u.UNITNAME))
+FROM FoxProLegacy.dbo.UNIT AS u;
+GO

@@ -1,0 +1,28 @@
+USE IRYS;
+GO
+INSERT INTO dbo.Banks
+(
+	Id,
+	BankName,
+	ContactName,
+	ContactTitle,
+	Address,
+	Province,
+	City,
+	ZipCode,
+	Phone,
+	BankCode
+)
+SELECT
+	TRY_CONVERT(INT, b.BANKID),
+	LTRIM(RTRIM(b.BANKNAME)),
+	NULLIF(LTRIM(RTRIM(b.CONTACTNAM)), ''),
+	NULLIF(LTRIM(RTRIM(b.CONTACTTIT)), ''),
+	NULLIF(LTRIM(RTRIM(b.ADDRESS)), ''),
+	NULLIF(LTRIM(RTRIM(b.PROVINCE)), ''),
+	NULLIF(LTRIM(RTRIM(b.CITY)), ''),
+	NULLIF(LTRIM(RTRIM(b.ZIPCODE)), ''),
+	NULLIF(LTRIM(RTRIM(b.PHONE)), ''),
+	NULLIF(LTRIM(RTRIM(b.BANKCODE)), '')
+FROM FoxProLegacy.dbo.BANKS AS b
+GO

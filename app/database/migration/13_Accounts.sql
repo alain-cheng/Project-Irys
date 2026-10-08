@@ -1,0 +1,26 @@
+USE IRYS;
+GO
+INSERT INTO dbo.Accounts
+(
+	Id,
+	AccountClass,
+	SubAccountOf,
+	AccountName,
+	Description,
+	OpeningBalance,
+	CurrentBalance
+)
+SELECT
+	TRY_CONVERT(INT, a.ACCT_NO),
+	TRY_CONVERT(INT, a.ACCTCLASS),
+	CASE
+		WHEN NULLIF(LTRIM(RTRIM(a.SUBOF)), '') IS NULL THEN NULL
+		WHEN TRY_CONVERT(INT , a.SUBOF) IS NULL THEN NULL
+		ELSE TRY_CONVERT(INT, a.SUBOF)
+	END,
+	a.ACCTNAME,
+	NULLIF(LTRIM(RTRIM(a.ACCTDESC)), ''),
+	a.OPENBAL,
+	a.CURRBAL
+FROM FoxProLegacy.dbo.ACCOUNTS AS a;
+GO
