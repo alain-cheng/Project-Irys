@@ -2,7 +2,7 @@ USE IRYS;
 GO
 INSERT INTO dbo.Units
 (
-	Id,
+	UnitCode,
 	UnitName
 )
 SELECT
