@@ -1,0 +1,100 @@
+use anyhow::Context;
+use deadpool_tiberius::Pool;
+
+use crate::models::customer::Customer;
+
+/// test function
+pub async fn get_customer(pool: &Pool) -> anyhow::Result<Option<Customer>> {
+    let mut client = pool
+        .get()
+        .await
+        .context("Failed to retrieve SQL Server connection.")?; 
+
+    let row = client
+        .query(
+            r#" 
+                SELECT    TOP(1) 
+                    Id, CompanyName, ContactName, ContactTitle,
+                    Address, City, Province, ZipCode, Phone, Fax
+                FROM      dbo.Customers
+                ORDER BY  Id;
+            "#,
+            &[],
+        )
+        .await?
+        .into_row()
+        .await?;
+    
+    // Return Ok even if no record was found from query
+    let Some(row) = row else {
+        return Ok(None);
+    };
+
+    let id = row
+        .try_get::<i32, _>("Id")?
+        .context("Unexpected NULL value for Customer Id")?;
+
+    let company_name = row
+        .try_get::<&str, _>("CompanyName")?
+        .map(str::to_owned);
+
+    let contact_name = row
+        .try_get::<&str, _>("ContactName")?
+        .map(str::to_owned);
+
+    let contact_title = row
+        .try_get::<&str, _>("ContactTitle")?
+        .map(str::to_owned);
+
+    let address = row
+        .try_get::<&str, _>("Address")?
+        .map(str::to_owned);
+
+    let city = row
+        .try_get::<&str, _>("City")?
+        .map(str::to_owned);
+
+    let province = row
+        .try_get::<&str, _>("Province")?
+        .map(str::to_owned);
+
+    let zip_code = row
+        .try_get::<&str, _>("ZipCode")?
+        .map(str::to_owned);
+
+    let phone = row
+        .try_get::<&str, _>("Phone")?
+        .map(str::to_owned);
+
+    let fax = row
+        .try_get::<&str, _>("Fax")?
+        .map(str::to_owned);
+
+    Ok(Some(Customer {
+        id,
+        company_name,
+        contact_name,
+        contact_title,
+        address,
+        city,
+        province,
+        zip_code,
+        phone,
+        fax,
+    }))
+}
+
+/// Retrieves a customer from the database given by its unique id.
+/// 
+/// If customer is not found, then it returns `Ok(None)`
+/// 
+/// # Arguments
+/// * `id` - A 32-bit unsigned integer representing the customer's unique identifier.
+pub async fn get_customer_by_id() {
+    // todo
+}
+
+// Retrieves all customers from the database
+pub async fn get_all_customers() {
+    // todo
+}
