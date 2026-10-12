@@ -7,19 +7,6 @@ import Sidebar from "../components/Sidebar"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Orders() {
-    // test Rust call
-    useEffect(() => {
-        const testRust = async () => {
-            const message = await invoke("greet", {
-                name: "Test",
-            })
-
-            console.log(message)
-        }
-
-        testRust()
-    }, [])
-
     return (
         <div className="flex pt-16 space-x-2">
             <Sidebar links={orderLinks} />

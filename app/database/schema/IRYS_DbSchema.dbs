@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="SqlServer" database="SqlServer" id="7c602b43-4db2-43a9-8302-0ab5fb29e865" >
 	<schema name="dbo" catalogname="IRYS" >
-		<table name="AccountClasses" prior="AccountClass" >
+		<table name="AccountClasses" prior="AccountClass" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.ACCTCLASS > IRYS.dbo.AccountClasses]]></comment>
 			<column name="AccountClass" prior="Id" type="int" mandatory="y" />
 			<column name="AccountDescription" type="varchar(max)" />
@@ -16,7 +16,7 @@
 				<column name="AccountClass" />
 			</index>
 		</table>
-		<table name="Accounts" prior="Acco" >
+		<table name="Accounts" prior="Acco" generator_rows="225" >
 			<comment><![CDATA[Legacy.dbo.ACCOUNTS > IRYS.dbo.Accounts
 
 ---
@@ -47,7 +47,7 @@ ACCOUNTS.SUB  			// redundant]]></comment>
 				<fk_column name="SubAccountOf" pk="Id" />
 			</fk>
 		</table>
-		<table name="Banks" prior="Tbl" >
+		<table name="Banks" prior="Tbl" generator_rows="100" >
 			<column name="Id" type="int" mandatory="y" />
 			<column name="BankName" type="varchar" length="255" mandatory="y" />
 			<column name="ContactName" type="varchar" length="100" />
@@ -62,7 +62,7 @@ ACCOUNTS.SUB  			// redundant]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="BillDetails" prior="BillDetail" >
+		<table name="BillDetails" prior="BillDetail" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.BILLDETAILS > IRYS.dbo.BillDetails]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="BillId" type="int" />
@@ -81,7 +81,7 @@ ACCOUNTS.SUB  			// redundant]]></comment>
 				<fk_column name="AccountId" pk="Id" />
 			</fk>
 		</table>
-		<table name="BillOfMaterials" prior="BillOfMateri" >
+		<table name="BillOfMaterials" prior="BillOfMateri" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.BILLOFMAT > IRYS.dbo.BillOfMaterials
 
 ---
@@ -96,7 +96,7 @@ BILLOFMAT.ITEMCODE1]]></comment>
 				<fk_column name="ItemCode" pk="ItemCode" />
 			</fk>
 		</table>
-		<table name="BillPaymentDetails" prior="BillPaymentDetail" >
+		<table name="BillPaymentDetails" prior="BillPaymentDetail" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.BILLPYMNTDET > IRYS.dbo.BillPaymentDetails]]></comment>
 			<column name="PaymentId" type="int" />
 			<column name="BillId" type="int" />
@@ -110,7 +110,7 @@ BILLOFMAT.ITEMCODE1]]></comment>
 				<fk_column name="BillId" pk="Id" />
 			</fk>
 		</table>
-		<table name="BillPayments" prior="BillPayment" >
+		<table name="BillPayments" prior="BillPayment" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.BILLPYMNT > IRYS.dbo.BillPayments
 
 ---
@@ -149,7 +149,7 @@ BILLPYMNT.CV]]></comment>
 				<fk_column name="BillStatusId" pk="Id" />
 			</fk>
 		</table>
-		<table name="BillStatus" prior="BillSta" >
+		<table name="BillStatus" prior="BillSta" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="StatusName" type="varchar" length="20" mandatory="y" />
@@ -157,7 +157,7 @@ BILLPYMNT.CV]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="Bills" prior="B" >
+		<table name="Bills" prior="B" generator_rows="150" >
 			<comment><![CDATA[LEGACY.dbo.BILLS > IRYS.dbo.Bills
 
 ---
@@ -204,7 +204,7 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 				<fk_column name="TermCode" pk="TermCode" />
 			</fk>
 		</table>
-		<table name="Categories" prior="Categor" >
+		<table name="Categories" prior="Categor" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.CATEGORY > IRYS.dbo.Categories]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="CategoryName" type="varchar" length="255" mandatory="y" />
@@ -213,7 +213,7 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="CollectionDetails" prior="CollectionDetail" >
+		<table name="CollectionDetails" prior="CollectionDetail" generator_rows="505" >
 			<comment><![CDATA[LEGACY.dbo.COLLDETAILS > IRYS.dbo.CollectionDetails]]></comment>
 			<column name="CollectionId" type="int" />
 			<column name="OrderId" type="int" />
@@ -224,7 +224,7 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 				<fk_column name="OrderId" pk="Id" />
 			</fk>
 		</table>
-		<table name="Collections" prior="Collection" >
+		<table name="Collections" prior="Collection" generator_rows="150" >
 			<comment><![CDATA[LEGACY.dbo.COLLECTIONS > IRYS.dbo.Collections]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="CollectionDate" type="date" mandatory="y" >
@@ -244,7 +244,7 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 				<fk_column name="Salesman" pk="Id" />
 			</fk>
 		</table>
-		<table name="CustomerArea" prior="CustArea" >
+		<table name="CustomerArea" prior="CustArea" generator_rows="100" >
 			<comment><![CDATA[Legacy.dbo.CUSTAREA > IRYS.dbo.CustomerArea
 
 ---
@@ -261,7 +261,7 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 				<column name="AreaName" />
 			</index>
 		</table>
-		<table name="Customers" prior="Custo" >
+		<table name="Customers" prior="Custo" generator_rows="150" >
 			<column name="Id" prior="CustomerId" type="int" mandatory="y" />
 			<column name="CompanyName" type="varchar" length="255" />
 			<column name="ContactName" type="varchar" length="100" />
@@ -320,7 +320,7 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 				<fk_column name="AreaCode" pk="AreaCode" />
 			</fk>
 		</table>
-		<table name="DefectDetails" prior="DefectDeta" >
+		<table name="DefectDetails" prior="DefectDeta" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.DEFECTSDET > IRYS.dbo.DefectDetails]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="DefectId" type="int" mandatory="y" />
@@ -338,7 +338,7 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 				<fk_column name="ItemCode" pk="ItemCode" />
 			</fk>
 		</table>
-		<table name="Defects" prior="Tbl" >
+		<table name="Defects" prior="Tbl" generator_rows="150" >
 			<comment><![CDATA[LEGACY.dbo.DEFECTS > IRYS.dbo.Defects]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="DefectDate" type="date" mandatory="y" >
@@ -355,7 +355,7 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 				<fk_column name="WarehouseId" pk="Id" />
 			</fk>
 		</table>
-		<table name="Employees" prior="Employee" >
+		<table name="Employees" prior="Employee" generator_rows="100" >
 			<comment><![CDATA[Legacy.dbo.EMPLOYEES > IRYS.dbo.Employee
 
 ---
@@ -397,7 +397,7 @@ Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="ItemGroups" prior="ItemGrou" >
+		<table name="ItemGroups" prior="ItemGrou" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.ITEMGRP > IRYS.dbo.ItemGroups
 
 ---
@@ -412,7 +412,7 @@ ITEMGRP.CATDESCRIP]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="ItemLocations" prior="ItemLoca" >
+		<table name="ItemLocations" prior="ItemLoca" generator_rows="100" >
 			<comment><![CDATA[LEGAYC.dbo.ITEMLOC > IRYS.dbo.ItemLocations]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="LocationName" type="varchar(max)" mandatory="y" />
@@ -420,7 +420,7 @@ ITEMGRP.CATDESCRIP]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="ItemSuppliers" prior="ItemSuppl" >
+		<table name="ItemSuppliers" prior="ItemSuppl" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.ITEMSUPPLIER > IRYS.dbo.ItemSuppliers]]></comment>
 			<column name="ItemCode" type="int" />
 			<column name="SupplierId" type="int" />
@@ -431,7 +431,7 @@ ITEMGRP.CATDESCRIP]]></comment>
 				<fk_column name="ItemCode" pk="ItemCode" />
 			</fk>
 		</table>
-		<table name="Items" prior="Tbl" >
+		<table name="Items" prior="Tbl" generator_rows="150" >
 			<comment><![CDATA[LEGACY.dbo.ITEMS > IRYS.dbo.Items
 
 ---
@@ -601,8 +601,12 @@ ITEMS.ITMGRP]]></comment>
 			<column name="PDisc2" type="int" >
 				<defo><![CDATA[0]]></defo>
 			</column>
-			<column name="PDisc3" type="int" />
-			<column name="PDisc4" type="int" />
+			<column name="PDisc3" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="PDisc4" type="int" >
+				<defo><![CDATA[0]]></defo>
+			</column>
 			<column name="PDisc5" type="int" >
 				<defo><![CDATA[0]]></defo>
 			</column>
@@ -693,7 +697,7 @@ ITEMS.ITMGRP]]></comment>
 				<fk_column name="TermCode" pk="TermCode" />
 			</fk>
 		</table>
-		<table name="OrderStatuses" prior="OrderStatu" >
+		<table name="OrderStatuses" prior="OrderStatu" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="StatusName" type="varchar" length="20" mandatory="y" />
@@ -701,7 +705,7 @@ ITEMS.ITMGRP]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="Orders" prior="Tbl" >
+		<table name="Orders" prior="Tbl" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.ORDERS > IRYS.dbo.Orders
 
 ---
@@ -897,7 +901,7 @@ Remarks:
 				<fk_column name="User" pk="UserId" />
 			</fk>
 		</table>
-		<table name="PayStatuses" prior="PayStatus" >
+		<table name="PayStatuses" prior="PayStatus" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="StatusName" type="varchar" length="10" mandatory="y" />
@@ -905,7 +909,7 @@ Remarks:
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="PaymentModes" prior="PaymentMode" >
+		<table name="PaymentModes" prior="PaymentMode" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="Id" prior="PaymentModeId" type="int" mandatory="y" />
 			<column name="ModeName" prior="Mode" type="varchar" length="20" mandatory="y" />
@@ -913,7 +917,7 @@ Remarks:
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="Payments" prior="Paymen" >
+		<table name="Payments" prior="Paymen" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.PAYMENTS > IRYS.dbo.Payments
 
 ---
@@ -967,13 +971,13 @@ LEGACY.dbo.PAYMENTS.USER]]></comment>
 				<fk_column name="EmployeeId" pk="Id" />
 			</fk>
 		</table>
-		<table name="PurchaseOrders" prior="PurchaseOr" >
+		<table name="PurchaseOrders" prior="PurchaseOr" generator_rows="100" >
 			<column name="Id" type="int" mandatory="y" />
 			<index name="pk_PurchaseOrders" unique="PRIMARY_KEY" >
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="PurchaseStatuses" prior="PurchaseStatus" >
+		<table name="PurchaseStatuses" prior="PurchaseStatus" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="StatusName" type="varchar" length="20" mandatory="y" />
@@ -981,7 +985,7 @@ LEGACY.dbo.PAYMENTS.USER]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="Purchases" prior="Purch" >
+		<table name="Purchases" prior="Purch" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.PURCHASES > IRYS.dbo.Purchases
 
 ---
@@ -1051,7 +1055,7 @@ PURCHASES.PYMNT_TYPE]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="SalesOrderDetails" prior="SalesOrderDet" >
+		<table name="SalesOrderDetails" prior="SalesOrderDet" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.S_ORDERDETAILS > IRYS.dbo.SalesOrderDetails]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="SalesOrderId" type="int" />
@@ -1106,7 +1110,7 @@ PURCHASES.PYMNT_TYPE]]></comment>
 				<fk_column name="SalesOrderId" pk="Id" />
 			</fk>
 		</table>
-		<table name="SalesOrders" prior="SalesOrder" >
+		<table name="SalesOrders" prior="SalesOrder" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.SALESORDERS > IRYS.dbo.SalesOrders]]></comment>
 			<column name="Id" type="int" mandatory="y" />
 			<column name="CustomerId" type="int" />
@@ -1152,7 +1156,7 @@ PURCHASES.PYMNT_TYPE]]></comment>
 				<fk_column name="OrderStatusId" pk="Id" />
 			</fk>
 		</table>
-		<table name="Shippers" prior="Shippe" >
+		<table name="Shippers" prior="Shippe" generator_rows="100" >
 			<column name="Id" type="int" mandatory="y" />
 			<column name="ShipperName" type="varchar" length="255" mandatory="y" />
 			<column name="ContactName" type="varchar" length="100" />
@@ -1165,7 +1169,7 @@ PURCHASES.PYMNT_TYPE]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="SupplierPayments" prior="SupplierPayment" >
+		<table name="SupplierPayments" prior="SupplierPayment" generator_rows="150" >
 			<comment><![CDATA[LEGACY.dbo.PAYMENT2 > IRYS.dbo.SupplierPayments
 
 ---
@@ -1213,7 +1217,7 @@ LEGACY.dbo.PAYMENT2.USER]]></comment>
 				<fk_column name="SupplierId" pk="Id" />
 			</fk>
 		</table>
-		<table name="Suppliers" prior="Supplier" >
+		<table name="Suppliers" prior="Supplier" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.SUPPLIERS > IRYS.dbo.Suppliers
 
 ---
@@ -1252,7 +1256,7 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="TempSalesOrders" prior="TempSalesOrde" >
+		<table name="TempSalesOrders" prior="TempSalesOrde" generator_rows="337" >
 			<column name="Id" type="int" mandatory="y" />
 			<column name="SalesOrderId" type="int" />
 			<column name="CustomerId" type="int" />
@@ -1279,7 +1283,7 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 				<fk_column name="TermCode" pk="TermCode" />
 			</fk>
 		</table>
-		<table name="Terms" prior="Tbl" >
+		<table name="Terms" prior="Tbl" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.TERMS > IRYS.dbo.Terms
 
 ---
@@ -1304,7 +1308,7 @@ TERMS.TERMCODE1]]></comment>
 				<column name="TermCode" />
 			</index>
 		</table>
-		<table name="Units" prior="Unit" >
+		<table name="Units" prior="Unit" generator_rows="100" >
 			<comment><![CDATA[Legacy.dbo.UNIT > IRYS.dbo.Units
 
 ---
@@ -1317,7 +1321,7 @@ UNIT.UNITCODE > Units.Id]]></comment>
 				<column name="UnitCode" />
 			</index>
 		</table>
-		<table name="Users" prior="U" >
+		<table name="Users" prior="U" generator_rows="150" >
 			<comment><![CDATA[NEW TABLE]]></comment>
 			<column name="UserId" type="int" mandatory="y" />
 			<column name="EmployeeId" type="int" />
@@ -1330,7 +1334,7 @@ UNIT.UNITCODE > Units.Id]]></comment>
 				<fk_column name="EmployeeId" pk="Id" />
 			</fk>
 		</table>
-		<table name="Vendors" prior="Vendo" >
+		<table name="Vendors" prior="Vendo" generator_rows="100" >
 			<column name="Id" type="int" mandatory="y" />
 			<column name="VendorName" type="varchar" length="255" />
 			<column name="ContactName" type="varchar" length="100" />
@@ -1346,7 +1350,7 @@ UNIT.UNITCODE > Units.Id]]></comment>
 				<column name="Id" />
 			</index>
 		</table>
-		<table name="Warehouses" prior="Warehousw" >
+		<table name="Warehouses" prior="Warehousw" generator_rows="100" >
 			<column name="Id" type="int" mandatory="y" />
 			<column name="WarehouseName" type="varchar" length="255" />
 			<column name="WarehouseDescription" type="varchar(max)" />
@@ -1448,7 +1452,7 @@ UNIT.UNITCODE > Units.Id]]></comment>
 			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="76" y="1235" />
 			<entity schema="IRYS.dbo" name="TempSalesOrders" color="C4E0F9" x="2413" y="1919" />
 			<entity schema="IRYS.dbo" name="Terms" color="DDEEC1" x="1634" y="1387" />
-			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="874" y="2603" />
+			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="836" y="2565" />
 			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="1634" y="551" />
 			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="2508" y="95" />
 			<entity schema="IRYS.dbo" name="Warehouses" color="C4E0F9" x="2318" y="1634" />
@@ -1485,6 +1489,8 @@ GO
 
 ]]></string>
 			</script>
+			<script name="irys_db_schema.sql" id="a0288b88-b7d6-4224-a9bc-27125476dfa6" language="SQL" file="file:/C:/Users/cheng/Downloads/irys_db_schema.sql" />
+			<script name="irys_db_schema.sql" id="39912b96-95aa-49f0-91d2-be3fcea8e3b8" language="SQL" file="file:/C:/Users/cheng/Downloads/irys_db_schema.sql" />
 		</diagram>
 	</diagram_group>
 </project>
