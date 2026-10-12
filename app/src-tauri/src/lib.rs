@@ -25,7 +25,9 @@ pub fn run() {
     })
     .invoke_handler(tauri::generate_handler![
         // register all commands here
-        commands::customer_commands::get_customer
+        commands::customer_commands::get_customer_by_id,
+        commands::customer_commands::get_all_customers,
+        
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
