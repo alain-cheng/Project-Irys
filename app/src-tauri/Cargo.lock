@@ -88,8 +88,6 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-log",
  "tiberius",
- "tokio",
- "tokio-util",
 ]
 
 [[package]]
