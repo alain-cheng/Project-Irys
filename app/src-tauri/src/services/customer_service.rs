@@ -89,7 +89,7 @@ pub async fn get_customer(pool: &Pool) -> anyhow::Result<Option<Customer>> {
 /// If customer is not found, then it returns `Ok(None)`
 /// 
 /// # Arguments
-/// * `id` - A 32-bit unsigned integer representing the customer's unique identifier.
+/// * `id` - A 32-bit integer representing the customer's unique identifier.
 pub async fn get_customer_by_id(
     pool: &Pool, 
     id: i32

@@ -1,8 +1,9 @@
-import { use, useMemo, useState } from "react"
+import { use, useEffect, useMemo, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
 import { Plus, Search } from "lucide-react"
 
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
+import { invoke } from "@tauri-apps/api/core"
 
 import Tooltip from "../../components/Tooltip.jsx"
 import CustomerDataEntry from "./components/CustomerDataEntry.jsx"
@@ -18,35 +19,54 @@ function Customers() {
         setSelectedCustomer
     } = useOutletContext()
 
-    ///////////////////////////
-    /////     STATES      /////
-    ///////////////////////////
-    const [searchTerm, setSearchTerm] = useState("")
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const { // Toast controller
         toast,
         showToast,
     } = useToast()
-    const [customersView, setCustomersView] = useState(() => { // Retrieves and loads customers from the database
-        return getAllCustomers().map(c => ({
-            ...c,
-        }))
+
+    const [searchTerm, setSearchTerm] = useState("")
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [customers, setCustomers] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [hasLoaded, setHasLoaded] = useState(false)
+    const [error, setError] = useState(null)
+
+    // Load all customers from database
+    useEffect(() => {
+        async function getAllCustomers() {
+            setLoading(true)
+            setError(null)
+            setHasLoaded(false)
+            
+            try {
+                const result = await invoke("get_all_customers")
+                setCustomers(result)
+                setHasLoaded(true)
+            } catch (error) {
+                setError(String(error))
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        getAllCustomers()
     }, [])
 
-    // Sets the actual displayed data in the Table while also handling filtering
+    // Sets the actual displayed data (customers) in the Table, 
+    // while also capable of handling filtering actions (i.e. search)
     const filteredView = useMemo(() => {
         const query = searchTerm.toLowerCase().trim()
 
-        if (!query) return customersView
+        if (!query) return customers
 
-        return customersView.filter(customer =>
+        return customers.filter(customer =>
             Object.values(customer).some(value => 
                 String(value)
                     .toLowerCase()
                     .includes(query)
             )
         )
-    }, [customersView, searchTerm])
+    }, [customers, searchTerm])
 
     return(
         <div className="flex flex-col gap-2 h-full">
@@ -102,51 +122,53 @@ function Customers() {
                         <thead className="sticky top-0 z-10 border">
                             <tr>
                                 <th className="sticky left-0 top-0 z-10">ID</th>
-                                <th>Name</th>
-                                <th>Title</th>
+                                <th>Company Name</th>
+                                <th>Contact Name</th>
+                                <th>Contact Title</th>
                                 <th>Address</th>
                                 <th>City</th>
                                 <th>Province</th>
-                                <th>Zipcode</th>
-                                <th>Phone</th>
-                                <th>Fax</th>
-                                <th>TIN</th>
-                                <th>Credit Limit</th>
-                                <th>Salesman</th>
+                                <th>Zip Code</th>
+                                <th>Phone No.</th>
+                                <th>FAX</th>
                             </tr>
                         </thead>
 
                         {/* body */}
                         <tbody className="border">
-                            {filteredView.map((customer, index) => (
-                                <tr 
-                                    key={customer.id} 
-                                    onClick={() => setSelectedCustomer(prev => prev === customer.id ? 0 : customer.id)}
-                                    onDoubleClick={() => navigate(`/orders/customers/${customer.id}`)} 
-                                    className={`
-                                        ${ selectedCustomer === customer.id
-                                            ? "bg-yellow-200"
-                                            : index % 2 === 0
-                                                ? "bg-background"
-                                                : "bg-background-light"
-                                        }
-                                        hover:bg-accent-soft transition cursor-pointer
-                                    `}
-                                >
-                                    <td className="sticky left-0 z-5">{customer.id}</td>
-                                    <td>{customer.name}</td>
-                                    <td>{customer.title}</td>
-                                    <td>{customer.address}</td>
-                                    <td>{customer.city}</td>
-                                    <td>{customer.province}</td>
-                                    <td>{customer.zipCode}</td>
-                                    <td>{customer.phone}</td>
-                                    <td>{customer.fax}</td>
-                                    <td>{customer.tin}</td>
-                                    <td>{customer.creditLimit.toFixed(2)}</td>
-                                    <td>{customer.salesman}</td>
-                                </tr>
-                            ))}
+                            {loading && <tr>Loading customers...</tr>}
+
+                            {error && (<p role="alert">DB Error: {error}</p>)}
+
+                            {customers && (
+                                filteredView.map((customer, index) => (
+                                    <tr 
+                                        key={customer.id} 
+                                        onClick={() => setSelectedCustomer(prev => prev === customer.id ? 0 : customer.id)}
+                                        onDoubleClick={() => navigate(`/orders/customers/${customer.id}`)} 
+                                        className={`
+                                            ${ selectedCustomer === customer.id
+                                                ? "bg-yellow-200"
+                                                : index % 2 === 0
+                                                    ? "bg-background"
+                                                    : "bg-background-light"
+                                            }
+                                            hover:bg-accent-soft transition cursor-pointer
+                                        `}
+                                    >
+                                        <td className="sticky left-0 z-5">{customer.id}</td>
+                                        <td>{customer.companyName}</td>
+                                        <td>{customer.contactName}</td>
+                                        <td>{customer.contactTitle}</td>
+                                        <td>{customer.address}</td>
+                                        <td>{customer.city}</td>
+                                        <td>{customer.province}</td>
+                                        <td>{customer.zipCode}</td>
+                                        <td>{customer.phone}</td>
+                                        <td>{customer.fax}</td>
+                                        
+                                    </tr>
+                            )))}
                         </tbody>
                     </table>
                 </div>

@@ -2,26 +2,60 @@ import { data, useOutletContext, useParams } from "react-router-dom"
 import { getCustomerById } from "../../../../MockData/customers"
 
 import CopyButton from "../../../components/CopyButton"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { invoke } from "@tauri-apps/api/core"
 
 function CustomerDetails () {
     const { customerId } = useParams()
     const { setSelectedCustomer } = useOutletContext()
 
-    const customer = getCustomerById(Number(customerId))
+    const [customer, setCustomer] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [hasLoaded, setHasLoaded] = useState(false)
+    const [error, setError] = useState(null)
+    const [generalFields, setGeneralFields] = useState(null)
+    const [financialFields, setFinancialFields] = useState(null)
 
-    const copyToClipboard = (value) => {
-        navigator.clipboard.writeText(String(value))
-    }
+    // loads customer data
+    useEffect(() => {
+        async function getCustomerById() {
+            setLoading(true)
+            setHasLoaded(false)
 
-    if (!customer) {
-        return (
-            <div className="text-text text-sm mt-10">
-                <h1>Error</h1>
-                <p>Customer with the ID No. <b className="text-accent-strong">{customerId}</b> was not found.</p>
-            </div>
-        )
-    }
+            try {
+                const result = await invoke("get_customer_by_id", {
+                    id: Number(customerId)
+                })
+                setCustomer(result)
+                setHasLoaded(true)
+            } catch (error) {
+                setError(String(error))
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        getCustomerById()
+    }, [])
+
+    // fills the data fields once customer is loaded
+    useEffect(() => {
+        setGeneralFields([
+            ["Customer ID", customer?.id],
+            ["Company Name", customer?.companyName],
+            ["Contact Title", customer?.contactTitle],
+            ["Full Address", [customer?.address, customer?.city, customer?.province].filter(Boolean).join(", ")],
+            ["Zip Code", customer?.zipCode],
+            ["Phone Number", customer?.phone],
+        ])
+
+        setFinancialFields([
+            ["FAX Number", customer?.fax],
+            // ["TIN Number", customer?.tin],
+            // ["Credit Limit", customer?.creditLimit.toFixed(2)],
+            // ["Salesman", customer?.salesman],
+        ])
+    }, [customer])
 
     // Sets the customer to "selected" state when their details page is viewed
     useEffect(() => {
@@ -30,77 +64,76 @@ function CustomerDetails () {
         }
     }, [customerId, setSelectedCustomer])
 
-    const generalFields = [
-        ["Customer ID", customer.id],
-        ["Name", customer.name],
-        ["Title", customer.title],
-        ["Full Address", [customer.address, customer.city, customer.province].filter(Boolean).join(", ")],
-        ["Zip Code", customer.zipCode],
-        ["Phone Number", customer.phone],
-    ]
-
-    const financialFields = [
-        ["FAX Number", customer.fax],
-        ["TIN Number", customer.tin],
-        ["Credit Limit", customer.creditLimit.toFixed(2)],
-        ["Salesman", customer.salesman],
-    ]
-
     return(
         <div className="mt-5">
-            <div className="border border-border-soft rounded-lg bg-background shadow-xs mb-2">
-                <h4 className="text-accent-strong px-2 py-1">Customer: {customer.name}</h4>
-            </div>
+            {loading && <p>Loading customer data...</p>}
 
-            <h1 className="text-text">Customer Details</h1>
-            
-            <div className="border border-border-soft rounded-lg px-2 py-3 my-3 bg-background shadow-xs flex gap-2">
-                <div className="flex-1">
-                    <h3 className="text-accent-strong mb-2">Customer Information</h3>
-                    <table className="border border-border-soft shadow-xs">
-                        <tbody>
-                            {generalFields.map(([label, value], index) => (
-                                <tr
-                                    key={label}
-                                    className={`${
-                                        index % 2 === 0
-                                            ? "bg-background"
-                                            : "bg-background-light"
-                                        }
-                                    `}
-                                >
-                                    <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                    <td className="w-full">{value}</td>
-                                    <td>
-                                        <CopyButton value={value}/>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            {error && <p role="alert">Error: {error}</p>}
+
+            {hasLoaded && customer === null && (
+                <div className="text-text text-sm mt-10">
+                    <h1>Error</h1>
+                    <p>Customer with the ID No. <b className="text-accent-strong">{customerId}</b> was not found.</p>
                 </div>
-                
-                <div className="flex-1">
-                    <h3 className="text-accent-strong mb-2">Financial Details</h3>
-                    <table className="border-collapse shadow-xs">
-                        <tbody>
-                            {financialFields.map(([label, value], index) => (
-                                <tr
-                                    key={label}
-                                    className={
-                                        index % 2 === 0
-                                        ? "bg-background"
-                                        : "bg-background-light"
-                                    }
-                                >
-                                    <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                    <td className="w-full">{value}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            )}
+
+            {customer && (
+                <>
+                    <div className="border border-border-soft rounded-lg bg-background shadow-xs mb-2">
+                        <h4 className="text-accent-strong px-2 py-1">Customer: {customer?.companyName}</h4>
+                    </div>
+
+                    <h1 className="text-text">Customer Details</h1>
+                    
+                    <div className="border border-border-soft rounded-lg px-2 py-3 my-3 bg-background shadow-xs flex gap-2">
+                        <div className="flex-1">
+                            <h3 className="text-accent-strong mb-2">Customer Information</h3>
+                            <table className="border border-border-soft shadow-xs">
+                                <tbody>
+                                    {generalFields.map(([label, value], index) => (
+                                        <tr
+                                            key={label}
+                                            className={`${
+                                                index % 2 === 0
+                                                    ? "bg-background"
+                                                    : "bg-background-light"
+                                                }
+                                            `}
+                                        >
+                                            <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
+                                            <td className="w-full">{value}</td>
+                                            <td>
+                                                <CopyButton value={value}/>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div className="flex-1">
+                            <h3 className="text-accent-strong mb-2">Financial Details</h3>
+                            <table className="border-collapse shadow-xs">
+                                <tbody>
+                                    {financialFields.map(([label, value], index) => (
+                                        <tr
+                                            key={label}
+                                            className={
+                                                index % 2 === 0
+                                                ? "bg-background"
+                                                : "bg-background-light"
+                                            }
+                                        >
+                                            <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
+                                            <td className="w-full">{value}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     )
 }
