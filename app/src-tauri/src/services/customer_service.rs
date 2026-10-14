@@ -1,34 +1,62 @@
 use anyhow::Context;
 use deadpool_tiberius::Pool;
 
-use crate::models::customer::Customer;
+use crate::models::customer::{Customer, NewCustomer};
 
-/// test function
-pub async fn get_customer(pool: &Pool) -> anyhow::Result<Option<Customer>> {
+pub async fn add_customer(
+    pool: &Pool,
+    new_customer: NewCustomer
+) -> anyhow::Result<Customer> {
     let mut client = pool
         .get()
         .await
-        .context("Failed to retrieve database connection.")?; 
+        .context("Failed to retrieve database connection.")?;
 
     let row = client
         .query(
-            r#" 
-                SELECT    TOP(1) 
-                    Id, CompanyName, ContactName, ContactTitle,
-                    Address, City, Province, ZipCode, Phone, Fax
-                FROM      dbo.Customers
-                ORDER BY  Id;
+            r#"
+                INSERT INTO dbo.Customers (
+                    CompanyName,
+                    ContactName,
+                    ContactTitle,
+                    Address,
+                    City,
+                    Province,
+                    ZipCode,
+                    Phone,
+                    Fax
+                )
+                OUTPUT 
+                    INSERTED.Id,
+                    INSERTED.CompanyName,
+                    INSERTED.ContactName,
+                    INSERTED.ContactTitle,
+                    INSERTED.Address,
+                    INSERTED.City,
+                    INSERTED.Province,
+                    INSERTED.ZipCode,
+                    INSERTED.Phone,
+                    INSERTED.Fax
+                VALUES (
+                    @P1, @P2, @P3, @P4, @P5, @P6, @P7, @P8, @P9
+                );
             "#,
-            &[],
+            &[
+                &new_customer.company_name,
+                &new_customer.contact_name,
+                &new_customer.contact_title,
+                &new_customer.address,
+                &new_customer.city,
+                &new_customer.province,
+                &new_customer.zip_code,
+                &new_customer.phone,
+                &new_customer.fax,
+            ],
         )
         .await?
         .into_row()
-        .await?;
-    
-    // Return Ok even if no record was found from query
-    let Some(row) = row else {
-        return Ok(None);
-    };
+        .await?
+        .context("Customer inserted, but no record is returned")?;
 
     let id = row
         .try_get::<i32, _>("Id")?
@@ -70,7 +98,7 @@ pub async fn get_customer(pool: &Pool) -> anyhow::Result<Option<Customer>> {
         .try_get::<&str, _>("Fax")?
         .map(str::to_owned);
 
-    Ok(Some(Customer {
+    Ok(Customer {
         id,
         company_name,
         contact_name,
@@ -81,7 +109,7 @@ pub async fn get_customer(pool: &Pool) -> anyhow::Result<Option<Customer>> {
         zip_code,
         phone,
         fax,
-    }))
+    })
 }
 
 /// Retrieves a customer from the database given by its unique id.

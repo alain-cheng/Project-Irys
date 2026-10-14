@@ -27,7 +27,7 @@ pub fn run() {
         // register all commands here
         commands::customer_commands::get_customer_by_id,
         commands::customer_commands::get_all_customers,
-        
+        commands::customer_commands::add_customer
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

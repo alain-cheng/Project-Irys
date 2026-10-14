@@ -2,12 +2,18 @@ use deadpool_tiberius::Pool;
 use tauri::State;
 
 use crate::services::customer_service;
-use crate::models::customer::Customer;
+use crate::models::customer::{Customer, NewCustomer};
 
-/// test function
+/// Inserts a new customer into the database
+/// 
+/// # Arguments
+/// * `customer` - a customer model
 #[tauri::command]
-pub async fn get_customer(pool: State<'_, Pool>) -> Result<Option<Customer>, String> {
-    customer_service::get_customer(pool.inner())
+pub async fn add_customer(
+    pool: State<'_, Pool>, 
+    customer: NewCustomer
+) -> Result<Customer, String> {
+    customer_service::add_customer(pool.inner(), customer)
         .await
         .map_err(|e| e.to_string())
 }

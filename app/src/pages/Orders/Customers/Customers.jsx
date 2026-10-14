@@ -26,6 +26,7 @@ function Customers() {
 
     const [searchTerm, setSearchTerm] = useState("")
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
     const [customers, setCustomers] = useState(null)
     const [loading, setLoading] = useState(false)
     const [hasLoaded, setHasLoaded] = useState(false)
@@ -43,7 +44,7 @@ function Customers() {
                 setCustomers(result)
                 setHasLoaded(true)
             } catch (error) {
-                setError(String(error))
+                setError(String(error.message))
             } finally {
                 setLoading(false)
             }
@@ -68,10 +69,36 @@ function Customers() {
         )
     }, [customers, searchTerm])
 
+
+    async function handleAddCustomer(newCustomer) {
+        setError(null)
+        setIsSaving(true)
+
+        try {
+            const createdCustomer = await invoke("add_customer", {
+                customer: newCustomer
+            })
+
+            setIsModalOpen(false)
+
+            return createdCustomer
+        } catch (error) {
+            setError(String(error.message))
+        } finally {
+            setIsSaving(false)
+
+            if (error) 
+                showToast(error, "error")
+            else 
+                showToast("Customer created successfully.")
+        }
+    }
+
     return(
         <div className="flex flex-col gap-2 h-full">
             <h1 className="text-2xl text-text">Customers</h1>
-
+            
+            {/* To summon a toast, see `useToast.js` for example usage */}
             {toast && (
                 <Toast message={toast.message} type={toast.type} />
             )}
@@ -79,7 +106,9 @@ function Customers() {
             <CustomerDataEntry 
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSuccess={showToast}
+                // onSuccess={showToast}
+                onSubmit={handleAddCustomer}
+                isSaving={isSaving}
             />
             
             {/* Toolbar */}

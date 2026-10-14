@@ -6,44 +6,42 @@ import { useState } from "react"
  * 
  * @returns {JSX.Element} Customer data creation form
  */
-function CustomerDataEntry({ isOpen, onClose, onSuccess }) {
+function CustomerDataEntry({ isOpen, onClose, onSuccess, onSubmit, isSaving }) {
     if (!isOpen) return null
 
-    const [name, setName] = useState("")
-    const [title, setTitle] = useState("")
+    const [companyName, setCompanyName] = useState("")
+    const [contactTitle, setContactTitle] = useState("")
     const [address, setAddress] = useState("")
     const [city, setCity] = useState("")
     const [province, setProvince] = useState("")
-    const [zipCode, setZipCode] = useState(0)
+    const [zipCode, setZipCode] = useState("")
     const [phone, setPhone] = useState("")
-    const [fax, setFax] = useState(0)
-    const [tin, setTin] = useState(0)
-    const [creditLimit, setCreditLimit] = useState(0.00)
-    const [salesman, setSalesman] = useState("")
+    const [fax, setFax] = useState("")
+    // const [tin, setTin] = useState("")
+    // const [creditLimit, setCreditLimit] = useState(0.00)
+    // const [salesman, setSalesman] = useState("")
 
-    const handleSubmit = (e) => {
+    async function handleSubmit(e) {
         e.preventDefault()
 
-        // customer to be added to the db (placeholder)
         const newCustomer = {
-            id: Date.now(),
-            name: name,
-            title: title,
+            companyName: companyName,
+            contactTitle: contactTitle,
             address: address,
             city: city,
             province: province,
-            zipCode: parseInt(zipCode),
+            zipCode: zipCode,
             phone: phone,
-            fax: parseInt(fax),
-            tin: parseInt(tin),
-            creditLimit: parseFloat(creditLimit),
-            salesman: salesman
+            fax: fax
         }
-        console.log("New customer added", newCustomer)
+        
+        try {
+            await onSubmit(newCustomer)
+        } catch {
 
-        // after success, close modal
-        onClose()
-        onSuccess?.("Customer created successfully")
+        } finally {
+            onClose()
+        }
     }
 
     return(
@@ -73,13 +71,13 @@ function CustomerDataEntry({ isOpen, onClose, onSuccess }) {
                 > 
                     <div className="flex flex-col">
                         <label className="font-medium">
-                            Name <span className="text-red-500">*</span>
+                            Contact Name <span className="text-red-500">*</span>
                         </label>
                         <input
                             className="px-1 py-1 rounded-lg border border-gray-200"
                             type="text"
                             onChange={(e) => 
-                                setName(e.target.value)
+                                setCompanyName(e.target.value)
                             }
                             required
                         />
@@ -87,13 +85,13 @@ function CustomerDataEntry({ isOpen, onClose, onSuccess }) {
 
                     <div className="flex flex-col">
                         <label className="font-medium">
-                            Title
+                            Contact Title
                         </label>
                         <input
                             className="px-1 py-1 rounded-lg border border-gray-200"
                             type="text"
                             onChange={(e) => 
-                                setTitle(e.target.value)
+                                setContactTitle(e.target.value)
                             }
                         />
                     </div>
@@ -170,21 +168,21 @@ function CustomerDataEntry({ isOpen, onClose, onSuccess }) {
                         </label>
                         <input
                             className="px-1 py-1 rounded-lg border border-gray-200"
-                            type="number"
+                            type="text"
                             onChange={(e) => 
                                 setFax(e.target.value)
                             }
                         />
                     </div>
 
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="font-medium">
                             TIN
                         </label>
                         <span className="text-sm text-gray-500">Taxpayer Identification Number</span>
                         <input
                             className="px-1 py-1 rounded-lg border border-gray-200"
-                            type="number"
+                            type="text"
                             onChange={(e) => 
                                 setTin(e.target.value)
                             }
@@ -218,7 +216,7 @@ function CustomerDataEntry({ isOpen, onClose, onSuccess }) {
                                 setSalesman(e.target.value)
                             }
                         />
-                    </div>
+                    </div> */}
                 </form>
 
                 <hr className="border-gray-200" />
@@ -235,8 +233,9 @@ function CustomerDataEntry({ isOpen, onClose, onSuccess }) {
                         form="customer-form"
                         className="px-2 py-1 bg-green-400 hover:bg-green-500 text-white border rounded-lg cursor-pointer" 
                         type="submit"
+                        disabled={isSaving}
                     >
-                        Submit
+                        {isSaving ? "Saving..." : "Add Customer"}
                     </button>
                 </div>
             </div>
