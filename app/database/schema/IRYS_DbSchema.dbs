@@ -3,7 +3,9 @@
 	<schema name="dbo" catalogname="IRYS" >
 		<table name="AccountClasses" prior="AccountClass" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.ACCTCLASS > IRYS.dbo.AccountClasses]]></comment>
-			<column name="AccountClass" prior="Id" type="int" mandatory="y" />
+			<column name="AccountClass" prior="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="AccountDescription" type="varchar(max)" />
 			<column name="OpeningBalance" prior="OpenBalance" type="float" mandatory="y" >
 				<defo><![CDATA[0]]></defo>
@@ -26,7 +28,9 @@ ACCOUNTS.ACCT_NO > Accounts.Id
 
 Dropped Cols:
 ACCOUNTS.SUB  			// redundant]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="AccountClass" type="int" mandatory="y" />
 			<column name="SubAccountOf" type="int" />
 			<column name="AccountName" type="varchar" length="255" mandatory="y" />
@@ -48,7 +52,9 @@ ACCOUNTS.SUB  			// redundant]]></comment>
 			</fk>
 		</table>
 		<table name="Banks" prior="Tbl" generator_rows="100" >
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="BankName" type="varchar" length="255" mandatory="y" />
 			<column name="ContactName" type="varchar" length="100" />
 			<column name="ContactTitle" type="varchar" length="50" />
@@ -64,7 +70,9 @@ ACCOUNTS.SUB  			// redundant]]></comment>
 		</table>
 		<table name="BillDetails" prior="BillDetail" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.BILLDETAILS > IRYS.dbo.BillDetails]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="BillId" type="int" />
 			<column name="AccountId" type="int" />
 			<column name="Amount" type="float" mandatory="y" >
@@ -98,7 +106,7 @@ BILLOFMAT.ITEMCODE1]]></comment>
 		</table>
 		<table name="BillPaymentDetails" prior="BillPaymentDetail" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.BILLPYMNTDET > IRYS.dbo.BillPaymentDetails]]></comment>
-			<column name="PaymentId" type="int" />
+			<column name="PaymentId" type="int" mandatory="y" />
 			<column name="BillId" type="int" />
 			<column name="Amount" type="float" mandatory="y" >
 				<defo><![CDATA[0]]></defo>
@@ -151,7 +159,9 @@ BILLPYMNT.CV]]></comment>
 		</table>
 		<table name="BillStatus" prior="BillSta" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="StatusName" type="varchar" length="20" mandatory="y" />
 			<index name="pk_BillStatus" unique="PRIMARY_KEY" >
 				<column name="Id" />
@@ -164,7 +174,9 @@ BILLPYMNT.CV]]></comment>
 
 Altered Cols:
 BILLS.STATUS > Bills.BillStatusId]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="BillDate" type="date" mandatory="y" >
 				<defo><![CDATA[getdate()]]></defo>
 			</column>
@@ -206,7 +218,9 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 		</table>
 		<table name="Categories" prior="Categor" generator_rows="100" >
 			<comment><![CDATA[LEGACY.dbo.CATEGORY > IRYS.dbo.Categories]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="CategoryName" type="varchar" length="255" mandatory="y" />
 			<column name="Description" type="varchar(max)" />
 			<index name="pk_Categories" unique="PRIMARY_KEY" >
@@ -226,7 +240,9 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 		</table>
 		<table name="Collections" prior="Collection" generator_rows="150" >
 			<comment><![CDATA[LEGACY.dbo.COLLECTIONS > IRYS.dbo.Collections]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="CollectionDate" type="date" mandatory="y" >
 				<defo><![CDATA[getdate()]]></defo>
 			</column>
@@ -252,7 +268,9 @@ BILLS.STATUS > Bills.BillStatusId]]></comment>
 Dropped Cols:
 Legacy.dbo.CUSTAREA.AREACODE0
 Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
-			<column name="AreaCode" type="int" mandatory="y" />
+			<column name="AreaCode" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="AreaName" type="varchar" length="50" mandatory="y" />
 			<index name="pk_CustomerArea" unique="PRIMARY_KEY" >
 				<column name="AreaCode" />
@@ -262,7 +280,9 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 			</index>
 		</table>
 		<table name="Customers" prior="Custo" generator_rows="150" >
-			<column name="Id" prior="CustomerId" type="int" mandatory="y" />
+			<column name="Id" prior="CustomerId" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="CompanyName" type="varchar" length="255" />
 			<column name="ContactName" type="varchar" length="100" />
 			<column name="ContactTitle" type="varchar" length="50" />
@@ -322,7 +342,9 @@ Legacy.dbo.CUSTAREA.AREADESC0]]></comment>
 		</table>
 		<table name="DefectDetails" prior="DefectDeta" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.DEFECTSDET > IRYS.dbo.DefectDetails]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="DefectId" type="int" mandatory="y" />
 			<column name="ItemCode" type="int" mandatory="y" />
 			<column name="Quantity" type="int" mandatory="y" >
@@ -366,7 +388,9 @@ Legacy.dbo.EMPLOYEES.USERNAME
 Legacy.dbo.EMPLOYEES.PASSWORD
 Legacy.dbo.EMPLOYEES.AGCODE
 Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
-			<column name="Id" prior="EmployeeId" type="int" mandatory="y" />
+			<column name="Id" prior="EmployeeId" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="FirstName" type="varchar" length="50" />
 			<column name="MiddleName" type="varchar" length="20" />
 			<column name="LastName" type="varchar" length="50" />
@@ -404,7 +428,9 @@ Legacy.dbo.EMPLOYEES.AGNAME]]></comment>
 
 Dropped Cols:
 ITEMGRP.CATDESCRIP]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="ItemGroupDescription" type="varchar" length="255" mandatory="y" />
 			<column name="PhotoFile" type="varchar" length="2083" />
 			<column name="CategoryId" type="int" />
@@ -414,7 +440,9 @@ ITEMGRP.CATDESCRIP]]></comment>
 		</table>
 		<table name="ItemLocations" prior="ItemLoca" generator_rows="100" >
 			<comment><![CDATA[LEGAYC.dbo.ITEMLOC > IRYS.dbo.ItemLocations]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="LocationName" type="varchar(max)" mandatory="y" />
 			<index name="pk_ItemLocations" unique="PRIMARY_KEY" >
 				<column name="Id" />
@@ -439,7 +467,9 @@ ITEMGRP.CATDESCRIP]]></comment>
 Dropped Cols:
 ITEMS.ITMCODE		// duplicate col
 ITEMS.ITMGRP]]></comment>
-			<column name="ItemCode" type="int" mandatory="y" />
+			<column name="ItemCode" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="ItemName" type="varchar" length="255" mandatory="y" />
 			<column name="Remarks" type="varchar(max)" />
 			<column name="ItemGroupId" type="int" />
@@ -699,7 +729,9 @@ ITEMS.ITMGRP]]></comment>
 		</table>
 		<table name="OrderStatuses" prior="OrderStatu" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="StatusName" type="varchar" length="20" mandatory="y" />
 			<index name="pk_OrderStatuses" unique="PRIMARY_KEY" >
 				<column name="Id" />
@@ -728,7 +760,9 @@ ORDERS.TMPCOLL
 Remarks:
 - ORDERS.USERS > Orders.Users will all be turned into NULL
 - ORDERS.WHOUSEID > Orders.WarehouseId will all be NULL]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="CustomerId" type="int" >
 				<comment><![CDATA[Should not allow NULL inserts in the Application Layer]]></comment>
 			</column>
@@ -903,7 +937,9 @@ Remarks:
 		</table>
 		<table name="PayStatuses" prior="PayStatus" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="StatusName" type="varchar" length="10" mandatory="y" />
 			<index name="pk_PayStatuses" unique="PRIMARY_KEY" >
 				<column name="Id" />
@@ -911,7 +947,9 @@ Remarks:
 		</table>
 		<table name="PaymentModes" prior="PaymentMode" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
-			<column name="Id" prior="PaymentModeId" type="int" mandatory="y" />
+			<column name="Id" prior="PaymentModeId" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="ModeName" prior="Mode" type="varchar" length="20" mandatory="y" />
 			<index name="pk_PaymentModes" unique="PRIMARY_KEY" >
 				<column name="Id" />
@@ -929,7 +967,9 @@ LEGACY.dbo.PAYMENTS.STATUS > IRYS.dbo.Payments.PayStatusId
 Dropped Cols:
 LEGACY.dbo.PAYMENTS.CV
 LEGACY.dbo.PAYMENTS.USER]]></comment>
-			<column name="Id" prior="PaymentId" type="int" mandatory="y" />
+			<column name="Id" prior="PaymentId" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="CustomerId" type="int" />
 			<column name="PaymentModeId" type="int" mandatory="y" />
 			<column name="Amount" type="float" mandatory="y" >
@@ -972,14 +1012,18 @@ LEGACY.dbo.PAYMENTS.USER]]></comment>
 			</fk>
 		</table>
 		<table name="PurchaseOrders" prior="PurchaseOr" generator_rows="100" >
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<index name="pk_PurchaseOrders" unique="PRIMARY_KEY" >
 				<column name="Id" />
 			</index>
 		</table>
 		<table name="PurchaseStatuses" prior="PurchaseStatus" generator_rows="100" >
 			<comment><![CDATA[NEW TABLE]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="StatusName" type="varchar" length="20" mandatory="y" />
 			<index name="pk_PurchaseStatuses" unique="PRIMARY_KEY" >
 				<column name="Id" />
@@ -995,7 +1039,9 @@ PURCHASES.STATUS > Purchases.PurchaseStatusId
 
 Dropped Cols:
 PURCHASES.PYMNT_TYPE]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="SupplierId" type="int" />
 			<column name="PONumber" type="varchar" length="100" />
 			<column name="EmployeeId" type="int" />
@@ -1057,7 +1103,9 @@ PURCHASES.PYMNT_TYPE]]></comment>
 		</table>
 		<table name="SalesOrderDetails" prior="SalesOrderDet" generator_rows="337" >
 			<comment><![CDATA[LEGACY.dbo.S_ORDERDETAILS > IRYS.dbo.SalesOrderDetails]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="SalesOrderId" type="int" />
 			<column name="Quantity" type="int" mandatory="y" />
 			<column name="ItemCode" type="int" />
@@ -1112,7 +1160,9 @@ PURCHASES.PYMNT_TYPE]]></comment>
 		</table>
 		<table name="SalesOrders" prior="SalesOrder" generator_rows="225" >
 			<comment><![CDATA[LEGACY.dbo.SALESORDERS > IRYS.dbo.SalesOrders]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="CustomerId" type="int" />
 			<column name="OrderDate" type="date" mandatory="y" >
 				<defo><![CDATA[getdate()]]></defo>
@@ -1157,7 +1207,9 @@ PURCHASES.PYMNT_TYPE]]></comment>
 			</fk>
 		</table>
 		<table name="Shippers" prior="Shippe" generator_rows="100" >
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="ShipperName" type="varchar" length="255" mandatory="y" />
 			<column name="ContactName" type="varchar" length="100" />
 			<column name="Address" type="varchar" length="255" />
@@ -1181,7 +1233,9 @@ LEGACY.dbo.PAYMENT2.STATUS > IRYS.dbo.SupplierPayments.PayStatusId
 Dropped Cols:
 LEGACY.dbo.PAYMENT2.CV
 LEGACY.dbo.PAYMENT2.USER]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="SupplierId" type="int" />
 			<column name="PaymentModeId" type="int" mandatory="y" />
 			<column name="Amount" type="float" mandatory="y" >
@@ -1232,7 +1286,9 @@ LEGACY.dbo.SUPPLIERS.SUPLCONTAC
 LEGACY.dbo.SUPPLIERS.SUPLTELNO
 LEGACY.dbo.SUPPLIERS.SUPLFAXNO
 LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="SupplierName" type="varchar" length="255" mandatory="y" />
 			<column name="ContactName" type="varchar" length="100" />
 			<column name="ContactTitle" type="varchar" length="50" />
@@ -1257,7 +1313,9 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 			</index>
 		</table>
 		<table name="TempSalesOrders" prior="TempSalesOrde" generator_rows="337" >
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="SalesOrderId" type="int" />
 			<column name="CustomerId" type="int" />
 			<column name="OrderDate" type="date" />
@@ -1291,7 +1349,9 @@ LEGACY.dbo.SUPPLIERS.STARTDATE]]></comment>
 Dropped Cols:
 TERMS.TERMDESC1
 TERMS.TERMCODE1]]></comment>
-			<column name="TermCode" type="int" mandatory="y" />
+			<column name="TermCode" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="DiscDate" type="date" />
 			<column name="DueDate" type="date" />
 			<column name="Discount" type="float" mandatory="y" >
@@ -1315,7 +1375,9 @@ TERMS.TERMCODE1]]></comment>
 
 Alterd Cols:
 UNIT.UNITCODE > Units.Id]]></comment>
-			<column name="UnitCode" prior="Id" type="int" mandatory="y" />
+			<column name="UnitCode" prior="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="UnitName" type="varchar" length="25" mandatory="y" />
 			<index name="pk_Unit" unique="PRIMARY_KEY" >
 				<column name="UnitCode" />
@@ -1323,7 +1385,9 @@ UNIT.UNITCODE > Units.Id]]></comment>
 		</table>
 		<table name="Users" prior="U" generator_rows="150" >
 			<comment><![CDATA[NEW TABLE]]></comment>
-			<column name="UserId" type="int" mandatory="y" />
+			<column name="UserId" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="EmployeeId" type="int" />
 			<column name="Username" type="varchar" length="255" mandatory="y" />
 			<column name="PasswordHash" type="varchar" length="255" mandatory="y" />
@@ -1335,7 +1399,9 @@ UNIT.UNITCODE > Units.Id]]></comment>
 			</fk>
 		</table>
 		<table name="Vendors" prior="Vendo" generator_rows="100" >
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="VendorName" type="varchar" length="255" />
 			<column name="ContactName" type="varchar" length="100" />
 			<column name="ContactTitle" type="varchar" length="50" />
@@ -1351,7 +1417,9 @@ UNIT.UNITCODE > Units.Id]]></comment>
 			</index>
 		</table>
 		<table name="Warehouses" prior="Warehousw" generator_rows="100" >
-			<column name="Id" type="int" mandatory="y" />
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
 			<column name="WarehouseName" type="varchar" length="255" />
 			<column name="WarehouseDescription" type="varchar(max)" />
 			<index name="pk_Warehouses" unique="PRIMARY_KEY" >
@@ -1489,8 +1557,6 @@ GO
 
 ]]></string>
 			</script>
-			<script name="irys_db_schema.sql" id="a0288b88-b7d6-4224-a9bc-27125476dfa6" language="SQL" file="file:/C:/Users/cheng/Downloads/irys_db_schema.sql" />
-			<script name="irys_db_schema.sql" id="39912b96-95aa-49f0-91d2-be3fcea8e3b8" language="SQL" file="file:/C:/Users/cheng/Downloads/irys_db_schema.sql" />
 		</diagram>
 	</diagram_group>
 </project>
