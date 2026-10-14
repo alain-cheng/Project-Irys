@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.Suppliers ON;
+GO
 INSERT INTO dbo.Suppliers
 (
 	Id,
@@ -33,4 +35,6 @@ SELECT
 	s.CREDIT,
 	NULLIF(LTRIM(RTRIM(s.TIN)), '')
 FROM FoxProLegacy.dbo.SUPPLIERS AS s;
+GO
+SET IDENTITY_INSERT dbo.Suppliers OFF;
 GO

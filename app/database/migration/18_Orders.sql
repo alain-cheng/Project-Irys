@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.Orders ON;
+GO
 INSERT INTO dbo.Orders
 (
     Id,
@@ -250,4 +252,6 @@ SELECT
 FROM FoxProLegacy.dbo.ORDERS AS o
 LEFT JOIN IRYS.dbo.OrderStatuses AS os
     ON LTRIM(RTRIM(os.StatusName)) = LTRIM(RTRIM(o.STATUS));
+GO
+SET IDENTITY_INSERT dbo.Orders OFF;
 GO

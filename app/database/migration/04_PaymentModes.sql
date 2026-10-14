@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.PaymentModes ON;
+GO
 INSERT INTO dbo.PaymentModes
 (
 	Id,
@@ -12,5 +14,7 @@ VALUES
 	(4, 'Bank Transfer'),
 	(5, 'Offst'),
 	(6, 'Others'),
-	(7, 'Unspecified')
+	(7, 'Unspecified');
+GO
+SET IDENTITY_INSERT dbo.PaymentModes OFF;
 GO
