@@ -81,17 +81,36 @@ function Customers() {
 
             setIsModalOpen(false)
 
+            if (createdCustomer) showToast("Customer created successfully.")
+
             return createdCustomer
         } catch (error) {
-            setError(String(error.message))
+            setError(String(message))
+            showToast(error, "error")
         } finally {
             setIsSaving(false)
-
-            if (error) 
-                showToast(error, "error")
-            else 
-                showToast("Customer created successfully.")
         }
+    }
+
+    async function handleDeleteCustomer(deleteId) {
+        setError(null)
+
+        try {
+            const deleted = await invoke("delete_customer_by_id", { id: deleteId })
+
+            if (deleted) {
+                setCustomers(prev =>
+                    prev.filter(c => c.id !== deleteId)
+                )
+
+                showToast("Customer deleted.")
+            } else {
+                showToast("Customer to be deleted not found.", "error")
+            }
+        } catch (error) {
+            setError(String(message))
+            showToast(error, "error")
+        } 
     }
 
     return(

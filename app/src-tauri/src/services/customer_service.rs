@@ -3,6 +3,10 @@ use deadpool_tiberius::Pool;
 
 use crate::models::customer::{Customer, NewCustomer};
 
+/// Inserts a new customer into the database
+/// 
+/// # Arguments
+/// * `new_customer` - a customer model containing the data for a new customer
 pub async fn add_customer(
     pool: &Pool,
     new_customer: NewCustomer
@@ -280,4 +284,28 @@ pub async fn get_all_customers(pool: &Pool) -> anyhow::Result<Vec<Customer>> {
     }
 
     Ok(customers)
+}
+
+/// Removes a customer from the database given its id
+/// 
+/// # Arguments
+/// * `id` - The unique identifier of the customer record to be deleted.
+pub async fn delete_customer_by_id(
+    pool: &Pool,
+    id: i32
+) -> anyhow::Result<bool> {
+    let mut client = pool
+        .get()
+        .await
+        .context("Failed to retrieve database connection")?;
+
+    let result = client 
+        .execute(
+            "DELETE FROM dbo.Customers WHERE Id = @P1", 
+            &[&id],
+        )
+        .await
+        .context("Failed to delete customer.")?;
+
+    Ok(result.total() > 0)
 }
