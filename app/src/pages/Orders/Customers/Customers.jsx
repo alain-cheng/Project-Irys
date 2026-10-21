@@ -1,6 +1,6 @@
 import { use, useEffect, useMemo, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
-import { Plus, Search, UserRoundX } from "lucide-react"
+import { Plus, Search, SquarePen, UserRoundX } from "lucide-react"
 
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 import { invoke } from "@tauri-apps/api/core"
@@ -148,39 +148,51 @@ function Customers() {
             
             {/* Toolbar */}
             <div
-                className="flex gap-3 items-center"
+                className="flex items-center rounded-lg border border-border-soft bg-background"
             >
                 {/* Add Customer */}
-                <div className="relative group">
+                <div className="relative group rounded-l-lg hover:bg-background-darker">
                     <button
-                        className="px-2 py-1 rounded-lg bg-accent-light cursor-pointer"
+                        className="flex items-center justify-center w-10 h-10 cursor-pointer"
                         onClick={() => setIsAddModalOpen(true)}
                     >
-                        <Plus className="text-accent-strong"/>
+                        <Plus size={25}/>
                     </button>
                     <Tooltip text="Add New Customer" />
                 </div>
 
                 {/* Delete Customer */}
-                <div className="relative group"> 
+                <div className={`relative group ${!selectedCustomer ? "" : "hover:bg-background-darker" }`}> 
                     <button
-                        className="px-2 py-1 rounded-lg bg-red-200 text-red-500 cursor-pointer disabled:bg-gray-100 disabled:text-text"
+                        className="flex items-center justify-center w-10 h-10 cursor-pointer disabled:text-gray-200"
                         onClick={() => setIsDeleteModalOpen(true) }
                         disabled={!selectedCustomer}
                     >
-                        <UserRoundX className="" />
+                        <UserRoundX size={25}/>
                     </button>
                     
                     <Tooltip text={ selectedCustomer ? "Delete Selected Customer" : "Select a customer to delete"} />
+                </div> 
+
+                <div className={`relative group ${!selectedCustomer ? "" : "hover:bg-background-darker" }`}>
+                    <button
+                        className="flex items-center justify-center w-10 h-10 cursor-pointer disabled:text-gray-200"
+                        onClick={() => navigate(`/orders/customers/${selectedCustomer}`)}
+                        disabled={!selectedCustomer}
+                    >
+                        <SquarePen size={25}/>
+                    </button>
+
+                    <Tooltip text={ selectedCustomer ? "Edit Selected Customer" : "Select a customer to edit"} />
                 </div>
                 
 
                 {/* Search bar */}
                 <div className="relative flex flex-row items-center justify-center">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input 
                         type="text"
-                        className="flex-1 pl-10 py-2 border border-border-soft rounded-lg bg-background text-sm"
+                        className="flex-1 pl-10 py-2 h-10 border border-border-soft bg-background text-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search Customer..."

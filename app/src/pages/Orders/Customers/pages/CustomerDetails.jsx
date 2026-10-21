@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
-import { data, useOutletContext, useParams } from "react-router-dom"
-import { getCustomerById } from "../../../../MockData/customers"
+import { useOutletContext, useParams } from "react-router-dom"
 import useToast from "../../../components/hooks/useToast"
 
 import CopyButton from "../../../components/CopyButton"
@@ -20,14 +19,49 @@ function CustomerDetails () {
         showToast
     } = useToast()
 
+    //////////////////////////////////
+    ///           States           ///
+    //////////////////////////////////
     const [refreshKey, setRefreshKey] = useState(0)
     const [customer, setCustomer] = useState(null)
     const [loading, setLoading] = useState(false)
     const [hasLoaded, setHasLoaded] = useState(false)
     const [error, setError] = useState(null)
-    const [generalFields, setGeneralFields] = useState(null)
-    const [financialFields, setFinancialFields] = useState(null)
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
+    const [formData, setFormData] = useState({
+        companyName: "",
+        contactName: "",
+        contactTitle: "",
+        address: "",
+        city: "",
+        province: "",
+        zipCode: "",
+        phone: "",
+        fax: "",
+    })
+    //////////////////////////////////
+
+    const generalFields = [
+        ["Customer ID", null],
+        ["Company Name", "companyName"],
+        ["Contact Name", "contactName"],
+        ["Contact Title", "contactTitle"],
+        ["Address", "address"],
+        ["City", "city"],
+        ["Province", "province"],
+        ["Zip Code", "zipCode"],
+        ["Phone Number", "phone"],
+    ]
+
+    const financialFields = [
+        ["FAX Number", "fax"],
+    ]
+
+    //////////////////////////////////
+    ///          Effects           ///
+    //////////////////////////////////
 
     // loads customer data
     useEffect(() => {
@@ -40,6 +74,11 @@ function CustomerDetails () {
                     id: Number(customerId)
                 })
                 setCustomer(result)
+
+                if (result) {
+                    setFormData(toFormData(result))
+                }
+
                 setHasLoaded(true)
             } catch (error) {
                 setError(String(error))
@@ -51,31 +90,30 @@ function CustomerDetails () {
         getCustomerById()
     }, [refreshKey])
 
-    // fills the data fields once customer is loaded
-    useEffect(() => {
-        setGeneralFields([
-            ["Customer ID", customer?.id],
-            ["Company Name", customer?.companyName],
-            ["Contact Title", customer?.contactTitle],
-            ["Full Address", [customer?.address, customer?.city, customer?.province].filter(Boolean).join(", ")],
-            ["Zip Code", customer?.zipCode],
-            ["Phone Number", customer?.phone],
-        ])
-
-        setFinancialFields([
-            ["FAX Number", customer?.fax],
-            // ["TIN Number", customer?.tin],
-            // ["Credit Limit", customer?.creditLimit.toFixed(2)],
-            // ["Salesman", customer?.salesman],
-        ])
-    }, [customer])
-
     // Sets the customer to "selected" state when their details page is viewed
     useEffect(() => {
         if (customerId) {
             setSelectedCustomer(Number(customerId))
         }
     }, [customerId, setSelectedCustomer])
+
+    //////////////////////////////////
+    ///         Functions          ///
+    //////////////////////////////////
+
+    function toFormData(customer) {
+        return {
+            companyName: customer.companyName ?? "",
+            contactName: customer.contactName ?? "",
+            contactTitle: customer.contactTitle ?? "",
+            address: customer.address ?? "",
+            city: customer.city ?? "",
+            province: customer.province ?? "",
+            zipCode: customer.zipCode ?? "",
+            phone: customer.phone ?? "",
+            fax: customer.fax ?? "",
+        }
+    }
 
     async function handleDeleteCustomer(id) {
         setError(null)
@@ -102,6 +140,74 @@ function CustomerDetails () {
             return false
         }
     }
+
+    //////////////////////////////////
+    ///   Edit Handler Functions   ///
+    //////////////////////////////////
+
+    function handleFieldChange(event) {
+        const { name, value } = event.target
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+
+    function handleDiscard() {
+        setFormData(toFormData(customer))
+        setIsEditing(false)
+        setError(null)
+    }
+
+    async function handleSave() {
+        setError(null)
+        setIsSaving(true)
+
+        // turn blank inputs into null
+        const nullable = value => value.trim() || null
+
+        const updatedCustomer = {
+            companyName: nullable(formData.companyName),
+            contactName: nullable(formData.contactName),
+            contactTitle: nullable(formData.contactTitle),
+            address: nullable(formData.address),
+            city: nullable(formData.city),
+            province: nullable(formData.province),
+            zipCode: nullable(formData.zipCode),
+            phone: nullable(formData.phone),
+            fax: nullable(formData.fax),
+        }
+
+        try {
+            const result = await invoke("update_customer", {
+                id: Number(customerId),
+                customer: updatedCustomer,
+            })
+
+            // if invoked command returned None/null (ex. customer being updated was deleted)
+            if (result === null) {
+                setCustomer(null)
+                setHasLoaded(true)
+                setIsEditing(false)
+                showToast("Customer not found", "error")
+                return
+            } 
+
+            setCustomer(result)
+            setFormData(toFormData(result))
+            setIsEditing(false)
+
+            showToast("Customer records updated.")
+        } catch (error) {
+            const message = String(error)
+            setError(message)
+            showToast(message, "error")
+        } finally {
+            setIsSaving(false)
+        }
+    }
+    //////////////////////////////////
 
     return(
         <div className="mt-5">
@@ -148,23 +254,46 @@ function CustomerDetails () {
                             <h3 className="text-accent-strong mb-2">Customer Information</h3>
                             <table className="border border-border-soft shadow-xs">
                                 <tbody>
-                                    {generalFields.map(([label, value], index) => (
-                                        <tr
-                                            key={label}
-                                            className={`${
-                                                index % 2 === 0
-                                                    ? "bg-background"
-                                                    : "bg-background-light"
+                                    {generalFields.map(([label, field], index) => {
+                                        const value = field === null
+                                            ? customer.id
+                                            : customer[field]
+
+                                        return (
+                                            <tr
+                                                key={label}
+                                                className={
+                                                    index % 2 === 0
+                                                        ? "bg-background"
+                                                        : "bg-background-light"
                                                 }
-                                            `}
-                                        >
-                                            <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                            <td className="w-full">{value}</td>
-                                            <td>
-                                                <CopyButton value={value}/>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                            >
+                                                <td className="w-48 font-semibold whitespace-nowrap px-2 py-1">
+                                                    {label}
+                                                </td>
+
+                                                <td className="w-full px-2 py-1">
+                                                    {isEditing && field !== null ? (
+                                                        <input
+                                                            type="text"
+                                                            name={field}
+                                                            value={formData[field]}
+                                                            onChange={handleFieldChange}
+                                                            className="w-full min-w-0 rounded border border-border-soft bg-background px-2 py-1 outline-none focus:border-accent-strong"
+                                                        />
+                                                    ) : (
+                                                        value || "—"
+                                                    )}
+                                                </td>
+
+                                                <td className="px-1">
+                                                    {!isEditing && (
+                                                        <CopyButton value={value ?? ""} />
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
                                 </tbody>
                             </table>
                         </div>
@@ -173,17 +302,32 @@ function CustomerDetails () {
                             <h3 className="text-accent-strong mb-2">Financial Details</h3>
                             <table className="border-collapse shadow-xs">
                                 <tbody>
-                                    {financialFields.map(([label, value], index) => (
+                                    {financialFields.map(([label, field], index) => (
                                         <tr
                                             key={label}
                                             className={
                                                 index % 2 === 0
-                                                ? "bg-background"
-                                                : "bg-background-light"
+                                                    ? "bg-background"
+                                                    : "bg-background-light"
                                             }
                                         >
-                                            <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                            <td className="w-full">{value}</td>
+                                            <td className="w-48 font-semibold whitespace-nowrap px-2 py-1">
+                                                {label}
+                                            </td>
+
+                                            <td className="w-full px-2 py-1">
+                                                {isEditing ? (
+                                                    <input
+                                                        type="text"
+                                                        name={field}
+                                                        value={formData[field]}
+                                                        onChange={handleFieldChange}
+                                                        className="w-full min-w-0 rounded border border-border-soft bg-background px-2 py-1 outline-none focus:border-accent-strong"
+                                                    />
+                                                ) : (
+                                                    customer[field] || "—"
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -191,21 +335,48 @@ function CustomerDetails () {
                         </div>
                     </div>
                     
+                    {/* Buttons */}
                     <div className="flex space-x-2">
-                        <button
-                            className="px-2 py-1 rounded-lg text-text bg-accent-light hover:bg-accent-strong"
-                        >
-                            Edit Records
-                        </button>
+                        {isEditing ? (
+                            <>
+                                <button
+                                    type="button"
+                                    className="px-3 py-1 rounded-lg text-white bg-green-600 hover:bg-green-500 disabled:opacity-50"
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? "Saving..." : "Save"}
+                                </button>
 
-                        <button
-                            className="px-2 py-1 rounded-lg text-white bg-red-500 hover:bg-red-400 cursor-pointer"
-                            onClick={() => setIsDeleteModalOpen(true)}
-                        >
-                            Delete Customer
-                        </button>
+                                <button
+                                    type="button"
+                                    className="px-3 py-1 rounded-lg text-text bg-background border border-border-soft hover:bg-background-light disabled:opacity-50"
+                                    onClick={handleDiscard}
+                                    disabled={isSaving}
+                                >
+                                    Discard
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    className="px-2 py-1 rounded-lg text-text bg-accent-light hover:bg-accent-strong"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    Edit Records
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="px-2 py-1 rounded-lg text-white bg-red-500 hover:bg-red-400 cursor-pointer"
+                                    onClick={() => setIsDeleteModalOpen(true)}
+                                >
+                                    Delete Customer
+                                </button>
+                            </>
+                        )}
                     </div>
-                    
                 </>
             )}
         </div>
