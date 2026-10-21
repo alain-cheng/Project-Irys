@@ -41,7 +41,7 @@ import { Info, CircleX, TriangleAlert } from "lucide-react"
  * 
  */
 function Toast({ message, type = "success"}) {
-    const baseStyle = "flex gap-2 fixed items-center bottom-5 px-3 py-2 text-white rounded shadow transition"
+    const baseStyle = "flex gap-2 fixed items-center bottom-5 px-3 py-2 text-white rounded shadow transition z-1000"
 
     const styles = {
         success: "bg-green-500",

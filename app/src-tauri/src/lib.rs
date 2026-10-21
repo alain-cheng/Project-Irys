@@ -25,10 +25,12 @@ pub fn run() {
     })
     .invoke_handler(tauri::generate_handler![
         // register all commands here
+        commands::customer_commands::add_customer,
         commands::customer_commands::get_customer_by_id,
         commands::customer_commands::get_all_customers,
-        commands::customer_commands::add_customer,
+        commands::customer_commands::update_customer,
         commands::customer_commands::delete_customer_by_id
+        
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

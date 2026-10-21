@@ -45,11 +45,27 @@ pub async fn get_all_customers(pool: State<'_, Pool>) -> Result<Vec<Customer>, S
 /// # Arguments
 /// * `id` - The unique identifier of the customer record to be deleted.
 #[tauri::command]
-pub async fn delete_customer_by_id(
+pub async fn delete_customer_by_id( // oftentimes we probably dont want to delete a record from the database entirely, suggested to use an active flag instead 
     pool: State<'_, Pool>,
     id: i32
 ) -> Result<bool, String> {
     customer_service::delete_customer_by_id(pool.inner(), id)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Updates a customer record given its id
+/// 
+/// # Arguments
+/// * `id` - Unique identifier of the customer record to be updated.
+/// * `customer` - Customer model containing the updated records.
+#[tauri::command]
+pub async fn update_customer(
+    pool: State<'_, Pool>,
+    id: i32,
+    customer: NewCustomer
+) -> Result<Option<Customer>, String> {
+    customer_service::update_customer(pool.inner(), id, customer)
         .await
         .map_err(|e| e.to_string())
 }

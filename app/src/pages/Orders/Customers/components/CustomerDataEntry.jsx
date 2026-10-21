@@ -35,13 +35,7 @@ function CustomerDataEntry({ isOpen, onClose, onSuccess, onSubmit, isSaving }) {
             fax: fax
         }
         
-        try {
-            await onSubmit(newCustomer)
-        } catch {
-
-        } finally {
-            onClose()
-        }
+        await onSubmit(newCustomer)
     }
 
     return(

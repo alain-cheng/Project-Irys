@@ -309,3 +309,120 @@ pub async fn delete_customer_by_id(
 
     Ok(result.total() > 0)
 }
+
+/// Updates a customer record given its id
+/// 
+/// # Arguments
+/// * `id` - Unique identifier of the customer record to be updated.
+/// * `customer` - Customer model containing the updated records.
+pub async fn update_customer(
+    pool: &Pool,
+    id: i32,
+    customer: NewCustomer,
+) -> anyhow::Result<Option<Customer>> {
+    let mut client = pool
+        .get()
+        .await
+        .context("Failed to retrieve database connection")?;
+
+    let row = client
+        .query(
+            r#"
+            UPDATE dbo.Customers
+            SET
+                CompanyName = @P1,
+                ContactName = @P2,
+                ContactTitle = @P3,
+                Address = @P4,
+                City = @P5,
+                Province = @P6,
+                ZipCode = @P7,
+                Phone = @P8,
+                Fax = @P9
+            OUTPUT
+                INSERTED.Id,
+                INSERTED.CompanyName,
+                INSERTED.ContactName,
+                INSERTED.ContactTitle,
+                INSERTED.Address,
+                INSERTED.City,
+                INSERTED.Province,
+                INSERTED.ZipCode,
+                INSERTED.Phone,
+                INSERTED.Fax
+            WHERE Id = @P10;
+            "#,
+            &[
+                &customer.company_name,
+                &customer.contact_name,
+                &customer.contact_title,
+                &customer.address,
+                &customer.city,
+                &customer.province,
+                &customer.zip_code,
+                &customer.phone,
+                &customer.fax,
+                &id,
+            ]
+        )
+        .await?
+        .into_row()
+        .await?;
+
+    let Some(row) = row else {
+        return Ok(None);
+    };
+
+    let id = row
+        .try_get::<i32, _>("Id")?
+        .context("Unexpected NULL value for Customer Id")?;
+
+    let company_name = row
+        .try_get::<&str, _>("CompanyName")?
+        .map(str::to_owned);
+
+    let contact_name = row
+        .try_get::<&str, _>("ContactName")?
+        .map(str::to_owned);
+
+    let contact_title = row
+        .try_get::<&str, _>("ContactTitle")?
+        .map(str::to_owned);
+
+    let address = row
+        .try_get::<&str, _>("Address")?
+        .map(str::to_owned);
+
+    let city = row
+        .try_get::<&str, _>("City")?
+        .map(str::to_owned);
+
+    let province = row
+        .try_get::<&str, _>("Province")?
+        .map(str::to_owned);
+
+    let zip_code = row
+        .try_get::<&str, _>("ZipCode")?
+        .map(str::to_owned);
+
+    let phone = row
+        .try_get::<&str, _>("Phone")?
+        .map(str::to_owned);
+
+    let fax = row
+        .try_get::<&str, _>("Fax")?
+        .map(str::to_owned);
+
+    Ok(Some(Customer {
+        id,
+        company_name,
+        contact_name,
+        contact_title,
+        address,
+        city,
+        province,
+        zip_code,
+        phone,
+        fax,
+    }))
+}

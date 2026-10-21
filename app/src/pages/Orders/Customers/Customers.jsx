@@ -1,6 +1,6 @@
 import { use, useEffect, useMemo, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, UserRoundX } from "lucide-react"
 
 import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 import { invoke } from "@tauri-apps/api/core"
@@ -8,8 +8,10 @@ import { invoke } from "@tauri-apps/api/core"
 import Tooltip from "../../components/Tooltip.jsx"
 import CustomerDataEntry from "./components/CustomerDataEntry.jsx"
 import Toast from "../../components/Toast.jsx"
+import DeleteConfirmation from "./components/DeleteConfirmation.jsx"
 
 import useToast from "../../components/hooks/useToast.js"
+
 
 function Customers() {
     const navigate = useNavigate()
@@ -24,8 +26,10 @@ function Customers() {
         showToast,
     } = useToast()
 
+    const [refreshKey, setRefreshKey] = useState(0)
     const [searchTerm, setSearchTerm] = useState("")
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
     const [customers, setCustomers] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -51,7 +55,7 @@ function Customers() {
         }
 
         getAllCustomers()
-    }, [])
+    }, [refreshKey])
 
     // Sets the actual displayed data (customers) in the Table, 
     // while also capable of handling filtering actions (i.e. search)
@@ -75,42 +79,47 @@ function Customers() {
         setIsSaving(true)
 
         try {
-            const createdCustomer = await invoke("add_customer", {
-                customer: newCustomer
-            })
-
-            setIsModalOpen(false)
+            const createdCustomer = await invoke("add_customer", { customer: newCustomer })
 
             if (createdCustomer) showToast("Customer created successfully.")
 
+            setIsAddModalOpen(false)
+            setRefreshKey(prev => prev + 1)
+
             return createdCustomer
         } catch (error) {
-            setError(String(message))
-            showToast(error, "error")
+            const message = String(error)
+            setError(message)
+            showToast(message, "error")
         } finally {
             setIsSaving(false)
         }
     }
 
-    async function handleDeleteCustomer(deleteId) {
+    async function handleDeleteCustomer(id) {
         setError(null)
 
         try {
-            const deleted = await invoke("delete_customer_by_id", { id: deleteId })
+            const deleted = await invoke("delete_customer_by_id", { id: id })
 
-            if (deleted) {
-                setCustomers(prev =>
-                    prev.filter(c => c.id !== deleteId)
-                )
-
-                showToast("Customer deleted.")
-            } else {
-                showToast("Customer to be deleted not found.", "error")
+            if (!deleted) {
+                showToast(`Customer #${id} was not found.`, "error")
+                return false
             }
+
+            setIsDeleteModalOpen(false)
+            setRefreshKey(prev => prev + 1)
+            setSelectedCustomer(prev => prev === id ? null : prev)
+
+            showToast("Customer deleted.")
+
+            return true
         } catch (error) {
-            setError(String(message))
-            showToast(error, "error")
-        } 
+            const message = String(error)
+            setError(message)
+            showToast(message, "error")
+            return false
+        }
     }
 
     return(
@@ -123,11 +132,18 @@ function Customers() {
             )}
 
             <CustomerDataEntry 
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
                 // onSuccess={showToast}
                 onSubmit={handleAddCustomer}
                 isSaving={isSaving}
+            />
+
+            <DeleteConfirmation
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                customerId={selectedCustomer}
+                onDelete={handleDeleteCustomer}
             />
             
             {/* Toolbar */}
@@ -138,12 +154,24 @@ function Customers() {
                 <div className="relative group">
                     <button
                         className="px-2 py-1 rounded-lg bg-accent-light cursor-pointer"
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => setIsAddModalOpen(true)}
                     >
                         <Plus className="text-accent-strong"/>
                     </button>
-
                     <Tooltip text="Add New Customer" />
+                </div>
+
+                {/* Delete Customer */}
+                <div className="relative group"> 
+                    <button
+                        className="px-2 py-1 rounded-lg bg-red-200 text-red-500 cursor-pointer disabled:bg-gray-100 disabled:text-text"
+                        onClick={() => setIsDeleteModalOpen(true) }
+                        disabled={!selectedCustomer}
+                    >
+                        <UserRoundX className="" />
+                    </button>
+                    
+                    <Tooltip text={ selectedCustomer ? "Delete Selected Customer" : "Select a customer to delete"} />
                 </div>
                 
 

@@ -1,20 +1,33 @@
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { invoke } from "@tauri-apps/api/core"
 import { data, useOutletContext, useParams } from "react-router-dom"
 import { getCustomerById } from "../../../../MockData/customers"
+import useToast from "../../../components/hooks/useToast"
 
 import CopyButton from "../../../components/CopyButton"
-import { useEffect, useState } from "react"
-import { invoke } from "@tauri-apps/api/core"
+import Toast from "../../../components/Toast"
+import DeleteConfirmation from "../components/DeleteConfirmation"
+
 
 function CustomerDetails () {
+    const navigate = useNavigate()
     const { customerId } = useParams()
     const { setSelectedCustomer } = useOutletContext()
 
+    const {
+        toast,
+        showToast
+    } = useToast()
+
+    const [refreshKey, setRefreshKey] = useState(0)
     const [customer, setCustomer] = useState(null)
     const [loading, setLoading] = useState(false)
     const [hasLoaded, setHasLoaded] = useState(false)
     const [error, setError] = useState(null)
     const [generalFields, setGeneralFields] = useState(null)
     const [financialFields, setFinancialFields] = useState(null)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     // loads customer data
     useEffect(() => {
@@ -36,7 +49,7 @@ function CustomerDetails () {
         }
 
         getCustomerById()
-    }, [])
+    }, [refreshKey])
 
     // fills the data fields once customer is loaded
     useEffect(() => {
@@ -64,21 +77,66 @@ function CustomerDetails () {
         }
     }, [customerId, setSelectedCustomer])
 
+    async function handleDeleteCustomer(id) {
+        setError(null)
+
+        try {
+            const deleted = await invoke("delete_customer_by_id", { id: id })
+
+            if (!deleted) {
+                showToast(`Customer #${id} was not found.`, "error")
+                return false
+            }
+
+            setIsDeleteModalOpen(false)
+            setRefreshKey(prev => prev + 1)
+            setSelectedCustomer(prev => prev === id ? null : prev)
+
+            showToast("Customer deleted.")
+
+            return true
+        } catch (error) {
+            const message = String(error)
+            setError(message)
+            showToast(message, "error")
+            return false
+        }
+    }
+
     return(
         <div className="mt-5">
             {loading && <p>Loading customer data...</p>}
 
             {error && <p role="alert">Error: {error}</p>}
 
+            {toast && (
+                <Toast message={toast.message} type={toast.type} />
+            )}
+
             {hasLoaded && customer === null && (
                 <div className="text-text text-sm mt-10">
-                    <h1>Error</h1>
+                    <h1>Notice</h1>
                     <p>Customer with the ID No. <b className="text-accent-strong">{customerId}</b> was not found.</p>
+                    <p>If you are trying to view their records, this customer was likely deleted.</p>
+
+                    <button 
+                        className="mt-5 w-15 px-2 py-1 bg-blue-200 hover:bg-blue-300 rounded-lg"
+                        onClick={() => navigate(`/orders/customers`)}
+                    >
+                        Ok
+                    </button>
                 </div>
             )}
 
             {customer && (
                 <>
+                    <DeleteConfirmation
+                        isOpen={isDeleteModalOpen}
+                        onClose={() => setIsDeleteModalOpen(false)}
+                        customerId={Number(customerId)}
+                        onDelete={handleDeleteCustomer}
+                    />
+            
                     <div className="border border-border-soft rounded-lg bg-background shadow-xs mb-2">
                         <h4 className="text-accent-strong px-2 py-1">Customer: {customer?.companyName}</h4>
                     </div>
@@ -132,6 +190,22 @@ function CustomerDetails () {
                             </table>
                         </div>
                     </div>
+                    
+                    <div className="flex space-x-2">
+                        <button
+                            className="px-2 py-1 rounded-lg text-text bg-accent-light hover:bg-accent-strong"
+                        >
+                            Edit Records
+                        </button>
+
+                        <button
+                            className="px-2 py-1 rounded-lg text-white bg-red-500 hover:bg-red-400 cursor-pointer"
+                            onClick={() => setIsDeleteModalOpen(true)}
+                        >
+                            Delete Customer
+                        </button>
+                    </div>
+                    
                 </>
             )}
         </div>
