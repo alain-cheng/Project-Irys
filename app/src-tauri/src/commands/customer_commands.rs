@@ -2,7 +2,7 @@ use deadpool_tiberius::Pool;
 use tauri::State;
 
 use crate::services::customer_service;
-use crate::models::customer::{Customer, NewCustomer};
+use crate::models::customer::{Customer, NewCustomer, UpdateCustomer};
 
 /// Inserts a new customer into the database
 /// 
@@ -63,7 +63,7 @@ pub async fn delete_customer_by_id( // oftentimes we probably dont want to delet
 pub async fn update_customer(
     pool: State<'_, Pool>,
     id: i32,
-    customer: NewCustomer
+    customer: UpdateCustomer
 ) -> Result<Option<Customer>, String> {
     customer_service::update_customer(pool.inner(), id, customer)
         .await

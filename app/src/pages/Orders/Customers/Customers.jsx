@@ -1,8 +1,7 @@
-import { use, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
 import { Plus, Search, SquarePen, UserRoundX } from "lucide-react"
 
-import { customers, getAllCustomers, getCustomerById } from "../../../MockData/customers.js"
 import { invoke } from "@tauri-apps/api/core"
 
 import Tooltip from "../../components/Tooltip.jsx"
@@ -91,6 +90,8 @@ function Customers() {
             const message = String(error)
             setError(message)
             showToast(message, "error")
+
+            return null
         } finally {
             setIsSaving(false)
         }
@@ -134,7 +135,6 @@ function Customers() {
             <CustomerDataEntry 
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
-                // onSuccess={showToast}
                 onSubmit={handleAddCustomer}
                 isSaving={isSaving}
             />
@@ -226,7 +226,7 @@ function Customers() {
                         <tbody className="border">
                             {loading && <tr>Loading customers...</tr>}
 
-                            {error && (<p role="alert">DB Error: {error}</p>)}
+                            {error && (<tr className="bg-red-200">DB Error: {error}</tr>)}
 
                             {customers && (
                                 filteredView.map((customer, index) => (
