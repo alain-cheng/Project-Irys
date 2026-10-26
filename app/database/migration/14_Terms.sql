@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.Terms ON;
+GO
 INSERT INTO dbo.Terms
 (
 	TermCode,
@@ -19,4 +21,6 @@ VALUES
 	(18, NULL, NULL, 0, 0, NULL, 15),
 	(19, NULL, NULL, 0, 0, NULL, 90),
 	(33, NULL, NULL, 0, 0, NULL, 0)
+GO
+SET IDENTITY_INSERT dbo.Terms OFF;
 GO

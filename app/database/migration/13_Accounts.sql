@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.Accounts ON;
+GO
 INSERT INTO dbo.Accounts
 (
 	Id,
@@ -23,4 +25,6 @@ SELECT
 	a.OPENBAL,
 	a.CURRBAL
 FROM FoxProLegacy.dbo.ACCOUNTS AS a;
+GO
+SET IDENTITY_INSERT dbo.Accounts OFF;
 GO

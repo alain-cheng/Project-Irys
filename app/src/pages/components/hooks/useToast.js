@@ -21,7 +21,7 @@ export default function useToast() {
 
         setTimeout(() => {
             setToast(null)
-        }, 3000)
+        }, 4000)
     }
 
     return {

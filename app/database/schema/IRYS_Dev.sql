@@ -11,7 +11,7 @@ GO
 ---               AccountClasses                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.AccountClasses ( 
-	AccountClass         int      NOT NULL,
+	AccountClass         int    IDENTITY ( 1 , 1 )  NOT NULL,
 	AccountDescription   varchar(max)      NULL,
 	OpeningBalance       float  CONSTRAINT DF_AccountClasses_OpeningBalance DEFAULT 0    NOT NULL,
 	CurrentBalance       float  CONSTRAINT DF_AccountClasses_CurrentBalance DEFAULT 0    NOT NULL,
@@ -27,7 +27,7 @@ GO
 ---                  Accounts                   ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Accounts ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	AccountClass         int      NOT NULL,
 	SubAccountOf         int      NULL,
 	AccountName          varchar(255)      NOT NULL,
@@ -53,7 +53,7 @@ GO
 ---                    Banks                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Banks ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	BankName             varchar(255)      NOT NULL,
 	ContactName          varchar(100)      NULL,
 	ContactTitle         varchar(50)      NULL,
@@ -71,7 +71,7 @@ GO
 ---                 BillStatus                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.BillStatus ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	StatusName           varchar(20)      NOT NULL,
 	CONSTRAINT pk_BillStatus PRIMARY KEY  ( Id ) 
  );
@@ -84,7 +84,7 @@ GO
 ---                 Categories                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Categories ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CategoryName         varchar(255)      NOT NULL,
 	Description          varchar(max)      NULL,
 	CONSTRAINT pk_Categories PRIMARY KEY  ( Id ) 
@@ -98,7 +98,7 @@ GO
 ---                CustomerArea                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.CustomerArea ( 
-	AreaCode             int      NOT NULL,
+	AreaCode             int    IDENTITY ( 1 , 1 )  NOT NULL,
 	AreaName             varchar(50)      NOT NULL,
 	CONSTRAINT pk_CustomerArea PRIMARY KEY  ( AreaCode ) ,
 	CONSTRAINT unq_CustomerArea_AreaName UNIQUE ( AreaName ) 
@@ -118,7 +118,7 @@ GO
 ---                  Employees                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Employees ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	FirstName            varchar(50)      NULL,
 	MiddleName           varchar(20)      NULL,
 	LastName             varchar(50)      NULL,
@@ -155,7 +155,7 @@ GO
 ---                 Collections                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Collections ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CollectionDate       date  CONSTRAINT DF_Collections_CollectionDate DEFAULT getdate()    NOT NULL,
 	EmployeeId           int      NULL,
 	ReferenceNumber      varchar(100)      NULL,
@@ -172,7 +172,7 @@ GO
 ---                  Customers                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Customers ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CompanyName          varchar(255)      NULL,
 	ContactName          varchar(100)      NULL,
 	ContactTitle         varchar(50)      NULL,
@@ -219,7 +219,7 @@ GO
 ---                 ItemGroups                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.ItemGroups ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	ItemGroupDescription varchar(255)      NOT NULL,
 	PhotoFile            varchar(2083)      NULL,
 	CategoryId           int      NULL,
@@ -239,7 +239,7 @@ GO
 ---                ItemLocations                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.ItemLocations ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	LocationName         varchar(max)      NOT NULL,
 	CONSTRAINT pk_ItemLocations PRIMARY KEY  ( Id ) 
  );
@@ -252,7 +252,7 @@ GO
 ---                OrderStatuses                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.OrderStatuses ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	StatusName           varchar(20)      NOT NULL,
 	CONSTRAINT pk_OrderStatuses PRIMARY KEY  ( Id ) 
  );
@@ -265,7 +265,7 @@ GO
 ---                 PayStatuses                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.PayStatuses ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	StatusName           varchar(10)      NOT NULL,
 	CONSTRAINT pk_PayStatuses PRIMARY KEY  ( Id ) 
  );
@@ -278,7 +278,7 @@ GO
 ---                PaymentModes                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.PaymentModes ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	ModeName             varchar(20)      NOT NULL,
 	CONSTRAINT pk_PaymentModes PRIMARY KEY  ( Id ) 
  );
@@ -291,7 +291,7 @@ GO
 ---                  Payments                   ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Payments ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CustomerId           int      NULL,
 	PaymentModeId        int      NOT NULL,
 	Amount               float  CONSTRAINT DF_Payments_Amount DEFAULT 0    NOT NULL,
@@ -325,7 +325,7 @@ GO
 ---               PurchaseOrders                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.PurchaseOrders ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CONSTRAINT pk_PurchaseOrders PRIMARY KEY  ( Id ) 
  );
 GO
@@ -334,7 +334,7 @@ GO
 ---              PurchaseStatuses               ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.PurchaseStatuses ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	StatusName           varchar(20)      NOT NULL,
 	CONSTRAINT pk_PurchaseStatuses PRIMARY KEY  ( Id ) 
  );
@@ -347,7 +347,7 @@ GO
 ---                  Purchases                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Purchases ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	SupplierId           int      NULL,
 	PONumber             varchar(100)      NULL,
 	EmployeeId           int      NULL,
@@ -392,7 +392,7 @@ GO
 ---                  Shippers                   ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Shippers ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	ShipperName          varchar(255)      NOT NULL,
 	ContactName          varchar(100)      NULL,
 	Address              varchar(255)      NULL,
@@ -408,7 +408,7 @@ GO
 ---                  Suppliers                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Suppliers ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	SupplierName         varchar(255)      NOT NULL,
 	ContactName          varchar(100)      NULL,
 	ContactTitle         varchar(50)      NULL,
@@ -446,7 +446,7 @@ GO
 ---              SupplierPayments               ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.SupplierPayments ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	SupplierId           int      NULL,
 	PaymentModeId        int      NOT NULL,
 	Amount               float  CONSTRAINT DF_SupplierPayments_Amount DEFAULT 0    NOT NULL,
@@ -479,7 +479,7 @@ GO
 ---                    Terms                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Terms ( 
-	TermCode             int      NOT NULL,
+	TermCode             int    IDENTITY ( 1 , 1 )  NOT NULL,
 	DiscDate             date      NULL,
 	DueDate              date      NULL,
 	Discount             float  CONSTRAINT DF_Terms_Discount DEFAULT 0    NOT NULL,
@@ -503,7 +503,7 @@ GO
 ---                    Units                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Units ( 
-	UnitCode             int      NOT NULL,
+	UnitCode             int    IDENTITY ( 1 , 1 )  NOT NULL,
 	UnitName             varchar(25)      NOT NULL,
 	CONSTRAINT pk_Unit PRIMARY KEY  ( UnitCode ) 
  );
@@ -521,7 +521,7 @@ GO
 ---                    Items                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Items ( 
-	ItemCode             int      NOT NULL,
+	ItemCode             int    IDENTITY ( 1 , 1 )  NOT NULL,
 	ItemName             varchar(255)      NOT NULL,
 	Remarks              varchar(max)      NULL,
 	ItemGroupId          int      NULL,
@@ -656,7 +656,7 @@ GO
 ---                    Users                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Users ( 
-	UserId               int      NOT NULL,
+	UserId               int    IDENTITY ( 1 , 1 )  NOT NULL,
 	EmployeeId           int      NULL,
 	Username             varchar(255)      NOT NULL,
 	PasswordHash         varchar(255)      NOT NULL,
@@ -671,7 +671,7 @@ GO
 ---                 SalesOrders                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.SalesOrders ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CustomerId           int      NULL,
 	OrderDate            date  CONSTRAINT DF_SalesOrders_OrderDate DEFAULT getdate()    NOT NULL,
 	Remarks              varchar(max)      NULL,
@@ -695,7 +695,7 @@ GO
 ---              SalesOrderDetails              ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.SalesOrderDetails ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	SalesOrderId         int      NULL,
 	Quantity             int      NOT NULL,
 	ItemCode             int      NULL,
@@ -725,7 +725,7 @@ GO
 ---               TempSalesOrders               ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.TempSalesOrders ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	SalesOrderId         int      NULL,
 	CustomerId           int      NULL,
 	OrderDate            date      NULL,
@@ -743,7 +743,7 @@ GO
 ---                   Vendors                   ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Vendors ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	VendorName           varchar(255)      NULL,
 	ContactName          varchar(100)      NULL,
 	ContactTitle         varchar(50)      NULL,
@@ -788,7 +788,7 @@ GO
 ---                    Bills                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Bills ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	BillDate             date  CONSTRAINT DF_Bills_BillDate DEFAULT getdate()    NOT NULL,
 	DueDate              date  CONSTRAINT DF_Bills_DueDate DEFAULT getdate()    NOT NULL,
 	VendorId             int      NULL,
@@ -817,7 +817,7 @@ GO
 ---                 BillDetails                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.BillDetails ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	BillId               int      NULL,
 	AccountId            int      NULL,
 	Amount               float  CONSTRAINT DF_BillDetails_Amount DEFAULT 0    NOT NULL,
@@ -833,7 +833,7 @@ GO
 ---             BillPaymentDetails              ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.BillPaymentDetails ( 
-	PaymentId            int      NULL,
+	PaymentId            int      NOT NULL,
 	BillId               int      NULL,
 	Amount               float  CONSTRAINT DF_BillPaymentDetails_Amount DEFAULT 0    NOT NULL
  );
@@ -846,7 +846,7 @@ GO
 ---                 Warehouses                  ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Warehouses ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	WarehouseName        varchar(255)      NULL,
 	WarehouseDescription varchar(max)      NULL,
 	CONSTRAINT pk_Warehouses PRIMARY KEY  ( Id ) 
@@ -874,7 +874,7 @@ GO
 ---                DefectDetails                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.DefectDetails ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	DefectId             int      NOT NULL,
 	ItemCode             int      NOT NULL,
 	Quantity             int  CONSTRAINT DF_DefectDetails_Quantity DEFAULT 0    NOT NULL,
@@ -889,7 +889,7 @@ GO
 ---                   Orders                    ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.Orders ( 
-	Id                   int      NOT NULL,
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
 	CustomerId           int      NULL,
 	InvoiceNumber        varchar(100)      NULL,
 	EmployeeId           int      NULL,

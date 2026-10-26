@@ -1,5 +1,6 @@
--- LEGACY.dbo.VENDORS > IRYS.dbo.Vendors
 USE IRYS;
+GO
+SET IDENTITY_INSERT dbo.Vendors ON;
 GO
 INSERT INTO dbo.Vendors
 (
@@ -28,4 +29,6 @@ SELECT
 	NULLIF(LTRIM(RTRIM(v.FAX)), ''),
 	NULLIF(LTRIM(RTRIM(v.TIN)), '')
 FROM FoxProLegacy.dbo.VENDORS AS v;
+GO
+SET IDENTITY_INSERT dbo.Vendors OFF;
 GO

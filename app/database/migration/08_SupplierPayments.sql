@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.SupplierPayments ON;
+GO
 INSERT INTO dbo.SupplierPayments
 (
 	Id,
@@ -67,4 +69,6 @@ LEFT JOIN IRYS.dbo.PaymentModes AS pm
 	ON pm.ModeName = LTRIM(RTRIM(p.MODE))
 LEFT JOIN IRYS.dbo.PayStatuses AS ps
 	ON ps.StatusName = LTRIM(RTRIM(p.STATUS))
+GO
+SET IDENTITY_INSERT dbo.SupplierPayments OFF;
 GO

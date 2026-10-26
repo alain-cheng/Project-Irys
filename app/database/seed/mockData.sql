@@ -4,6 +4,8 @@ GO
 ---------------------------------------------------
 ---                CustomerArea                 ---
 ---------------------------------------------------
+SET IDENTITY_INSERT dbo.CustomerArea ON;
+GO
 INSERT INTO dbo.CustomerArea
 (
     AreaCode,
@@ -16,10 +18,14 @@ VALUES
     (4, 'Cavite'),
     (5, 'Bulacan');
 GO
+SET IDENTITY_INSERT dbo.CustomerArea OFF;
+GO
 
 ---------------------------------------------------
 ---                  Employees                  ---
 ---------------------------------------------------
+SET IDENTITY_INSERT dbo.Employees ON;
+GO
 INSERT INTO dbo.Employees
 (
     Id,
@@ -137,10 +143,14 @@ VALUES
         2
     );
 GO
+SET IDENTITY_INSERT dbo.Employees OFF;
+GO
 
 ---------------------------------------------------
 ---                  Customers                  ---
 ---------------------------------------------------
+SET IDENTITY_INSERT dbo.Customers ON;
+GO
 INSERT INTO dbo.Customers
 (
     Id,
@@ -431,4 +441,6 @@ VALUES
         'C',
         'Alarm enabled for testing.'
     );
+GO
+SET IDENTITY_INSERT dbo.Customers OFF;
 GO

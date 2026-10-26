@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.OrderStatuses ON;
+GO
 INSERT INTO dbo.OrderStatuses
 (
 	Id,
@@ -11,4 +13,6 @@ VALUES
 	(2, 'OPEN'),
 	(3, 'POSTED'),
 	(4, 'CANCEL')
+GO
+SET IDENTITY_INSERT dbo.OrderStatuses OFF;
 GO

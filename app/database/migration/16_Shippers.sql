@@ -1,5 +1,7 @@
 USE IRYS;
 GO
+SET IDENTITY_INSERT dbo.Shippers ON;
+GO
 INSERT INTO dbo.Shippers
 (
     Id,
@@ -21,4 +23,6 @@ SELECT
     NULLIF(LTRIM(RTRIM(s.ZIPCODE)), ''),
     NULLIF(LTRIM(RTRIM(s.PHONE)), '')
 FROM FoxProLegacy.dbo.SHIPPERS AS s;
+GO
+SET IDENTITY_INSERT dbo.Shippers OFF;
 GO
