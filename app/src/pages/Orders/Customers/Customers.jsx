@@ -224,9 +224,9 @@ function Customers() {
 
                         {/* body */}
                         <tbody className="border">
-                            {loading && <tr>Loading customers...</tr>}
+                            {loading && <tr><td>Loading customers...</td></tr>}
 
-                            {error && (<tr className="bg-red-200">DB Error: {error}</tr>)}
+                            {error && (<tr className="bg-red-200"><td>DB Error: {error}</td></tr>)}
 
                             {customers && (
                                 filteredView.map((customer, index) => (

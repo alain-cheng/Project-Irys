@@ -19,9 +19,11 @@ If you are developing a production application, we recommend using TypeScript wi
 
 ## Tech Stack, Frameworks, Libraries
 
-- ReactJs
+- React.js
 - [Vite](https://vite.dev/guide/)
+- [Vitest](https://vitest.dev/guide/)
 - [Tauri](https://v2.tauri.app/start/)
 - [Rust](https://doc.rust-lang.org/stable/) Backend
+
 - [TailwindCSS](https://tailwindcss.com/docs/installation/using-vite)
 - [Lucide React](https://lucide.dev/icons) Icons
