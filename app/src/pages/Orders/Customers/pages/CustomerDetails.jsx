@@ -40,10 +40,36 @@ function CustomerDetails () {
         zipCode: "",
         phone: "",
         fax: "",
+        alarm: false,
+        employeeId: 0,
+        priceLvl: 0,
+        creditLimit: 0,
+        balance: 0,
+        credit: 0,
+        invBalance: 0,
+        tin: "",
+        areaCode: 0,
+        customerCode: "",
+        customerArea: "",
+        customerAgent: "",
+        agentName: "",
+        customerType: "",
+        startDate: "",
+        smCode: "",
+        term: "",
+        termCode: "",
+        pType: "",
+        remarks: "",
     })
     //////////////////////////////////
 
+    /*
+        TODO: Add input constraints
+            - startDate requires "YYYY-MM-DD" formatting
+            - numerical fields should  only accept numerical inputs
+    */
     const generalFields = [
+        // [label, field, ]
         ["Customer ID", null],
         ["Company Name", "companyName"],
         ["Contact Name", "contactName"],
@@ -53,10 +79,36 @@ function CustomerDetails () {
         ["Province", "province"],
         ["Zip Code", "zipCode"],
         ["Phone Number", "phone"],
+        ["Employee", "employeeId"],
+        ["FAX Number", "fax"],
+        ["TIN", "tin"],
+        ["Area Code", "areaCode"],
+        ["Customer Code", "customerCode"],
+        ["Customer Area", "customerArea"],
+        ["Customer Agent", "customerAgent"],
+        ["Agent Name", "agentName"],
+        ["Customer Type", "customerType"],
+        ["Start Date", "startDate"],
+        ["SM Code", "smCode"],
+        ["Term", "term"],
+        ["Term Code", "termCode"],
+        ["P Type", "pType"],
     ]
 
     const financialFields = [
-        ["FAX Number", "fax"],
+        ["Price Level", "priceLvl"],
+        ["Credit Limit", "creditLimit"],
+        ["Balance", "balance"],
+        ["Credit", "credit"],
+        ["Inventory Balance", "invBalance"],
+    ]
+
+    const toggleFields = [
+        ["Alarm", "alarm"],
+    ]
+
+    const textFields = [
+        ["Remarks", "remarks"]
     ]
 
     //////////////////////////////////
@@ -112,6 +164,26 @@ function CustomerDetails () {
             zipCode: customer.zipCode ?? "",
             phone: customer.phone ?? "",
             fax: customer.fax ?? "",
+            alarm: customer.alarm ?? false,
+            employeeId: customer.employeeId ?? 0,
+            priceLvl: customer.priceLvl ?? 0,
+            creditLimit: customer.creditLimit ?? 0,
+            balance: customer.balance ?? 0,
+            credit: customer.credit ?? 0,
+            invBalance: customer.invBalance ?? 0,
+            tin: customer.tin ?? "",
+            areaCode: customer.areaCode ?? 0,
+            customerCode: customer.customerCode ?? "",
+            customerArea: customer.customerArea ?? "",
+            customerAgent: customer.customerAgent ?? "",
+            agentName: customer.agentName ?? "",
+            customerType: customer.customerType ?? "",
+            startDate: customer.startDate ?? "",
+            smCode: customer.smCode ?? "",
+            term: customer.term ?? "",
+            termCode: customer.termCode ?? "",
+            pType: customer.pType ?? "",
+            remarks: customer.remarks ?? "",
         }
     }
 
@@ -164,7 +236,7 @@ function CustomerDetails () {
         setError(null)
         setIsSaving(true)
 
-        // turn blank inputs into null
+        // convert blank inputs into null
         const nullable = value => value.trim() || null
 
         const updatedCustomer = {
@@ -177,6 +249,26 @@ function CustomerDetails () {
             zipCode: nullable(formData.zipCode),
             phone: nullable(formData.phone),
             fax: nullable(formData.fax),
+            alarm: Boolean(formData.alarm),
+            employeeId: parseInt(formData.employeeId, 10),
+            priceLvl: parseInt(formData.priceLvl, 10),
+            creditLimit: Number(formData.creditLimit),
+            balance: Number(formData.balance),
+            credit: Number(formData.credit),
+            invBalance: Number(formData.invBalance),
+            tin: nullable(formData.tin),
+            areaCode: parseInt(formData.areaCode, 10),
+            customerCode: nullable(formData.customerCode),
+            customerArea: nullable(formData.customerArea),
+            customerAgent: nullable(formData.customerAgent),
+            agentName: nullable(formData.agentName),
+            customerType: nullable(formData.customerType),
+            startDate: nullable(formData.startDate),
+            smCode: nullable(formData.smCode),
+            term: nullable(formData.term),
+            termCode: nullable(formData.termCode),
+            pType: nullable(formData.pType),
+            remarks: nullable(formData.remarks),
         }
 
         try {
@@ -195,7 +287,7 @@ function CustomerDetails () {
             } 
 
             setCustomer(result)
-            setFormData(toFormData(result))
+            setFormData(toFormData(result))+
             setIsEditing(false)
 
             showToast("Customer records updated.")
@@ -209,6 +301,9 @@ function CustomerDetails () {
     }
     //////////////////////////////////
 
+    /* 
+        TODO: Display alarm
+    */
     return(
         <div className="mt-5">
             {loading && <p>Loading customer data...</p>}
@@ -298,7 +393,7 @@ function CustomerDetails () {
                             </table>
                         </div>
                         
-                        <div className="flex-1">
+                        <div className="flex-1 space-y-3">
                             <h3 className="text-accent-strong mb-2">Financial Details</h3>
                             <table className="border-collapse shadow-xs">
                                 <tbody>
@@ -332,6 +427,22 @@ function CustomerDetails () {
                                     ))}
                                 </tbody>
                             </table>
+
+                            
+                            {textFields.map(([label, field]) => (
+                                <div className="flex-col space-y-3">
+                                    <h3 className="text-accent-strong">{label}</h3>
+                                    <textarea 
+                                        rows={4} 
+                                        name={field} 
+                                        onChange={handleFieldChange}
+                                        className="w-full px-2 py-2 text-sm resize-none border border-border-soft" 
+                                        disabled={!isEditing}
+                                    >
+                                        {customer[field]}
+                                    </textarea>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     

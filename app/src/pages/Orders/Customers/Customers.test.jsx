@@ -54,7 +54,7 @@ describe("Customers", () => {
         ).toBeInTheDocument()
     })
 
-    test("Loads customers after invoking appropriate Tauri command", async () => {
+    test("Loads customers after invoking `get_all_customers` Tauri command", async () => {
         invoke.mockResolvedValue([
             {
                 id: 1,
