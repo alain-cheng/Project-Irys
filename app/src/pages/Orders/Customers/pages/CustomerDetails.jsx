@@ -354,6 +354,8 @@ function CustomerDetails () {
                                         ${ isEditing ? "cursor-pointer" : ""}
                                         ${ formData.alarm ? "bg-red-200 border-red-500" : ""}
                                     `}
+                                    aria-label="Toggle Alarm"
+                                    aria-pressed={formData.alarm}
                                     disabled={!isEditing}
                                     onClick={() => 
                                         setFormData(prev => ({
@@ -466,6 +468,7 @@ function CustomerDetails () {
                                                         <input
                                                             type={type}
                                                             name={field}
+                                                            aria-label={label}
                                                             value={formData[field] ?? ""}
                                                             onChange={handleFieldChange}
                                                             min={min}
@@ -512,6 +515,7 @@ function CustomerDetails () {
                                                     <input
                                                         type="number"
                                                         name={field}
+                                                        aria-label={label}
                                                         value={formData[field]}
                                                         onChange={handleFieldChange}
                                                         className="w-full min-w-0 rounded border border-border-soft bg-background px-2 py-1 outline-none focus:border-accent-strong"
@@ -536,14 +540,14 @@ function CustomerDetails () {
                                 <div className="flex-col space-y-3">
                                     <h3 className="text-accent-strong">{label}</h3>
                                     <textarea 
+                                        className="w-full px-2 py-2 text-sm resize-none border border-border-soft" 
                                         rows={4} 
                                         name={field} 
+                                        aria-label={field}
+                                        value={formData[field] ?? ""}
                                         onChange={handleFieldChange}
-                                        className="w-full px-2 py-2 text-sm resize-none border border-border-soft" 
                                         disabled={!isEditing}
-                                    >
-                                        {customer[field]}
-                                    </textarea>
+                                    />
                                 </div>
                             ))}
                         </div>

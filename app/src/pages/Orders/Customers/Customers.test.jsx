@@ -33,11 +33,11 @@ function CustomersTestWrapper() {
     )
 }
 
-beforeEach(() => {
-    vi.clearAllMocks()
-})
-
 describe("Customers", () => {
+    beforeEach(() => {
+        vi.clearAllMocks()
+    })
+
     test("Renders the customer table", () => {
         render(
             <MemoryRouter>
