@@ -7,7 +7,8 @@ import useToast from "../../../components/hooks/useToast"
 import CopyButton from "../../../components/CopyButton"
 import Toast from "../../../components/Toast"
 import DeleteConfirmation from "../components/DeleteConfirmation"
-import { CircleX, Pencil, Save, Trash } from "lucide-react"
+import { Bell, BellDot, CircleX, Pencil, Save, Trash } from "lucide-react"
+import Tooltip from "../../../components/Tooltip"
 
 
 function CustomerDetails () {
@@ -343,50 +344,98 @@ function CustomerDetails () {
                     <h1 className="text-text mb-2">Customer Details</h1>
 
                     {/* Toolbar */}
-                    <div className="flex px-2 py-3 space-x-2 justify-end bg-background border border-border-soft rounded-lg">
-                        {isEditing ? (
-                            <>
-                                <button
-                                    type="button"
-                                    className="flex items-center justify-center px-2 py-1 rounded-lg text-white bg-green-600 hover:bg-green-500 disabled:opacity-50"
-                                    onClick={handleSave}
-                                    disabled={isSaving}
+                    <div className="flex bg-background border border-border-soft rounded-lg">
+                        {/* Icon Buttons */}
+                        <div className="flex flex-1 px-2 py-3 justify-start items-center">
+                            <div className="relative group">
+                                <button 
+                                    className={`
+                                        px-2 py-2 border border-border-soft rounded-full 
+                                        ${ isEditing ? "cursor-pointer" : ""}
+                                        ${ formData.alarm ? "bg-red-200 border-red-500" : ""}
+                                    `}
+                                    disabled={!isEditing}
+                                    onClick={() => 
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            alarm: !prev.alarm
+                                        }))
+                                    }
                                 >
-                                    <Save size={15} className="mr-2"/>
-                                    {isSaving ? "Saving..." : "Save"}
+                                    {formData.alarm ? (
+                                        <>
+                                            <BellDot size={20} className="text-red-500" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Bell size={20} className="text-text" />
+                                        </>
+                                    )}
+                                    
                                 </button>
+                                <Tooltip 
+                                    text={`
+                                        ${isEditing 
+                                            ? `${formData.alarm 
+                                                ? "Turn off alarm" 
+                                                : "Turn on alarm"
+                                                }` 
+                                            : `${formData.alarm 
+                                                ? "Edit to turn off alarm" 
+                                                : "Edit to turn on alarm"
+                                                }`
+                                        }
+                                    `}
+                                />
+                            </div>
+                        </div>
 
-                                <button
-                                    type="button"
-                                    className="flex items-center justify-center px-2 py-1 rounded-lg text-text bg-background border border-border-soft hover:bg-background-light disabled:opacity-50"
-                                    onClick={handleDiscard}
-                                    disabled={isSaving}
-                                >
-                                    <CircleX size={15} className="mr-2"/>
-                                    Discard
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    type="button"
-                                    className="flex items-center justify-center px-2 py-1 rounded-lg text-text bg-accent-light hover:bg-accent-strong"
-                                    onClick={() => setIsEditing(true)}
-                                >
-                                    <Pencil size={15} className="mr-2"/>
-                                    Edit
-                                </button>
+                        {/* Buttons */}
+                        <div className="flex flex-1 px-2 py-3 space-x-2 justify-end">
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="flex items-center justify-center px-2 py-1 rounded-lg text-white bg-green-600 hover:bg-green-500 disabled:opacity-50"
+                                        onClick={handleSave}
+                                        disabled={isSaving}
+                                    >
+                                        <Save size={15} className="mr-2"/>
+                                        {isSaving ? "Saving..." : "Save"}
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    className="flex items-center justify-center px-2 py-1 rounded-lg text-white bg-red-500 hover:bg-red-400 cursor-pointer"
-                                    onClick={() => setIsDeleteModalOpen(true)}
-                                >
-                                    <Trash size={15} className="mr-2"/>
-                                    Delete
-                                </button>
-                            </>
-                        )}
+                                    <button
+                                        type="button"
+                                        className="flex items-center justify-center px-2 py-1 rounded-lg text-text bg-background border border-border-soft hover:bg-background-light disabled:opacity-50"
+                                        onClick={handleDiscard}
+                                        disabled={isSaving}
+                                    >
+                                        <CircleX size={15} className="mr-2"/>
+                                        Discard
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="flex items-center justify-center px-2 py-1 rounded-lg text-text bg-accent-light hover:bg-accent-strong"
+                                        onClick={() => setIsEditing(true)}
+                                    >
+                                        <Pencil size={15} className="mr-2"/>
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="flex items-center justify-center px-2 py-1 rounded-lg text-white bg-red-500 hover:bg-red-400 cursor-pointer"
+                                        onClick={() => setIsDeleteModalOpen(true)}
+                                    >
+                                        <Trash size={15} className="mr-2"/>
+                                        Delete
+                                    </button>
+                                </>
+                            )}
+                        </div>
                     </div>
                     
                     <div className="border border-border-soft rounded-lg px-2 py-3 my-3 bg-background shadow-xs flex gap-2">
