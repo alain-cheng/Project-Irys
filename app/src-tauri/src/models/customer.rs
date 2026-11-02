@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use chrono::NaiveDate;
 
+// - '//' marks optional fields, but not encouraged in frontend
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Customer {
@@ -15,14 +17,14 @@ pub struct Customer {
     pub phone: Option<String>,
     pub fax: Option<String>,
     pub alarm: bool,
-    pub employee_id: Option<i32>,
+    pub employee_id: Option<i32>, //
     pub price_lvl: i32,
     pub credit_limit: f64,
     pub balance: f64,
     pub credit: f64,
     pub inv_balance: f64,
     pub tin: Option<String>,
-    pub area_code: Option<i32>,
+    pub area_code: Option<i32>, //
     pub customer_code: Option<String>,
     pub customer_area: Option<String>,
     pub customer_agent: Option<String>,
@@ -79,7 +81,7 @@ pub struct UpdateCustomer {
     pub fax: Option<String>,
     #[serde(default)]
     pub alarm: bool,
-    pub employee_id: Option<i32>,
+    pub employee_id: Option<i32>, 
     #[serde(default = "default_price_lvl")]
     pub price_lvl: i32,
     #[serde(default)]
