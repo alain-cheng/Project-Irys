@@ -86,4 +86,37 @@ describe("Customers", () => {
             screen.getByText("Jane Doe")
         ).toBeInTheDocument()
     })
+
+    test("Highlights table rows red when alarm is enabled", async () => {
+        invoke.mockResolvedValue([
+            {
+                id: 1,
+                companyName: "Alarmed Company",
+                contactName: "Jane Doe",
+                alarm: true,
+            },
+            {
+                id: 2,
+                companyName: "Normal Company",
+                contactName: "John Doe",
+                alarm: false,
+            },
+        ])
+
+        render(
+            <MemoryRouter>
+                <CustomersTestWrapper />
+            </MemoryRouter>
+        )
+
+        const alarmedCustomer = await screen.findByText("Alarmed Company")
+        const normalCustomer = screen.getByText("Normal Company")
+
+        const alarmedRow = alarmedCustomer.closest("tr")
+        const normalRow = normalCustomer.closest("tr")
+
+        expect(alarmedRow).toHaveClass("bg-red-200")
+        expect(normalRow).not.toHaveClass("bg-red-200")
+    })
+
 })
