@@ -1,7 +1,8 @@
-import { Navigate, BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Outlet, Routes, Route } from "react-router-dom"
 
 // make sure to add new pages here for routing
 import Dashboard from "./pages/Dashboard/Dashboard"
+import Login from "./pages/Login/Login"
 
 import Orders from "./pages/Orders/Orders"
 import OrdersDefault from "./pages/Orders/OrdersDefault"
@@ -51,10 +52,11 @@ function App() {
   return (
       <BrowserRouter>
 
-        <Header />
-
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Login />} />
+
+          <Route element={<><Header /><Outlet /></>}>
+          <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/orders" element={<Orders />}>
             <Route index element={<OrdersDefault/>}/> 
@@ -107,6 +109,7 @@ function App() {
           <Route path="/reports" element={<Reports />} />
 
           <Route path="*" element={<NotFound />} /> 
+          </Route>
         </Routes>
       </BrowserRouter>
   )

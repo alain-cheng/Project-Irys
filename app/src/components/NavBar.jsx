@@ -1,14 +1,15 @@
 import { useNavigate } from "react-router-dom"
 import { NavLink } from "react-router-dom";
+import { LogOut } from "lucide-react"
 
 function NavBar() {
     const navigate = useNavigate();
 
     return(
-        <div className="border-b border-border-soft rounded-2xl py-2 shadow-xs">
-            <div className="">
+        <nav className="flex flex-1 min-w-0 items-center gap-4">
+            <div className="shrink-0 border-b border-border-soft rounded-2xl py-2 shadow-xs">
                 <NavLink
-                    to="/"
+                    to="/dashboard"
                     end
                     className={({ isActive }) =>
                         `px-3 py-2 rounded-l-2xl ${
@@ -63,7 +64,15 @@ function NavBar() {
                     Reports
                 </NavLink>
             </div>
-        </div>
+            <button
+                type="button"
+                onClick={() => navigate("/", { replace: true })}
+                className="ml-auto flex shrink-0 cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-text transition hover:bg-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+            >
+                <LogOut size={18} aria-hidden="true" />
+                Logout
+            </button>
+        </nav>
     )
 }
 
