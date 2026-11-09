@@ -34,7 +34,7 @@ function Items() {
         <div className="flex pt-16 space-x-2">
             <Sidebar links={commonLinks} />
 
-            <main className="ml-70 mr-5 flex-1 min-w-0">
+            <main className="ml-70 peer-data-[collapsed=true]:ml-22 transition-[margin] duration-200 motion-reduce:transition-none mr-5 flex-1 min-w-0">
                 <Breadcrumb />
 
                 <div className="flex flex-col h-full py-5">

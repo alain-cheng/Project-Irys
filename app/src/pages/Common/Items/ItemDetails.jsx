@@ -21,7 +21,7 @@ function ItemDetails () {
             <div className="p-8 text-text text-sm">
                 <Sidebar links={commonLinks} />
 
-                <div className="mt-10">
+                <div className="mt-10 ml-70 peer-data-[collapsed=true]:ml-22 transition-[margin] duration-200 motion-reduce:transition-none">
                     <h1>Error</h1>
                     <p>Item with the ID No. <b className="text-accent-strong">{itemId}</b> was not found.</p>
                 </div>
@@ -57,7 +57,7 @@ function ItemDetails () {
         <div className="pt-16">
             <Sidebar links={commonLinks} />
 
-            <main className="flex-1 ml-70 mr-5 min-w-0">
+            <main className="flex-1 ml-70 peer-data-[collapsed=true]:ml-22 transition-[margin] duration-200 motion-reduce:transition-none mr-5 min-w-0">
                 <Breadcrumb />
 
                 <div className="mb-2 bg-background border border-border-soft rounded-lg  shadow-xs">
