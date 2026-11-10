@@ -1,10 +1,6 @@
-import { useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-
-import { getAverageCost } from "../../../helpers/helpers"
-import { getAllItems } from "../../../MockData/items"
-import { getAllUnits, getUnitById, units } from "../../../MockData/units"
-import { getAllItemCategories, getItemCategoryById } from "../../../MockData/itemCategories"
+import { invoke } from "@tauri-apps/api/core"
 
 import { commonLinks } from "../../../routes/commonLinks"
 
@@ -13,21 +9,29 @@ import Breadcrumb from "../../../components/Breadcrumb"
 
 function Items() {
     const navigate = useNavigate()
-    
-    const itemViews = useMemo(() => {
-        const unitsMap = Object.fromEntries(
-            getAllUnits().map(u => [u.id, u])
-        )
+    const [items, setItems] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-        const categoriesMap = Object.fromEntries(
-            getAllItemCategories().map(ic => [ic.id, ic])
-        )
+    useEffect(() => {
+        let active = true
 
-        return getAllItems().map(item => ({
-            ...item,
-            unitName: unitsMap[item.unitId]?.unitName ?? "-",
-            categoryName: categoriesMap[item.categoryId]?.categoryName ?? "-",
-        }))
+        async function loadItems() {
+            try {
+                const result = await invoke("get_all_items")
+                if (active) setItems(result)
+            } catch (error) {
+                if (active) setError(String(error))
+            } finally {
+                if (active) setLoading(false)
+            }
+        }
+
+        loadItems()
+
+        return () => {
+            active = false
+        }
     }, [])
 
     return(
@@ -50,11 +54,11 @@ function Items() {
                                         <th>Item Name</th>
                                         <th>Stocks</th>
                                         <th>Bad Stocks</th>
-                                        <th>Unit</th>
+                                        <th>Unit Code</th>
                                         <th>Comm</th>
-                                        <th>Terms</th>
-                                        <th>Loc</th>
-                                        <th>Category</th>
+                                        <th>Term Code</th>
+                                        <th>Location ID</th>
+                                        <th>Category ID</th>
                                         <th>Wholesale Price</th>
                                         <th>Wholesale Discount</th>
                                         <th>Retail 1 Price</th>
@@ -70,32 +74,53 @@ function Items() {
                                 </thead>
         
                                 <tbody>
-                                    {itemViews.map((item) => (
+                                    {loading && (
+                                        <tr>
+                                            <td colSpan={20} role="status">Loading items...</td>
+                                        </tr>
+                                    )}
+                                    {error && (
+                                        <tr className="bg-red-200">
+                                            <td colSpan={20} role="alert">DB Error: {error}</td>
+                                        </tr>
+                                    )}
+                                    {!loading && !error && items.length === 0 && (
+                                        <tr>
+                                            <td colSpan={20}>No items found.</td>
+                                        </tr>
+                                    )}
+                                    {items.map((item, index) => (
                                         <tr 
-                                            key={item.id} 
-                                            onClick={() => navigate(`/items/${item.id}`)}
-                                            className="bg-background hover:bg-accent-soft transition cursor-pointer"
+                                            key={item.itemCode}
+                                            onClick={() => navigate(`/items/${item.itemCode}`)}
+                                            className={`
+                                                ${index % 2 === 0
+                                                    ? "bg-background"
+                                                    : "bg-background-light"
+                                                }
+                                                bg-background hover:bg-accent-soft transition cursor-pointer
+                                            `}
                                         >
-                                            <td className="sticky left-0 z-5 bg-background">{item.id}</td>
+                                            <td className="sticky left-0 z-5 bg-background">{item.itemCode}</td>
                                             <td>{item.itemName}</td>
-                                            <td>{item.stocks}</td>
-                                            <td>{item.badStocks}</td>
-                                            <td>{item.unitName}</td>
-                                            <td>{item.comm}</td>
-                                            <td>{item.terms}</td>
-                                            <td>{item.loc}</td>
-                                            <td>{item.categoryName}</td>
-                                            <td>{item.wholesalePrice.toFixed(2)}</td>
-                                            <td>{item.wholesaleDiscount}</td>
-                                            <td>{item.retail1Price.toFixed(2)}</td>
-                                            <td>{item.retail1Discount}</td>
-                                            <td>{item.retail2Price.toFixed(2)}</td>
-                                            <td>{item.retail2Discount}</td>
+                                            <td>{item.unitsInStock}</td>
+                                            <td>{item.returnStocks ?? "-"}</td>
+                                            <td>{item.unitCode ?? "-"}</td>
+                                            <td>{item.itemCommission}</td>
+                                            <td>{item.termCode ?? "-"}</td>
+                                            <td>{item.itemLocationId ?? "-"}</td>
+                                            <td>{item.categoryId ?? "-"}</td>
+                                            <td>{item.sellingPrice.toFixed(2)}</td>
+                                            <td>{item.sDiscId}</td>
+                                            <td>{item.r1SPrice.toFixed(2)}</td>
+                                            <td>{item.r1DiscId}</td>
+                                            <td>{item.r2Price.toFixed(2)}</td>
+                                            <td>{item.r2DiscId}</td>
                                             <td>{item.purchasePrice.toFixed(2)}</td>
-                                            <td>{item.purchaseDiscount}</td>
-                                            <td>{item.specialPrice.toFixed(2)}</td>
-                                            <td>{item.specialDiscount}</td>
-                                            <td>{getAverageCost(item).toFixed(2)}</td>
+                                            <td>{item.pDiscId}</td>
+                                            <td>{item.spPrice.toFixed(2)}</td>
+                                            <td>{item.spDiscId}</td>
+                                            <td>{item.averageCost.toFixed(2)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
