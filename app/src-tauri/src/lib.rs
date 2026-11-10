@@ -29,7 +29,12 @@ pub fn run() {
         commands::customer_commands::get_customer_by_id,
         commands::customer_commands::get_all_customers,
         commands::customer_commands::update_customer,
-        commands::customer_commands::delete_customer_by_id
+        commands::customer_commands::delete_customer_by_id,
+        commands::item_commands::add_item,
+        commands::item_commands::get_item_by_id,
+        commands::item_commands::get_all_items,
+        commands::item_commands::update_item,
+        commands::item_commands::delete_item_by_id
         
       ])
     .run(tauri::generate_context!())
