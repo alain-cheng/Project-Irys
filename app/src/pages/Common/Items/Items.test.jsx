@@ -1,14 +1,23 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
 import { render, screen, within } from "@testing-library/react"
-import { MemoryRouter } from "react-router-dom"
+import { MemoryRouter, Route, Routes } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
 
 import Items from "./Items"
+import ItemsLayout from "./ItemsLayout"
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn() }))
 
 function renderItems() {
-    return render(<MemoryRouter initialEntries={["/items"]}><Items /></MemoryRouter>)
+    return render(
+        <MemoryRouter initialEntries={["/items"]}>
+            <Routes>
+                <Route path="/items" element={<ItemsLayout />}>
+                    <Route index element={<Items />} />
+                </Route>
+            </Routes>
+        </MemoryRouter>
+    )
 }
 
 describe("Items", () => {

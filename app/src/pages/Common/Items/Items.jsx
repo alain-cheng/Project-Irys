@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useOutletContext } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
 
 import { commonLinks } from "../../../routes/commonLinks"
@@ -12,6 +12,11 @@ function Items() {
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+
+    const {
+        selectedItem,
+        setSelectedItem,
+    } = useOutletContext()
 
     useEffect(() => {
         let active = true
@@ -92,11 +97,16 @@ function Items() {
                                     {items.map((item, index) => (
                                         <tr 
                                             key={item.itemCode}
-                                            onClick={() => navigate(`/items/${item.itemCode}`)}
+                                            onClick={() => setSelectedItem(
+                                                prev => prev === item.itemCode ? 0 : item.itemCode
+                                            )}
+                                            onDoubleClick={() => navigate(`/items/${item.itemCode}`)}
                                             className={`
-                                                ${index % 2 === 0
-                                                    ? "bg-background"
-                                                    : "bg-background-light"
+                                                ${selectedItem === item.itemCode
+                                                    ? "bg-yellow-200"
+                                                    : index % 2 === 0
+                                                        ? "bg-background"
+                                                        : "bg-background-light"
                                                 }
                                                 bg-background hover:bg-accent-soft transition cursor-pointer
                                             `}

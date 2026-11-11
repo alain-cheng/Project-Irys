@@ -1,9 +1,6 @@
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-
-import { getItemById } from "../../../MockData/items"
-import { getUnitById } from "../../../MockData/units"
-import { getItemCategoryById } from "../../../MockData/itemCategories"
-import { getAverageCost } from "../../../helpers/helpers"
+import { invoke } from "@tauri-apps/api/core"
 
 import { commonLinks } from "../../../routes/commonLinks"
 import Sidebar from "../../components/Sidebar"
@@ -14,43 +11,79 @@ import Breadcrumb from "../../../components/Breadcrumb"
 function ItemDetails () {
     const { itemId } = useParams()
 
-    const item = getItemById(Number(itemId))
+    const [item, setItem] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-    if (!item) {
+    useEffect(() => {
+        let active = true
+
+        async function loadItem() {
+            setLoading(true)
+            setError(null)
+            setItem(null)
+
+            try {
+                const result = await invoke("get_item_by_id", {
+                    id: Number(itemId),
+                })
+                if (active) setItem(result)
+            } catch (error) {
+                if (active) setError(String(error))
+            } finally {
+                if (active) setLoading(false)
+            }
+        }
+
+        loadItem()
+
+        return () => {
+            active = false
+        }
+    }, [itemId])
+
+    if (loading || error || !item) {
         return (
-            <div className="p-8 text-text text-sm">
+            <div className="pt-16 text-text text-sm">
                 <Sidebar links={commonLinks} />
 
-                <div className="mt-10 ml-70 peer-data-[collapsed=true]:ml-22 transition-[margin] duration-200 motion-reduce:transition-none">
-                    <h1>Error</h1>
-                    <p>Item with the ID No. <b className="text-accent-strong">{itemId}</b> was not found.</p>
-                </div>
+                <main className="ml-70 peer-data-[collapsed=true]:ml-22 transition-[margin] duration-200 motion-reduce:transition-none mr-5 min-w-0">
+                    <Breadcrumb />
+                    <h1>Item Details</h1>
+                    {loading ? (
+                        <p role="status">Loading item...</p>
+                    ) : error ? (
+                        <p role="alert" className="text-red-700">DB Error: {error}</p>
+                    ) : (
+                        <p>Item with the ID No. <b className="text-accent-strong">{itemId}</b> was not found.</p>
+                    )}
+                </main>
             </div>
         )
     }
 
     const generalFields = [
-        ["Item ID Number", item.id],
+        ["Item ID Number", item.itemCode],
         ["Item", item.itemName],
-        ["Category", getItemCategoryById(item.categoryId).categoryName],
-        ["Unit", getUnitById(item.unitId).unitName],
-        ["Commission", item.comm],
-        ["Terms", item.terms],
-        ["Location", item.loc],
+        ["Category ID", item.categoryId ?? "-"],
+        ["Unit Code", item.unitCode ?? "-"],
+        ["Commission", item.itemCommission],
+        ["Term Code", item.termCode ?? "-"],
+        ["Location ID", item.itemLocationId ?? "-"],
     ]
 
     const numericalFields = [
-        ["In Stock", item.stocks],
-        ["Bad Stock", item.badStocks],
+        ["In Stock", item.unitsInStock],
+        ["Bad Stock", item.returnStocks ?? "-"],
     ]
 
     const priceFields = [
-        ["Wholesale", item.wholesalePrice.toFixed(2), item.wholesaleDiscount],
-        ["Retail 1", item.retail1Price.toFixed(2), item.retail1Discount],
-        ["Retail 2", item.retail2Price.toFixed(2), item.retail2Discount],
-        ["Purchase", item.purchasePrice.toFixed(2), item.purchaseDiscount],
-        ["Special", item.specialPrice.toFixed(2), item.specialDiscount],
-        ["Average", getAverageCost(item).toFixed(2), 0],
+        ["Wholesale", item.sellingPrice.toFixed(2), item.sDiscId],
+        ["Retail 1", item.r1SPrice.toFixed(2), item.r1DiscId],
+        ["Retail 2", item.r2Price.toFixed(2), item.r2DiscId],
+        ["Purchase", item.purchasePrice.toFixed(2), item.pDiscId],
+        ["Special", item.spPrice.toFixed(2), item.spDiscId],
+        ["Average", item.averageCost.toFixed(2), "-"],
     ]
 
     return(

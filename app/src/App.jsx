@@ -6,10 +6,12 @@ import Login from "./pages/Login/Login"
 
 import Orders from "./pages/Orders/Orders"
 import OrdersDefault from "./pages/Orders/OrdersDefault"
+
 import CustomersLayout from "./pages/Orders/Customers/CustomersLayout"
 import Customers from "./pages/Orders/Customers/Customers"
 import CustomerDetails from "./pages/Orders/Customers/pages/CustomerDetails"
 import DataEntry from "./pages/Orders/Customers/pages/DataEntry"
+
 import PaymentHistory from "./pages/Orders/Customers/pages/PaymentHistory"
 import SalesHistory from "./pages/Orders/Customers/pages/SalesHistory"
 import SalesOrders from "./pages/Orders/SalesOrders/SalesOrders"
@@ -24,6 +26,7 @@ import CollectionDetails from "./pages/Orders/Collections/CollectionDetails"
 import InvoiceReturns from "./pages/Orders/InvoiceReturns/InvoiceReturns"
 import InvoiceReturnDetails from "./pages/Orders/InvoiceReturns/InvoiceReturnDetails"
 
+import ItemsLayout from "./pages/Common/Items/ItemsLayout"
 import Items from "./pages/Common/Items/Items"
 import ItemDetails from "./pages/Common/Items/ItemDetails"
 import ItemOrders from "./pages/Common/ItemOrders"
@@ -44,6 +47,7 @@ import Reports from "./pages/Reports/Reports"
 
 import Header from './components/Header'
 import NotFound from "./pages/NotFound"
+
 
 
 
@@ -87,8 +91,10 @@ function App() {
             <Route path="invoice_returns/:invoiceReturnId" element={<InvoiceReturnDetails/>}/>
           </Route>
 
-          <Route path="/items" element={<Items />} />
-          <Route path="/items/:itemId" element={<ItemDetails/>}/>
+          <Route path="/items" element={<ItemsLayout />}>
+            <Route index element={<Items />} />
+            <Route path=":itemId" element={<ItemDetails/>}/>
+          </Route>
           
           <Route path="/item_orders" element={<ItemOrders />} />
 
