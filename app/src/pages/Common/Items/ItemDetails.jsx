@@ -1,11 +1,35 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
+import { Image as ImageIcon } from "lucide-react"
 
 import { commonLinks } from "../../../routes/commonLinks"
 import Sidebar from "../../components/Sidebar"
 import CopyButton from "../../components/CopyButton"
 import Breadcrumb from "../../../components/Breadcrumb"
+
+function ItemPhoto({ photoFile, itemName }) {
+    const [failed, setFailed] = useState(false)
+    const source = photoFile?.trim()
+
+    return (
+        <div className="mx-auto aspect-square w-full max-w-64 overflow-hidden rounded-lg border border-border-soft bg-background-light">
+            {source && !failed ? (
+                <img
+                    src={source}
+                    alt={itemName}
+                    onError={() => setFailed(true)}
+                    className="h-full w-full object-contain p-3"
+                />
+            ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-3 text-text">
+                    <ImageIcon size={48} strokeWidth={1} aria-hidden="true" />
+                    <span className="text-sm">No photo available</span>
+                </div>
+            )}
+        </div>
+    )
+}
 
 
 function ItemDetails () {
@@ -98,89 +122,101 @@ function ItemDetails () {
                 </div>
 
                 <h1 className="text-text">Item Details</h1>
-                <div className="flex flex-col gap-2 px-2 py-3 my-2 border border-border-soft rounded-lg bg-background shadow-xs">
-                    <h3 className="text-accent-strong">Item Information</h3>
+                <div className="grid grid-cols-1 items-start gap-6 px-4 py-4 my-2 border border-border-soft rounded-lg bg-background shadow-xs lg:grid-cols-2">
+                    <div className="min-w-0 space-y-5">
+                        <section aria-labelledby="item-photo-heading" className="space-y-3">
+                            <ItemPhoto
+                                key={`${item.itemCode}:${item.photoFile ?? ""}`}
+                                photoFile={item.photoFile}
+                                itemName={item.itemName}
+                            />
+                        </section>
 
-                    <div className="flex gap-2">
-                        <div className="flex-1">
-                            <table className="border border-border-soft shadow-xs">
-                                <tbody>
-                                    {generalFields.map(([label, value], index) => (
-                                        <tr
-                                            key={label}
-                                            className={`${
-                                                index % 2 === 0
-                                                    ? "bg-background"
-                                                    : "bg-background-light"
-                                                }
-                                            `}
-                                        >
-                                            <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                            <td className="w-full">{value}</td>
-                                            <td>
-                                                <CopyButton value={value}/>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <section aria-labelledby="item-information-heading" className="space-y-3">
+                            <h3 id="item-information-heading" className="text-accent-strong">Item Information</h3>
+                            <div className="overflow-x-auto">
+                                <table className="w-full border border-border-soft shadow-xs overflow-hidden">
+                                    <tbody>
+                                        {generalFields.map(([label, value], index) => (
+                                            <tr
+                                                key={label}
+                                                className={`${
+                                                    index % 2 === 0
+                                                        ? "bg-background"
+                                                        : "bg-background-light"
+                                                    }
+                                                `}
+                                            >
+                                                <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
+                                                <td className="w-full"><span className="whitespace-normal wrap-break-word">{value}</span></td>
+                                                <td>
+                                                    <CopyButton value={value}/>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
 
-                        <div className="flex-1">
-                            <table className="border border-border-soft shadow-xs">
-                                <tbody>
-                                    {numericalFields.map(([label, value], index) => (
-                                        <tr
-                                            key={label}
-                                            className={`${
-                                                index % 2 === 0
-                                                    ? "bg-background"
-                                                    : "bg-background-light"
-                                                }
-                                            `}
-                                        >
-                                            <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                            <td className="w-full">{value}</td>
-                                            <td>
-                                                <CopyButton value={value}/>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <section aria-labelledby="item-stock-heading" className="space-y-3">
+                            <div className="overflow-x-auto">
+                                <table className="w-full border border-border-soft shadow-xs overflow-hidden">
+                                    <tbody>
+                                        {numericalFields.map(([label, value], index) => (
+                                            <tr
+                                                key={label}
+                                                className={`${
+                                                    index % 2 === 0
+                                                        ? "bg-background"
+                                                        : "bg-background-light"
+                                                    }
+                                                `}
+                                            >
+                                                <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
+                                                <td className="w-full">{value}</td>
+                                                <td>
+                                                    <CopyButton value={value}/>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
                     </div>
 
-                    <h3 className="text-accent-strong">Pricing per Unit</h3>
-                    
-                    <div className="">
-                        <table className="border border-border-soft shadow-xs">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Amount</th>
-                                    <th>Discount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {priceFields.map(([label, price, discount], index) => (
-                                    <tr
-                                        key={label}
-                                        className={`${
-                                            index % 2 === 0
-                                                ? "bg-background"
-                                                : "bg-background-light"
-                                            }
-                                        `}
-                                    >
-                                        <td className="w-48 font-semibold whitespace-nowrap">{label}</td>
-                                        <td className="w-full">{price}</td>
-                                        <td className="w-full">{discount}</td>
+                    <section aria-labelledby="item-pricing-heading" className="min-w-0 space-y-3">
+                        <h3 id="item-pricing-heading" className="text-accent-strong">Pricing per Unit</h3>
+                        <div className="overflow-x-auto">
+                            <table className="w-full border border-border-soft shadow-xs">
+                                <thead>
+                                    <tr>
+                                        <th>Price Type</th>
+                                        <th className="text-right">Amount</th>
+                                        <th>Discount</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {priceFields.map(([label, price, discount], index) => (
+                                        <tr
+                                            key={label}
+                                            className={`${
+                                                index % 2 === 0
+                                                    ? "bg-background"
+                                                    : "bg-background-light"
+                                                }
+                                            `}
+                                        >
+                                            <td className="font-semibold whitespace-nowrap">{label}</td>
+                                            <td className="text-right tabular-nums">{price}</td>
+                                            <td>{discount}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
                 </div>
             </main>
         </div>

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
-import { render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { Link, MemoryRouter, Route, Routes } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
@@ -59,6 +59,7 @@ describe("ItemDetails", () => {
         invoke.mockResolvedValue(mockItem)
         renderDetails()
         expect(await screen.findByText("Item: Database Drill")).toBeInTheDocument()
+        expect(screen.getByText("No photo available")).toBeInTheDocument()
         for (const [label, expected] of [
             ["Item ID Number", "42"],
             ["Category ID", "8"],
@@ -81,6 +82,19 @@ describe("ItemDetails", () => {
         invoke.mockResolvedValue(null)
         renderDetails()
         expect(await screen.findByText(/was not found/)).toHaveTextContent("42")
+    })
+
+    test("Displays photoFile and falls back to the placeholder if it cannot load", async () => {
+        invoke.mockResolvedValue({ ...mockItem, photoFile: "/images/drill.png" })
+        renderDetails()
+        const photo = await screen.findByRole("img", { name: "Database Drill" })
+        expect(photo).toHaveAttribute("src", "/images/drill.png")
+        expect(screen.queryByText("No photo available")).not.toBeInTheDocument()
+
+        fireEvent.error(photo)
+
+        expect(screen.getByText("No photo available")).toBeInTheDocument()
+        expect(screen.queryByRole("img", { name: "Database Drill" })).not.toBeInTheDocument()
     })
 
     test("Shows errors returned by Tauri", async () => {
