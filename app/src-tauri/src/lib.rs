@@ -34,7 +34,12 @@ pub fn run() {
         commands::item_commands::get_item_by_id,
         commands::item_commands::get_all_items,
         commands::item_commands::update_item,
-        commands::item_commands::delete_item_by_id
+        commands::item_commands::delete_item_by_id,
+        commands::supplier_commands::add_supplier,
+        commands::supplier_commands::get_supplier_by_id,
+        commands::supplier_commands::get_all_suppliers,
+        commands::supplier_commands::update_supplier,
+        commands::supplier_commands::delete_supplier_by_id
         
       ])
     .run(tauri::generate_context!())
