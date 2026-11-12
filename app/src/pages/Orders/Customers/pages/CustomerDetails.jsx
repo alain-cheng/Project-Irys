@@ -298,11 +298,6 @@ function CustomerDetails () {
     }
     //////////////////////////////////
 
-    /* 
-        TODO: 
-        - Display alarm
-        - Input validation
-    */
     return(
         <div className="mt-5">
             {loading && <p>Loading customer data...</p>}

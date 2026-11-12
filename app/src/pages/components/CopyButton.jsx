@@ -14,6 +14,7 @@ function CopyButton({ value }) {
     return(
         <div className="relative group inline-flex">
             <button
+                type="button"
                 onClick={handleCopy}
                 className="opacity-50 hover:opacity-100 transition"
             >
