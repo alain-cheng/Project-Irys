@@ -4,6 +4,7 @@ import { getAllItems, getItemById } from "../../MockData/items"
 import { getAllOrders } from "../../MockData/orders"
 import { getAllUnits, getUnitById } from "../../MockData/units"
 import { commonLinks } from "../../routes/commonLinks"
+import { orderLinks } from "../../routes/orderLinks"
 
 import Sidebar from "../components/Sidebar"
 import Breadcrumb from "../../components/Breadcrumb"
@@ -28,7 +29,7 @@ function ItemOrders() {
 
     return(
         <div className="flex pt-16 space-x-2">
-            <Sidebar links={commonLinks} />
+            <Sidebar links={orderLinks} />
 
             <main className="ml-70 peer-data-[collapsed=true]:ml-22 transition-[margin] duration-200 motion-reduce:transition-none mr-5 flex-1 min-w-0">
                 <Breadcrumb />

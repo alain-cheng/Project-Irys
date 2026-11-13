@@ -272,7 +272,7 @@ function ItemDetails () {
                     <h4 className="px-2 py-1 text-accent-strong">Item: {item.itemName}</h4>
                 </div>
 
-                <h1 className="text-text">Item Details</h1>
+                <h1 className="text-text mb-2">Item Details</h1>
 
                 <div className="flex bg-background border border-border-soft rounded-lg">
                     <div className="flex flex-1 px-2 py-3 space-x-2 justify-end">

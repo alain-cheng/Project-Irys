@@ -850,3 +850,291 @@ VALUES
 GO
 SET IDENTITY_INSERT dbo.Items OFF;
 GO
+
+---------------------------------------------------
+---               Order Statuses                ---
+---------------------------------------------------
+SET IDENTITY_INSERT dbo.OrderStatuses ON;
+GO
+INSERT INTO dbo.OrderStatuses
+(
+	Id,
+	StatusName
+)
+VALUES
+	(0, 'UNSPECIFIED'),
+	(1, 'CLOSED'),
+	(2, 'OPEN'),
+	(3, 'POSTED'),
+	(4, 'CANCEL')
+GO
+SET IDENTITY_INSERT dbo.OrderStatuses OFF;
+GO
+
+---------------------------------------------------
+---                  SalesOrders                  ---
+---------------------------------------------------
+-- Terms, Shippers, and Users are not seeded yet, so those references stay NULL.
+SET IDENTITY_INSERT dbo.SalesOrders ON;
+GO
+INSERT INTO dbo.SalesOrders
+(
+    Id,
+    CustomerId,
+    OrderDate,
+    Remarks,
+    OrderStatusId,
+    Total,
+    Salesman,
+    PONumber,
+    TermCode,
+    ShipperId,
+    [User],
+    EmployeeId,
+    Notes
+)
+VALUES
+    (
+        2001, 1001, '2026-10-01', 'Fully invoiced and paid hardware order.', 1, 5450.00,
+        1, 'PO-2026-001', NULL, NULL, NULL, 1,
+        NULL
+    ),
+    (
+        2002, 1002, '2026-10-08', 'Fully invoiced furniture order with a partial payment.', 3, 6160.00,
+        2, 'PO-2026-002', NULL, NULL, NULL, 2,
+        NULL
+    ),
+    (
+        2003, 1003, '2026-11-03', 'Open sales order awaiting invoicing.', 2, 1790.00,
+        3, 'PO-2026-003', NULL, NULL, NULL, 3,
+        NULL
+    ),
+    (
+        2004, 1004, '2026-10-20', 'Fully invoiced tools order awaiting payment.', 3, 6240.00,
+        4, 'PO-2026-004', NULL, NULL, NULL, 4,
+        NULL
+    ),
+    (
+        2005, 1005, '2026-10-15', 'Fully invoiced and paid supplies order.', 1, 1140.00,
+        5, 'PO-2026-005', NULL, NULL, NULL, 5,
+        NULL
+    ),
+    (
+        2006, 1006, '2026-11-04', 'Partially invoiced construction order.', 2, 8350.00,
+        NULL, 'PO-2026-006', NULL, NULL, NULL, NULL,
+        'Sales order total is 8350.00; invoice total is 3700.00 for 10 sacks of cement and 1 cubic meter of sand. Remaining quantities are not invoiced.'
+    ),
+    (
+        2007, 1007, '2026-10-18', 'Cancelled paint order; retained for cancellation testing.', 4, 2680.00,
+        3, 'PO-2026-007', NULL, NULL, NULL, 3,
+        NULL
+    ),
+    (
+        2008, 1008, '2026-11-05', 'Unspecified-status sales order awaiting review.', 0, 3350.00,
+        5, 'PO-2026-008', NULL, NULL, NULL, 5,
+        NULL
+    );
+GO
+SET IDENTITY_INSERT dbo.SalesOrders OFF;
+GO
+
+---------------------------------------------------
+---               SalesOrderDetails               ---
+---------------------------------------------------
+-- Amount = Quantity * UnitPrice; each sales order total equals its detail amounts.
+-- Invoiced records the quantity invoiced; closed or cancelled lines have isClosed = 1.
+-- SDisc1-10 use their zero defaults; SDiscId stays Net.
+SET IDENTITY_INSERT dbo.SalesOrderDetails ON;
+GO
+INSERT INTO dbo.SalesOrderDetails
+(
+    Id,
+    SalesOrderId,
+    Quantity,
+    ItemCode,
+    UnitPrice,
+    Amount,
+    Invoiced,
+    isClosed,
+    SDiscId
+)
+VALUES
+    (
+        1, 2001, 10, 1, 85.00, 850.00,
+        10, 1, 'Net'
+    ),
+    (
+        2, 2001, 10, 2, 180.00, 1800.00,
+        10, 1, 'Net'
+    ),
+    (
+        3, 2001, 100, 3, 28.00, 2800.00,
+        100, 1, 'Net'
+    ),
+    (
+        4, 2002, 2, 5, 1800.00, 3600.00,
+        2, 1, 'Net'
+    ),
+    (
+        5, 2002, 8, 6, 320.00, 2560.00,
+        8, 1, 'Net'
+    ),
+    (
+        6, 2003, 12, 21, 75.00, 900.00,
+        0, 0, 'Net'
+    ),
+    (
+        7, 2003, 6, 22, 90.00, 540.00,
+        0, 0, 'Net'
+    ),
+    (
+        8, 2003, 10, 24, 35.00, 350.00,
+        0, 0, 'Net'
+    ),
+    (
+        9, 2004, 2, 15, 2200.00, 4400.00,
+        2, 1, 'Net'
+    ),
+    (
+        10, 2004, 4, 13, 280.00, 1120.00,
+        4, 1, 'Net'
+    ),
+    (
+        11, 2004, 3, 14, 240.00, 720.00,
+        3, 1, 'Net'
+    ),
+    (
+        12, 2005, 5, 19, 65.00, 325.00,
+        5, 1, 'Net'
+    ),
+    (
+        13, 2005, 5, 20, 55.00, 275.00,
+        5, 1, 'Net'
+    ),
+    (
+        14, 2005, 3, 2, 180.00, 540.00,
+        3, 1, 'Net'
+    ),
+    (
+        15, 2006, 20, 7, 250.00, 5000.00,
+        10, 0, 'Net'
+    ),
+    (
+        16, 2006, 2, 8, 1200.00, 2400.00,
+        1, 0, 'Net'
+    ),
+    (
+        17, 2006, 10, 9, 95.00, 950.00,
+        0, 0, 'Net'
+    ),
+    (
+        18, 2007, 4, 12, 220.00, 880.00,
+        0, 1, 'Net'
+    ),
+    (
+        19, 2007, 10, 11, 180.00, 1800.00,
+        0, 1, 'Net'
+    ),
+    (
+        20, 2008, 1, 16, 1800.00, 1800.00,
+        0, 0, 'Net'
+    ),
+    (
+        21, 2008, 2, 23, 650.00, 1300.00,
+        0, 0, 'Net'
+    ),
+    (
+        22, 2008, 10, 17, 25.00, 250.00,
+        0, 0, 'Net'
+    );
+GO
+SET IDENTITY_INSERT dbo.SalesOrderDetails OFF;
+GO
+
+---------------------------------------------------
+---                    Orders                     ---
+---------------------------------------------------
+-- Linked invoices include paid, partially paid, unpaid, partial-invoice, and cancelled samples.
+-- Order 3005 invoices only part of sales order 2006; its total is therefore lower.
+-- Cancelled order 3006 retains its original total but has no collectible balance.
+-- TermCode is explicitly NULL to avoid its default of 4 referencing an unseeded Terms row.
+-- PaymentModes, Terms, Shippers, Warehouses, and Users are not seeded yet.
+SET IDENTITY_INSERT dbo.Orders ON;
+GO
+INSERT INTO dbo.Orders
+(
+    Id,
+    CustomerId,
+    InvoiceNumber,
+    EmployeeId,
+    OrderDate,
+    DeliveryDate,
+    isPaid,
+    DueDate,
+    TermCode,
+    Total,
+    OrderStatusId,
+    Balance,
+    Salesman,
+    [User],
+    AmountPaid,
+    ShipperId,
+    SalesOrderId,
+    DRNumber,
+    SINumber,
+    SIDate,
+    PONumber,
+    Cancelled,
+    WarehouseId,
+    DatePaid,
+    CollectedAmount,
+    PaymentModeId,
+    Notes,
+    Remarks
+)
+VALUES
+    (
+        3001, 1001, 'INV-2026-001', 1, '2026-10-01', '2026-10-02',
+        1, '2026-10-31', NULL, 5450.00, 1, 0.00,
+        1, NULL, 5450.00, NULL, 2001, 'DR260001',
+        'INV-2026-001', '2026-10-01', 'PO-2026-001', 0, NULL, '2026-10-03',
+        5450.00, NULL, NULL, 'Fully invoiced and paid hardware order.'
+    ),
+    (
+        3002, 1002, 'INV-2026-002', 2, '2026-10-08', '2026-10-09',
+        0, '2026-11-07', NULL, 6160.00, 3, 4160.00,
+        2, NULL, 2000.00, NULL, 2002, 'DR260002',
+        'INV-2026-002', '2026-10-08', 'PO-2026-002', 0, NULL, '1899-12-30',
+        2000.00, NULL, NULL, 'Fully invoiced furniture order with a partial payment.'
+    ),
+    (
+        3003, 1004, 'INV-2026-003', 4, '2026-10-20', '2026-10-21',
+        0, '2026-11-19', NULL, 6240.00, 3, 6240.00,
+        4, NULL, 0.00, NULL, 2004, 'DR260003',
+        'INV-2026-003', '2026-10-20', 'PO-2026-004', 0, NULL, '1899-12-30',
+        0.00, NULL, NULL, 'Fully invoiced tools order awaiting payment.'
+    ),
+    (
+        3004, 1005, 'INV-2026-004', 5, '2026-10-15', '2026-10-16',
+        1, '2026-11-14', NULL, 1140.00, 1, 0.00,
+        5, NULL, 1140.00, NULL, 2005, 'DR260004',
+        'INV-2026-004', '2026-10-15', 'PO-2026-005', 0, NULL, '2026-10-17',
+        1140.00, NULL, NULL, 'Fully invoiced and paid supplies order.'
+    ),
+    (
+        3005, 1006, 'INV-2026-005', NULL, '2026-11-04', '2026-11-05',
+        0, '2026-12-04', NULL, 3700.00, 2, 2700.00,
+        NULL, NULL, 1000.00, NULL, 2006, 'DR260005',
+        'INV-2026-005', '2026-11-04', 'PO-2026-006', 0, NULL, '1899-12-30',
+        1000.00, NULL, 'Sales order total is 8350.00; invoice total is 3700.00 for 10 sacks of cement and 1 cubic meter of sand. Remaining quantities are not invoiced.', 'Partially invoiced construction order.'
+    ),
+    (
+        3006, 1007, 'INV-2026-006', 3, '2026-10-18', '1899-12-30',
+        0, '2026-10-18', NULL, 2680.00, 4, 0.00,
+        3, NULL, 0.00, NULL, 2007, NULL,
+        'INV-2026-006', '2026-10-18', 'PO-2026-007', 1, NULL, '1899-12-30',
+        0.00, NULL, 'Cancelled invoice retained with its original total and zero collectible balance.', 'Cancelled paint order; retained for cancellation testing.'
+    );
+GO
+SET IDENTITY_INSERT dbo.Orders OFF;
+GO

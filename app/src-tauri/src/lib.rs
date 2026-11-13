@@ -39,7 +39,22 @@ pub fn run() {
         commands::supplier_commands::get_supplier_by_id,
         commands::supplier_commands::get_all_suppliers,
         commands::supplier_commands::update_supplier,
-        commands::supplier_commands::delete_supplier_by_id
+        commands::supplier_commands::delete_supplier_by_id,
+        commands::order_commands::add_order,
+        commands::order_commands::get_order_by_id,
+        commands::order_commands::get_all_orders,
+        commands::order_commands::update_order,
+        commands::order_commands::delete_order_by_id,
+        commands::sales_order_commands::add_sales_order,
+        commands::sales_order_commands::get_sales_order_by_id,
+        commands::sales_order_commands::get_all_sales_orders,
+        commands::sales_order_commands::update_sales_order,
+        commands::sales_order_commands::delete_sales_order_by_id,
+        commands::sales_order_detail_commands::add_sales_order_detail,
+        commands::sales_order_detail_commands::get_sales_order_detail_by_id,
+        commands::sales_order_detail_commands::get_all_sales_order_details,
+        commands::sales_order_detail_commands::update_sales_order_detail,
+        commands::sales_order_detail_commands::delete_sales_order_detail_by_id
         
       ])
     .run(tauri::generate_context!())
