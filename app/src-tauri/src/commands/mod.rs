@@ -5,3 +5,4 @@ pub mod supplier_commands;
 pub mod order_commands;
 pub mod sales_order_commands;
 pub mod sales_order_detail_commands;
+pub mod order_status_commands;

@@ -5,3 +5,4 @@ pub mod supplier_service;
 pub mod order_service;
 pub mod sales_order_service;
 pub mod sales_order_detail_service;
+pub mod order_status_service;

@@ -9,7 +9,7 @@ import { getAllSalesOrderItems, getSalesOrderItemsBySOId } from "../../../MockDa
 
 import { formatDiscount } from "../../../helpers/helpers"
 
-import StatusLabel from "../../components/StatusLabel"
+import StatusLabelV1 from "../../components/StatusLabelV1"
 import { getAllStatuses, getStatusById } from "../../../MockData/status"
 
 function SalesOrders () {
@@ -174,7 +174,7 @@ function SalesOrders () {
                                     <td>{soi.amount.toFixed(2)}</td>
                                     <td>{soi.invoiced.toFixed(2)}</td>
                                     <td>{soi.onHand.toFixed(2)}</td>
-                                    <td><StatusLabel status={soi.closed}/></td>
+                                    <td><StatusLabelV1 status={soi.closed}/></td>
                                 </tr>
                             ))}
                         </tbody>

@@ -1515,11 +1515,11 @@ UNIT.UNITCODE > Units.Id]]></comment>
 			<entity schema="IRYS.dbo" name="Purchases" color="C1D8EE" x="3078" y="2717" />
 			<entity schema="IRYS.dbo" name="SalesOrderDetails" color="C1D8EE" x="1976" y="2090" />
 			<entity schema="IRYS.dbo" name="SalesOrders" color="C1D8EE" x="1615" y="1919" />
-			<entity schema="IRYS.dbo" name="Shippers" color="C1D8EE" x="76" y="2299" />
+			<entity schema="IRYS.dbo" name="Shippers" color="C1D8EE" x="95" y="2014" />
 			<entity schema="IRYS.dbo" name="SupplierPayments" color="C4E0F9" x="456" y="1235" />
 			<entity schema="IRYS.dbo" name="Suppliers" color="C4E0F9" x="76" y="1235" />
 			<entity schema="IRYS.dbo" name="TempSalesOrders" color="C4E0F9" x="2413" y="1919" />
-			<entity schema="IRYS.dbo" name="Terms" color="DDEEC1" x="1634" y="1387" />
+			<entity schema="IRYS.dbo" name="Terms" color="DDEEC1" x="1634" y="1368" />
 			<entity schema="IRYS.dbo" name="Units" color="C4E0F9" x="836" y="2565" />
 			<entity schema="IRYS.dbo" name="Users" color="C4E0F9" x="1634" y="551" />
 			<entity schema="IRYS.dbo" name="Vendors" color="C4E0F9" x="2508" y="95" />
