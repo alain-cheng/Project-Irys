@@ -3,7 +3,8 @@ on:
   push:
   pull_request: 
 jobs:
-  test:
+  frontend-test:
+    name: Frontend Build and Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,3 +28,19 @@ jobs:
 
       - name: Build Frontend
         run: npm run build
+
+  backend-test:
+    name: Backend Tests
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: app/src-tauri
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup Rust
+        run: rustup default stable
+
+      - name: Run Backend Tests
+        run: cargo test --lib

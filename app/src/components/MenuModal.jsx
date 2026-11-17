@@ -20,7 +20,7 @@ function MenuModal({ onClose }) {
                 <div className="">
                     <div className="flex">
                         <NavLink 
-                            to="/"
+                            to="/dashboard"
                             end
                             className="flex-1 text-left pl-2 hover:underline"
                             onClick={onClose}

@@ -200,7 +200,6 @@ function Customers() {
                 </div>
             </div>
             
-            
             {/* table container */}
             <div className="flex-1 min-h-0">
                 <div className="w-full max-h-[calc(100vh-180px)] overflow-auto">
@@ -219,44 +218,94 @@ function Customers() {
                                 <th>Zip Code</th>
                                 <th>Phone No.</th>
                                 <th>FAX</th>
+                                <th>Alarm</th>
+                                <th>Employee ID</th>
+                                <th>Price Level</th>
+                                <th>Credit Limit</th>
+                                <th>Balance</th>
+                                <th>Credit</th>
+                                <th>Inventory Balance</th>
+                                <th>TIN</th>
+                                <th>Area Code</th>
+                                <th>Customer Code</th>
+                                <th>Customer Area</th>
+                                <th>Customer Agent</th>
+                                <th>Agent Name</th>
+                                <th>Customer Type</th>
+                                <th>Start Date</th>
+                                <th>SM Code</th>
+                                <th>Term</th>
+                                <th>Term Code</th>
+                                <th>P Type</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
 
                         {/* body */}
                         <tbody className="border">
-                            {loading && <tr><td>Loading customers...</td></tr>}
+                            {loading && (
+                                <tr>
+                                    <td colSpan={30}>Loading customers...</td>
+                                </tr>
+                            )}
 
-                            {error && (<tr className="bg-red-200"><td>DB Error: {error}</td></tr>)}
+                            {error && (
+                                <tr className="bg-red-200">
+                                    <td colSpan={30}>DB Error: {error}</td>
+                                </tr>
+                            )}
 
-                            {customers && (
-                                filteredView.map((customer, index) => (
-                                    <tr 
-                                        key={customer.id} 
-                                        onClick={() => setSelectedCustomer(prev => prev === customer.id ? 0 : customer.id)}
-                                        onDoubleClick={() => navigate(`/orders/customers/${customer.id}`)} 
-                                        className={`
-                                            ${ selectedCustomer === customer.id
-                                                ? "bg-yellow-200"
+                            {customers && filteredView.map((customer, index) => (
+                                <tr
+                                    key={customer.id}
+                                    onClick={() => setSelectedCustomer(
+                                        prev => prev === customer.id ? 0 : customer.id
+                                    )}
+                                    onDoubleClick={() => navigate(`/orders/customers/${customer.id}`)}
+                                    className={`
+                                        ${selectedCustomer === customer.id
+                                            ? "bg-yellow-200"
+                                            : customer.alarm
+                                                ? "bg-red-200"
                                                 : index % 2 === 0
                                                     ? "bg-background"
                                                     : "bg-background-light"
-                                            }
-                                            hover:bg-accent-soft transition cursor-pointer
-                                        `}
-                                    >
-                                        <td className="sticky left-0 z-5">{customer.id}</td>
-                                        <td>{customer.companyName}</td>
-                                        <td>{customer.contactName}</td>
-                                        <td>{customer.contactTitle}</td>
-                                        <td>{customer.address}</td>
-                                        <td>{customer.city}</td>
-                                        <td>{customer.province}</td>
-                                        <td>{customer.zipCode}</td>
-                                        <td>{customer.phone}</td>
-                                        <td>{customer.fax}</td>
-                                        
-                                    </tr>
-                            )))}
+                                        }
+                                        hover:bg-accent-soft transition cursor-pointer
+                                    `}
+                                >
+                                    <td className="sticky left-0 z-5">{customer.id}</td>
+                                    <td>{customer.companyName}</td>
+                                    <td>{customer.contactName}</td>
+                                    <td>{customer.contactTitle}</td>
+                                    <td>{customer.address}</td>
+                                    <td>{customer.city}</td>
+                                    <td>{customer.province}</td>
+                                    <td>{customer.zipCode}</td>
+                                    <td>{customer.phone}</td>
+                                    <td>{customer.fax}</td>
+                                    <td>{customer.alarm ? "Yes" : "No"}</td>
+                                    <td>{customer.employeeId}</td>
+                                    <td>{customer.priceLvl}</td>
+                                    <td>{customer.creditLimit}</td>
+                                    <td>{customer.balance}</td>
+                                    <td>{customer.credit}</td>
+                                    <td>{customer.invBalance}</td>
+                                    <td>{customer.tin}</td>
+                                    <td>{customer.areaCode}</td>
+                                    <td>{customer.customerCode}</td>
+                                    <td>{customer.customerArea}</td>
+                                    <td>{customer.customerAgent}</td>
+                                    <td>{customer.agentName}</td>
+                                    <td>{customer.customerType}</td>
+                                    <td>{customer.startDate}</td>
+                                    <td>{customer.smCode}</td>
+                                    <td>{customer.term}</td>
+                                    <td>{customer.termCode}</td>
+                                    <td>{customer.pType}</td>
+                                    <td>{customer.remarks}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
