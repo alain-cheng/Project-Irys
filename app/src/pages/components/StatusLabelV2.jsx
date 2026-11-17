@@ -22,8 +22,8 @@ function StatusLabelV2({ statusName = "default" }) {
     const styles = {
         open: "bg-green-500 text-white",
         closed: "bg-red-500 text-white",
-        posted: "bg-yellow-100 text-text",
-        default: "bg-gray-500 text-text",
+        posted: "bg-yellow-200 text-text",
+        default: "bg-gray-300 text-text",
     }
 
     return(

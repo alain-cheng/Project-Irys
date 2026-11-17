@@ -128,6 +128,36 @@ pub async fn get_sales_order_detail_by_id(
     row.map(sales_order_detail_from_row).transpose()
 }
 
+pub async fn get_sales_order_details_by_sales_order_id(
+    pool: &Pool,
+    sales_order_id: i32,
+) -> anyhow::Result<Vec<SalesOrderDetail>> {
+    let mut client = pool
+        .get()
+        .await
+        .context("Failed to retrieve database connection.")?;
+
+    let rows = client
+        .query(
+            r#"
+                SELECT
+                    Id, SalesOrderId, Quantity, ItemCode, UnitPrice,
+                    Amount, Invoiced, isClosed, SDisc1, SDisc2,
+                    SDisc3, SDisc4, SDisc5, SDisc6, SDisc7,
+                    SDisc8, SDisc9, SDisc10, SDiscId
+                FROM dbo.SalesOrderDetails
+                WHERE SalesOrderId = @P1
+                ORDER BY Id;
+            "#,
+            &[&sales_order_id],
+        )
+        .await?
+        .into_first_result()
+        .await?;
+
+    rows.into_iter().map(sales_order_detail_from_row).collect()
+}
+
 pub async fn get_all_sales_order_details(pool: &Pool) -> anyhow::Result<Vec<SalesOrderDetail>> {
     let mut client = pool
         .get()

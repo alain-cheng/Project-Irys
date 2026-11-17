@@ -36,6 +36,19 @@ pub async fn get_all_sales_order_details(
 }
 
 #[tauri::command]
+pub async fn get_sales_order_details_by_sales_order_id(
+    pool: State<'_, Pool>,
+    sales_order_id: i32,
+) -> Result<Vec<SalesOrderDetail>, String> {
+    sales_order_detail_service::get_sales_order_details_by_sales_order_id(
+        pool.inner(),
+        sales_order_id,
+    )
+    .await
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub async fn update_sales_order_detail(
     pool: State<'_, Pool>,
     id: i32,

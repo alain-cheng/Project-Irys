@@ -53,6 +53,7 @@ pub fn run() {
         commands::sales_order_detail_commands::add_sales_order_detail,
         commands::sales_order_detail_commands::get_sales_order_detail_by_id,
         commands::sales_order_detail_commands::get_all_sales_order_details,
+        commands::sales_order_detail_commands::get_sales_order_details_by_sales_order_id,
         commands::sales_order_detail_commands::update_sales_order_detail,
         commands::sales_order_detail_commands::delete_sales_order_detail_by_id,
         commands::order_status_commands::add_order_status,
