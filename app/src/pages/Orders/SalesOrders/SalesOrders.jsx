@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
 
 import StatusLabelV1 from "../../components/StatusLabelV1"
@@ -12,6 +12,7 @@ const discountColumns = Array.from({ length: 10 }, (_, index) => ({
 
 function SalesOrders () {
     const navigate = useNavigate()
+    const { pathname } = useLocation()
 
     const [selectedSalesOrderId, setSelectedSalesOrderId] = useState(null)
     const [salesOrdersView, setSalesOrdersView] = useState([])
@@ -132,12 +133,19 @@ function SalesOrders () {
         }
     }, [salesOrdersItemsView])
 
-    function handleSelectSalesOrder(id) {
-        const nextId = selectedSalesOrderId === id ? null : id
+    function handleSelectSalesOrder(id, clickCount) {
+        // A double-click fires two clicks. Keep its second click selected for navigation.
+        const nextId = clickCount > 1 ? id : selectedSalesOrderId === id ? null : id
+        if (nextId === selectedSalesOrderId) return
         setSelectedSalesOrderId(nextId)
         setSalesOrdersItemsView([])
         setDetailsError(null)
         setDetailsLoading(nextId !== null)
+    }
+
+    function handleOpenSalesOrder() {
+        if (selectedSalesOrderId === null) return
+        navigate(`${pathname.replace(/\/$/, "")}/${selectedSalesOrderId}`)
     }
 
     return(
@@ -199,10 +207,10 @@ function SalesOrders () {
                                 </tr>
                             )}
                             {salesOrdersView.map((so, index) => (
-                                // onDoubleClick={() => navigate(`/orders/sales_orders/${so.id}`)}
                                 <tr 
                                     key={so.id} 
-                                    onClick={() => handleSelectSalesOrder(so.id)}
+                                    onClick={event => handleSelectSalesOrder(so.id, event.detail)}
+                                    onDoubleClick={handleOpenSalesOrder}
                                     className={`
                                         ${ selectedSalesOrderId === so.id
                                             ? "bg-yellow-200"

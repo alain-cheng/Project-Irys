@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
 
 import SalesOrders from "./SalesOrders"
+import SalesOrderDetails from "./SalesOrderDetails"
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn() }))
 
@@ -52,6 +53,7 @@ const mockItems = {
 function mockBackend(orders, detailsByOrder = {}, itemsByCode = mockItems) {
     invoke.mockImplementation((command, args) => {
         if (command === "get_all_sales_orders") return Promise.resolve(orders)
+        if (command === "get_sales_order_by_id") return Promise.resolve(orders.find(order => order.id === args.id) ?? null)
         if (command === "get_order_status_by_id") return Promise.resolve(mockStatuses[args.id] ?? null)
         if (command === "get_sales_order_details_by_sales_order_id") {
             const details = detailsByOrder[args.salesOrderId] ?? []
@@ -70,7 +72,7 @@ function renderSalesOrders() {
         <MemoryRouter initialEntries={["/orders/sales_orders"]}>
             <Routes>
                 <Route path="/orders/sales_orders" element={<SalesOrders />} />
-                <Route path="/orders/sales_orders/:id" element={<p>Unexpected detail navigation</p>} />
+                <Route path="/orders/sales_orders/:salesOrderId" element={<SalesOrderDetails />} />
             </Routes>
         </MemoryRouter>
     )
@@ -360,5 +362,26 @@ describe("SalesOrders Main Table", () => {
         await act(async () => { finishFirstName({ itemCode: 15, itemName: "Outdated Item Name" }) })
         expect(table.getByText("Current Item Name")).toBeInTheDocument()
         expect(table.queryByText("Outdated Item Name")).not.toBeInTheDocument()
+    })
+
+    test.each(["none", "same", "different"])("Opens the double-clicked order when the prior selection is %s", async initialSelection => {
+        const user = userEvent.setup()
+        mockBackend([
+            mockSalesOrder,
+            { ...mockSalesOrder, id: 2002, remarks: "Second sales order" },
+        ])
+        renderSalesOrders()
+        const target = await screen.findByText("Database sales order")
+        if (initialSelection !== "none") {
+            await user.click(initialSelection === "same" ? target : screen.getByText("Second sales order"))
+            await screen.findByText("No details found for this sales order.")
+        }
+
+        await user.dblClick(target)
+
+        expect(await screen.findByText("Sales Order: 2001")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Sales Order Details" })).toBeInTheDocument()
+        expect(invoke).toHaveBeenCalledWith("get_sales_order_by_id", { id: 2001 })
+        expect(screen.queryByRole("table", { name: "Sales orders", exact: true })).not.toBeInTheDocument()
     })
 })
