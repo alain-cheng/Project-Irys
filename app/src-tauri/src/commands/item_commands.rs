@@ -1,3 +1,5 @@
+use crate::auth::AuthSession;
+use crate::services::auth_service;
 use deadpool_tiberius::Pool;
 use tauri::State;
 
@@ -5,21 +7,41 @@ use crate::models::item::{Item, NewItem, UpdateItem};
 use crate::services::item_service;
 
 #[tauri::command]
-pub async fn add_item(pool: State<'_, Pool>, item: NewItem) -> Result<Item, String> {
+pub async fn add_item(
+    pool: State<'_, Pool>,
+    session: State<'_, AuthSession>,
+    item: NewItem,
+) -> Result<Item, String> {
+    auth_service::require_permission(pool.inner(), session.inner(), "items.create")
+        .await
+        .map_err(|e| e.to_string())?;
     item_service::add_item(pool.inner(), item)
         .await
         .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub async fn get_item_by_id(pool: State<'_, Pool>, id: i32) -> Result<Option<Item>, String> {
+pub async fn get_item_by_id(
+    pool: State<'_, Pool>,
+    session: State<'_, AuthSession>,
+    id: i32,
+) -> Result<Option<Item>, String> {
+    auth_service::require_permission(pool.inner(), session.inner(), "items.view")
+        .await
+        .map_err(|e| e.to_string())?;
     item_service::get_item_by_id(pool.inner(), id)
         .await
         .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub async fn get_all_items(pool: State<'_, Pool>) -> Result<Vec<Item>, String> {
+pub async fn get_all_items(
+    pool: State<'_, Pool>,
+    session: State<'_, AuthSession>,
+) -> Result<Vec<Item>, String> {
+    auth_service::require_permission(pool.inner(), session.inner(), "items.view")
+        .await
+        .map_err(|e| e.to_string())?;
     item_service::get_all_items(pool.inner())
         .await
         .map_err(|e| e.to_string())
@@ -28,16 +50,27 @@ pub async fn get_all_items(pool: State<'_, Pool>) -> Result<Vec<Item>, String> {
 #[tauri::command]
 pub async fn update_item(
     pool: State<'_, Pool>,
+    session: State<'_, AuthSession>,
     id: i32,
     item: UpdateItem,
 ) -> Result<Option<Item>, String> {
+    auth_service::require_permission(pool.inner(), session.inner(), "items.update")
+        .await
+        .map_err(|e| e.to_string())?;
     item_service::update_item(pool.inner(), id, item)
         .await
         .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-pub async fn delete_item_by_id(pool: State<'_, Pool>, id: i32) -> Result<bool, String> {
+pub async fn delete_item_by_id(
+    pool: State<'_, Pool>,
+    session: State<'_, AuthSession>,
+    id: i32,
+) -> Result<bool, String> {
+    auth_service::require_permission(pool.inner(), session.inner(), "items.delete")
+        .await
+        .map_err(|e| e.to_string())?;
     item_service::delete_item_by_id(pool.inner(), id)
         .await
         .map_err(|e| e.to_string())

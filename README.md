@@ -35,3 +35,34 @@ npm i
 4. Open powershell and run `.\database\scripts\setup-dev.ps1`, this will create the development database on localhost and populate it with mock data.
 
 5. Run `npx tauri dev` begin running the app. The application window should open in a moment.
+
+## Development authentication
+
+After database setup, use **Create an account (temporary)** on the login screen.
+The first registered account becomes an Administrator; later accounts become Staff.
+Roles are assigned in Rust, and registration creates active accounts with no linked employee.
+There are no seeded users or default passwords. Usernames are case insensitive and
+use 3–64 letters, numbers, dots, underscores, or hyphens. Passwords use 12–128 characters
+and are stored as salted Argon2id hashes; hashes are never returned to the frontend.
+
+The seed defines Administrator (all permissions), Staff (view/create/update business
+records, view statuses), and Viewer (view only). Existing database commands enforce
+these permissions in Rust and reload activation and permissions for each request.
+The current screens do not yet hide controls according to permissions.
+The login session stays in Rust memory and ends on logout or application restart.
+
+Registration is intentionally public for development and should be replaced with an
+administrator-managed account creation flow before internal deployment. Role assignment,
+account deactivation, and password reset screens are not implemented yet. Application
+permissions do not restrict someone who independently has direct SQL Server access.
+
+Run backend unit tests from `app/src-tauri` with `cargo test --lib`. A separate optional
+SQL Server authentication test requires a freshly seeded development database with
+an empty Users table:
+
+```powershell
+cargo test --lib local_database_auth_roundtrip -- --ignored
+```
+
+This test creates temporary accounts, exercises registration, login, logout, and
+permission/activation changes, then removes its test accounts. It does not run in CI.

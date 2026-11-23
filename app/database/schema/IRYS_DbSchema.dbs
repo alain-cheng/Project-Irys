@@ -1011,6 +1011,20 @@ LEGACY.dbo.PAYMENTS.USER]]></comment>
 				<fk_column name="EmployeeId" pk="Id" />
 			</fk>
 		</table>
+		<table name="Permissions" prior="Permission" >
+			<comment><![CDATA[NEW TABLE]]></comment>
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
+			<column name="PermissionCode" type="varchar" length="255" mandatory="y" />
+			<column name="Description" type="varchar(max)" />
+			<index name="pk_Permissions" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+			<index name="unq_Permissions_PermissionCode" unique="UNIQUE_KEY" >
+				<column name="PermissionCode" />
+			</index>
+		</table>
 		<table name="PurchaseOrders" prior="PurchaseOr" generator_rows="100" >
 			<column name="Id" type="int" mandatory="y" >
 				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
@@ -1098,6 +1112,26 @@ PURCHASES.PYMNT_TYPE]]></comment>
 				<defo><![CDATA['1899-12-30']]></defo>
 			</column>
 			<index name="pk_Purchases" unique="PRIMARY_KEY" >
+				<column name="Id" />
+			</index>
+		</table>
+		<table name="RolePermissions" prior="RolePermissi" >
+			<column name="RoleId" type="int" mandatory="y" />
+			<column name="PermissionId" type="int" mandatory="y" />
+			<fk name="fk_rolepermissions" to_schema="IRYS.dbo" to_table="Roles" >
+				<fk_column name="RoleId" pk="Id" />
+			</fk>
+			<fk name="fk_rolepermissions_permissions" to_schema="IRYS.dbo" to_table="Permissions" >
+				<fk_column name="PermissionId" pk="Id" />
+			</fk>
+		</table>
+		<table name="Roles" prior="Ro" >
+			<comment><![CDATA[NEW TABLE]]></comment>
+			<column name="Id" type="int" mandatory="y" >
+				<identity><![CDATA[IDENTITY ( 1 , 1 )]]></identity>
+			</column>
+			<column name="RoleName" type="varchar" length="50" mandatory="y" />
+			<index name="pk_Roles" unique="PRIMARY_KEY" >
 				<column name="Id" />
 			</index>
 		</table>
@@ -1391,11 +1425,21 @@ UNIT.UNITCODE > Units.Id]]></comment>
 			<column name="EmployeeId" type="int" />
 			<column name="Username" type="varchar" length="255" mandatory="y" />
 			<column name="PasswordHash" type="varchar" length="255" mandatory="y" />
+			<column name="RoleId" type="int" mandatory="y" />
+			<column name="isActive" type="bit" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
 			<index name="pk_Users" unique="PRIMARY_KEY" >
 				<column name="UserId" />
 			</index>
+			<index name="unq_Users_Username" unique="UNIQUE_KEY" >
+				<column name="Username" />
+			</index>
 			<fk name="fk_users_employees" to_schema="IRYS.dbo" to_table="Employees" >
 				<fk_column name="EmployeeId" pk="Id" />
+			</fk>
+			<fk name="fk_users_roles" to_schema="IRYS.dbo" to_table="Roles" >
+				<fk_column name="RoleId" pk="Id" />
 			</fk>
 		</table>
 		<table name="Vendors" prior="Vendo" generator_rows="100" >
@@ -1510,9 +1554,12 @@ UNIT.UNITCODE > Units.Id]]></comment>
 			<entity schema="IRYS.dbo" name="PayStatuses" color="DDEEC1" x="57" y="1672" />
 			<entity schema="IRYS.dbo" name="PaymentModes" color="DDEEC1" x="57" y="1843" />
 			<entity schema="IRYS.dbo" name="Payments" color="C4E0F9" x="456" y="1615" />
+			<entity schema="IRYS.dbo" name="Permissions" color="C4E0F9" x="2109" y="133" />
 			<entity schema="IRYS.dbo" name="PurchaseOrders" color="C1D8EE" x="2736" y="3249" />
 			<entity schema="IRYS.dbo" name="PurchaseStatuses" color="DDEEC1" x="2622" y="2736" />
 			<entity schema="IRYS.dbo" name="Purchases" color="C1D8EE" x="3078" y="2717" />
+			<entity schema="IRYS.dbo" name="RolePermissions" color="E4C1EE" x="1900" y="133" />
+			<entity schema="IRYS.dbo" name="Roles" color="C4E0F9" x="1653" y="133" />
 			<entity schema="IRYS.dbo" name="SalesOrderDetails" color="C1D8EE" x="1976" y="2090" />
 			<entity schema="IRYS.dbo" name="SalesOrders" color="C1D8EE" x="1615" y="1919" />
 			<entity schema="IRYS.dbo" name="Shippers" color="C1D8EE" x="95" y="2014" />
@@ -1536,6 +1583,9 @@ UNIT.UNITCODE > Units.Id]]></comment>
 				<entity schema="IRYS.dbo" name="PayStatuses" />
 				<entity schema="IRYS.dbo" name="PaymentModes" />
 				<entity schema="IRYS.dbo" name="Payments" />
+				<entity schema="IRYS.dbo" name="Permissions" />
+				<entity schema="IRYS.dbo" name="RolePermissions" />
+				<entity schema="IRYS.dbo" name="Roles" />
 				<entity schema="IRYS.dbo" name="SalesOrders" />
 				<entity schema="IRYS.dbo" name="Shippers" />
 				<entity schema="IRYS.dbo" name="SupplierPayments" />

@@ -1,9 +1,28 @@
 import { useNavigate } from "react-router-dom"
 import { NavLink } from "react-router-dom";
 import { LogOut } from "lucide-react"
+import { useState } from "react"
+import { useAuth } from "../auth/useAuth"
 
 function NavBar() {
     const navigate = useNavigate();
+    const { logout } = useAuth()
+    const [submitting, setSubmitting] = useState(false)
+    const [error, setError] = useState("")
+
+    async function handleLogout() {
+        if (submitting) return
+        setSubmitting(true)
+        setError("")
+        try {
+            await logout()
+            navigate("/", { replace: true })
+        } catch (error) {
+            setError(String(error))
+        } finally {
+            setSubmitting(false)
+        }
+    }
 
     return(
         <nav className="flex flex-1 min-w-0 items-center gap-4">
@@ -64,13 +83,15 @@ function NavBar() {
                     Reports
                 </NavLink>
             </div>
+            {error && <p role="alert" className="ml-auto text-sm text-red-700">{error}</p>}
             <button
                 type="button"
-                onClick={() => navigate("/", { replace: true })}
+                onClick={handleLogout}
+                disabled={submitting}
                 className="ml-auto flex shrink-0 cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-text transition hover:bg-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
             >
                 <LogOut size={18} aria-hidden="true" />
-                Logout
+                {submitting ? "Logging out..." : "Logout"}
             </button>
         </nav>
     )

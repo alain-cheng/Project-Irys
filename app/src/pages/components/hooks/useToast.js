@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 /**
  * Displays a toast notification for a fixed duration.
@@ -11,15 +11,19 @@ import { useState } from "react"
  * ```
  *
  * @param {string} message - Message to display.
- * @param {"success" | "error" | "warning"} [type="success"] - Toast style.
+ * @param {"info" | "success" | "error" | "warning"} [type="success"] - Toast style.
  */
 export default function useToast() {
     const [toast, setToast] = useState(null)
+    const timer = useRef(null)
+
+    useEffect(() => () => clearTimeout(timer.current), [])
 
     const showToast = (message, type = "success") => {
+        clearTimeout(timer.current)
         setToast({ message, type })
 
-        setTimeout(() => {
+        timer.current = setTimeout(() => {
             setToast(null)
         }, 4000)
     }

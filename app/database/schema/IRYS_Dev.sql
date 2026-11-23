@@ -322,6 +322,21 @@ LEGACY.dbo.PAYMENTS.USER' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1typ
 GO
 
 ---------------------------------------------------
+---                 Permissions                 ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.Permissions ( 
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
+	PermissionCode       varchar(255)      NOT NULL,
+	Description          varchar(max)      NULL,
+	CONSTRAINT pk_Permissions PRIMARY KEY  ( Id ) ,
+	CONSTRAINT unq_Permissions_PermissionCode UNIQUE ( PermissionCode ) 
+ );
+GO
+
+execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Permissions';;
+GO
+
+---------------------------------------------------
 ---               PurchaseOrders                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.PurchaseOrders ( 
@@ -386,6 +401,28 @@ PURCHASES.STATUS > Purchases.PurchaseStatusId
 
 Dropped Cols:
 PURCHASES.PYMNT_TYPE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Purchases';;
+GO
+
+---------------------------------------------------
+---                    Roles                    ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.Roles ( 
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
+	RoleName             varchar(50)      NOT NULL,
+	CONSTRAINT pk_Roles PRIMARY KEY  ( Id ) 
+ );
+GO
+
+execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Roles';;
+GO
+
+---------------------------------------------------
+---               RolePermissions               ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.RolePermissions ( 
+	RoleId               int      NOT NULL,
+	PermissionId         int      NOT NULL
+ );
 GO
 
 ---------------------------------------------------
@@ -660,7 +697,10 @@ CREATE  TABLE IRYS_Dev.dbo.Users (
 	EmployeeId           int      NULL,
 	Username             varchar(255)      NOT NULL,
 	PasswordHash         varchar(255)      NOT NULL,
-	CONSTRAINT pk_Users PRIMARY KEY  ( UserId ) 
+	RoleId               int      NOT NULL,
+	isActive             bit  CONSTRAINT DF_Users_isActive DEFAULT 0    NOT NULL,
+	CONSTRAINT pk_Users PRIMARY KEY  ( UserId ) ,
+	CONSTRAINT unq_Users_Username UNIQUE ( Username ) 
  );
 GO
 
@@ -1146,6 +1186,12 @@ GO
 ALTER TABLE IRYS_Dev.dbo.Payments ADD CONSTRAINT fk_payments_employees FOREIGN KEY ( EmployeeId ) REFERENCES IRYS_Dev.dbo.Employees( Id );
 GO
 
+ALTER TABLE IRYS_Dev.dbo.RolePermissions ADD CONSTRAINT fk_rolepermissions FOREIGN KEY ( RoleId ) REFERENCES IRYS_Dev.dbo.Roles( Id );
+GO
+
+ALTER TABLE IRYS_Dev.dbo.RolePermissions ADD CONSTRAINT fk_rolepermissions_permissions FOREIGN KEY ( PermissionId ) REFERENCES IRYS_Dev.dbo.Permissions( Id );
+GO
+
 ALTER TABLE IRYS_Dev.dbo.SalesOrderDetails ADD CONSTRAINT fk_salesorderdetails_items FOREIGN KEY ( ItemCode ) REFERENCES IRYS_Dev.dbo.Items( ItemCode );
 GO
 
@@ -1198,5 +1244,8 @@ ALTER TABLE IRYS_Dev.dbo.TempSalesOrders ADD CONSTRAINT fk_tempsalesorders_terms
 GO
 
 ALTER TABLE IRYS_Dev.dbo.Users ADD CONSTRAINT fk_users_employees FOREIGN KEY ( EmployeeId ) REFERENCES IRYS_Dev.dbo.Employees( Id );
+GO
+
+ALTER TABLE IRYS_Dev.dbo.Users ADD CONSTRAINT fk_users_roles FOREIGN KEY ( RoleId ) REFERENCES IRYS_Dev.dbo.Roles( Id );
 GO
 
