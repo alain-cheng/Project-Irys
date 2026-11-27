@@ -1138,3 +1138,104 @@ VALUES
 GO
 SET IDENTITY_INSERT dbo.Orders OFF;
 GO
+
+-- Temporary authentication roles. Password hashes are created by registration, never seeded.
+SET IDENTITY_INSERT dbo.Roles ON;
+INSERT INTO dbo.Roles (Id, RoleName) VALUES
+    (1, 'Administrator'),
+    (2, 'Staff'),
+    (3, 'Viewer');
+SET IDENTITY_INSERT dbo.Roles OFF;
+GO
+
+SET IDENTITY_INSERT dbo.Permissions ON;
+INSERT INTO dbo.Permissions (Id, PermissionCode, Description) VALUES
+    (1, 'customers.view', 'View customers'),
+    (2, 'customers.create', 'Create customers'),
+    (3, 'customers.update', 'Update customers'),
+    (4, 'customers.delete', 'Delete customers'),
+    (5, 'items.view', 'View items'),
+    (6, 'items.create', 'Create items'),
+    (7, 'items.update', 'Update items'),
+    (8, 'items.delete', 'Delete items'),
+    (9, 'suppliers.view', 'View suppliers'),
+    (10, 'suppliers.create', 'Create suppliers'),
+    (11, 'suppliers.update', 'Update suppliers'),
+    (12, 'suppliers.delete', 'Delete suppliers'),
+    (13, 'orders.view', 'View orders'),
+    (14, 'orders.create', 'Create orders'),
+    (15, 'orders.update', 'Update orders'),
+    (16, 'orders.delete', 'Delete orders'),
+    (17, 'sales_orders.view', 'View sales orders'),
+    (18, 'sales_orders.create', 'Create sales orders'),
+    (19, 'sales_orders.update', 'Update sales orders'),
+    (20, 'sales_orders.delete', 'Delete sales orders'),
+    (21, 'so_details.view', 'View so details'),
+    (22, 'so_details.create', 'Create so details'),
+    (23, 'so_details.update', 'Update so details'),
+    (24, 'so_details.delete', 'Delete so details'),
+    (25, 'statuses.view', 'View statuses'),
+    (26, 'statuses.create', 'Create statuses'),
+    (27, 'statuses.update', 'Update statuses'),
+    (28, 'statuses.delete', 'Delete statuses');
+SET IDENTITY_INSERT dbo.Permissions OFF;
+GO
+
+-- Administrators have all permissions. Staff can view, create, and update business
+-- records, but only view statuses. Viewers have read-only access.
+INSERT INTO dbo.RolePermissions (RoleId, PermissionId) VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (1, 5),
+    (1, 6),
+    (1, 7),
+    (1, 8),
+    (1, 9),
+    (1, 10),
+    (1, 11),
+    (1, 12),
+    (1, 13),
+    (1, 14),
+    (1, 15),
+    (1, 16),
+    (1, 17),
+    (1, 18),
+    (1, 19),
+    (1, 20),
+    (1, 21),
+    (1, 22),
+    (1, 23),
+    (1, 24),
+    (1, 25),
+    (1, 26),
+    (1, 27),
+    (1, 28),
+    (2, 1),
+    (2, 2),
+    (2, 3),
+    (2, 5),
+    (2, 6),
+    (2, 7),
+    (2, 9),
+    (2, 10),
+    (2, 11),
+    (2, 13),
+    (2, 14),
+    (2, 15),
+    (2, 17),
+    (2, 18),
+    (2, 19),
+    (2, 21),
+    (2, 22),
+    (2, 23),
+    (2, 25),
+    (3, 1),
+    (3, 5),
+    (3, 9),
+    (3, 13),
+    (3, 17),
+    (3, 21),
+    (3, 25);
+GO

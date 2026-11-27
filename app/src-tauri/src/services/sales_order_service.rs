@@ -1,3 +1,5 @@
+use crate::models::audit_log::{AuditAction, AuditContext, AuditEntity};
+use crate::services::audit_service::AuditTransaction;
 use anyhow::Context;
 use chrono::NaiveDate;
 use deadpool_tiberius::Pool;
@@ -34,12 +36,20 @@ fn sales_order_from_row(row: Row) -> anyhow::Result<SalesOrder> {
 
 pub async fn add_sales_order(
     pool: &Pool,
+    audit: &AuditContext,
     sales_order: NewSalesOrder,
 ) -> anyhow::Result<SalesOrder> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Create,
+        AuditEntity::SalesOrders,
+        None,
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
+
 
     let row = client
         .query(
@@ -79,6 +89,11 @@ pub async fn add_sales_order(
         .context("SalesOrder inserted, but no record is returned")?;
 
     sales_order_from_row(row)
+
+    }).await;
+    transaction
+        .finish(pool, result, |value| Some(value.id))
+        .await
 }
 
 pub async fn get_sales_order_by_id(pool: &Pool, id: i32) -> anyhow::Result<Option<SalesOrder>> {
@@ -133,13 +148,21 @@ pub async fn get_all_sales_orders(pool: &Pool) -> anyhow::Result<Vec<SalesOrder>
 
 pub async fn update_sales_order(
     pool: &Pool,
+    audit: &AuditContext,
     id: i32,
     sales_order: UpdateSalesOrder,
 ) -> anyhow::Result<Option<SalesOrder>> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Update,
+        AuditEntity::SalesOrders,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
+
 
     let row = client
         .query(
@@ -185,18 +208,38 @@ pub async fn update_sales_order(
         .await?;
 
     row.map(sales_order_from_row).transpose()
+
+    }).await;
+    transaction
+        .finish(pool, result, |value| value.as_ref().map(|record| record.id))
+        .await
 }
 
-pub async fn delete_sales_order_by_id(pool: &Pool, id: i32) -> anyhow::Result<bool> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+pub async fn delete_sales_order_by_id(
+    pool: &Pool,
+    audit: &AuditContext,
+    id: i32,
+) -> anyhow::Result<bool> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Delete,
+        AuditEntity::SalesOrders,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-    let result = client
-        .execute("DELETE FROM dbo.SalesOrders WHERE Id = @P1;", &[&id])
-        .await
-        .context("Failed to delete sales order.")?;
+        let result = client
+            .execute("DELETE FROM dbo.SalesOrders WHERE Id = @P1;", &[&id])
+            .await
+            .context("Failed to delete sales order.")?;
 
-    Ok(result.total() > 0)
+        Ok(result.total() > 0)
+    })
+    .await;
+    transaction
+        .finish(pool, result, |deleted| deleted.then_some(id))
+        .await
 }

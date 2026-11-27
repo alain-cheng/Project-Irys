@@ -322,6 +322,21 @@ LEGACY.dbo.PAYMENTS.USER' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1typ
 GO
 
 ---------------------------------------------------
+---                 Permissions                 ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.Permissions ( 
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
+	PermissionCode       varchar(255)      NOT NULL,
+	Description          varchar(max)      NULL,
+	CONSTRAINT pk_Permissions PRIMARY KEY  ( Id ) ,
+	CONSTRAINT unq_Permissions_PermissionCode UNIQUE ( PermissionCode ) 
+ );
+GO
+
+execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Permissions';;
+GO
+
+---------------------------------------------------
 ---               PurchaseOrders                ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.PurchaseOrders ( 
@@ -386,6 +401,28 @@ PURCHASES.STATUS > Purchases.PurchaseStatusId
 
 Dropped Cols:
 PURCHASES.PYMNT_TYPE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Purchases';;
+GO
+
+---------------------------------------------------
+---                    Roles                    ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.Roles ( 
+	Id                   int    IDENTITY ( 1 , 1 )  NOT NULL,
+	RoleName             varchar(50)      NOT NULL,
+	CONSTRAINT pk_Roles PRIMARY KEY  ( Id ) 
+ );
+GO
+
+execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Roles';;
+GO
+
+---------------------------------------------------
+---               RolePermissions               ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.RolePermissions ( 
+	RoleId               int      NOT NULL,
+	PermissionId         int      NOT NULL
+ );
 GO
 
 ---------------------------------------------------
@@ -660,11 +697,70 @@ CREATE  TABLE IRYS_Dev.dbo.Users (
 	EmployeeId           int      NULL,
 	Username             varchar(255)      NOT NULL,
 	PasswordHash         varchar(255)      NOT NULL,
-	CONSTRAINT pk_Users PRIMARY KEY  ( UserId ) 
+	RoleId               int      NOT NULL,
+	isActive             bit  CONSTRAINT DF_Users_isActive DEFAULT 0    NOT NULL,
+	CONSTRAINT pk_Users PRIMARY KEY  ( UserId ) ,
+	CONSTRAINT unq_Users_Username UNIQUE ( Username ) 
  );
 GO
 
 execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Users';;
+GO
+
+---------------------------------------------------
+---                  AuditLogs                  ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.AuditLogs (
+	Id                   bigint    IDENTITY ( 1 , 1 )  NOT NULL,
+	OccurredAtUtc        datetime2(7)  CONSTRAINT DF_AuditLogs_OccurredAtUtc DEFAULT SYSUTCDATETIME()    NOT NULL,
+	ActorUserId          int      NULL,
+	ActorUsername        varchar(255)      NULL,
+	AttemptedUsername    nvarchar(255)      NULL,
+	Action               varchar(32)      NOT NULL,
+	EntityType           varchar(64)      NULL,
+	EntityId             int      NULL,
+	Outcome              varchar(16)      NOT NULL,
+	ReasonCode           varchar(64)      NULL,
+	BeforeData           nvarchar(max)      NULL,
+	AfterData            nvarchar(max)      NULL,
+	CorrelationId        uniqueidentifier      NOT NULL,
+	SessionReference     uniqueidentifier      NULL,
+	CONSTRAINT pk_AuditLogs PRIMARY KEY  ( Id ) ,
+	CONSTRAINT Cns_AuditLogs CHECK ( Action IN ( 'LOGIN', 'LOGOUT', 'REGISTER', 'CREATE', 'READ', 'UPDATE', 'DELETE' ) ),
+	CONSTRAINT Cns_AuditLogs_0 CHECK ( Outcome IN (
+    'SUCCESS', 'FAILURE', 'DENIED', 'NO_CHANGE'
+) ),
+	CONSTRAINT Cns_AuditLogs_1 CHECK ( BeforeData IS NULL OR ISJSON(BeforeData) = 1 ),
+	CONSTRAINT Cns_AuditLogs_2 CHECK ( AfterData IS NULL OR ISJSON(AfterData) = 1 )
+ );
+GO
+
+CREATE  INDEX idx_AuditLogs ON IRYS_Dev.dbo.AuditLogs ( OccurredAtUtc );
+GO
+
+CREATE  INDEX idx_AuditLogs_0 ON IRYS_Dev.dbo.AuditLogs ( ActorUserId, OccurredAtUtc );
+GO
+
+CREATE  INDEX idx_AuditLogs_1 ON IRYS_Dev.dbo.AuditLogs ( EntityType, EntityId, OccurredAtUtc );
+GO
+
+execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE
+
+---
+Definitions:
+
+ActorUserId - Authenticated user responsible for the action.
+ActorUsername - Username snapshot.
+AttemptedUsername - Submitted username for login attempts.
+Action - Controlled action code
+EntityType - Target table/resource
+EntityId - Target record ID
+Outcome - Operation outcome
+ReasonCode - Controlled reason
+BeforeData - JSON data before the action
+AfterData - JSON data after the action
+CorrelationId - groups entries belonging to an operation
+SessionReference - groups activity from one authenticated session' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'AuditLogs';;
 GO
 
 ---------------------------------------------------
@@ -999,6 +1095,9 @@ GO
 ALTER TABLE IRYS_Dev.dbo.Accounts ADD CONSTRAINT fk_accounts_accounts FOREIGN KEY ( SubAccountOf ) REFERENCES IRYS_Dev.dbo.Accounts( Id );
 GO
 
+ALTER TABLE IRYS_Dev.dbo.AuditLogs ADD CONSTRAINT fk_auditlogs_users FOREIGN KEY ( ActorUserId ) REFERENCES IRYS_Dev.dbo.Users( UserId );
+GO
+
 ALTER TABLE IRYS_Dev.dbo.BillDetails ADD CONSTRAINT fk_billdetails_bills FOREIGN KEY ( BillId ) REFERENCES IRYS_Dev.dbo.Bills( Id );
 GO
 
@@ -1146,6 +1245,12 @@ GO
 ALTER TABLE IRYS_Dev.dbo.Payments ADD CONSTRAINT fk_payments_employees FOREIGN KEY ( EmployeeId ) REFERENCES IRYS_Dev.dbo.Employees( Id );
 GO
 
+ALTER TABLE IRYS_Dev.dbo.RolePermissions ADD CONSTRAINT fk_rolepermissions FOREIGN KEY ( RoleId ) REFERENCES IRYS_Dev.dbo.Roles( Id );
+GO
+
+ALTER TABLE IRYS_Dev.dbo.RolePermissions ADD CONSTRAINT fk_rolepermissions_permissions FOREIGN KEY ( PermissionId ) REFERENCES IRYS_Dev.dbo.Permissions( Id );
+GO
+
 ALTER TABLE IRYS_Dev.dbo.SalesOrderDetails ADD CONSTRAINT fk_salesorderdetails_items FOREIGN KEY ( ItemCode ) REFERENCES IRYS_Dev.dbo.Items( ItemCode );
 GO
 
@@ -1198,5 +1303,8 @@ ALTER TABLE IRYS_Dev.dbo.TempSalesOrders ADD CONSTRAINT fk_tempsalesorders_terms
 GO
 
 ALTER TABLE IRYS_Dev.dbo.Users ADD CONSTRAINT fk_users_employees FOREIGN KEY ( EmployeeId ) REFERENCES IRYS_Dev.dbo.Employees( Id );
+GO
+
+ALTER TABLE IRYS_Dev.dbo.Users ADD CONSTRAINT fk_users_roles FOREIGN KEY ( RoleId ) REFERENCES IRYS_Dev.dbo.Roles( Id );
 GO
 

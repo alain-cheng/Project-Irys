@@ -1,3 +1,5 @@
+use crate::models::audit_log::{AuditAction, AuditContext, AuditEntity};
+use crate::services::audit_service::AuditTransaction;
 use anyhow::Context;
 use deadpool_tiberius::Pool;
 use tiberius::Row;
@@ -161,15 +163,15 @@ fn item_from_row(row: Row) -> anyhow::Result<Item> {
 }
 
 /// Inserts a new item to the database
-/// 
+///
 /// Arguments:
 /// * `item` - item model containing the data for the new item
+pub async fn add_item(pool: &Pool, audit: &AuditContext, item: NewItem) -> anyhow::Result<Item> {
+    let mut transaction =
+        AuditTransaction::begin(pool, audit, AuditAction::Create, AuditEntity::Items, None).await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-pub async fn add_item(pool: &Pool, item: NewItem) -> anyhow::Result<Item> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
     let row = client.query(
         r#"
         INSERT INTO dbo.Items (
@@ -315,12 +317,16 @@ pub async fn add_item(pool: &Pool, item: NewItem) -> anyhow::Result<Item> {
         ],
     ).await?.into_row().await?.context("Item inserted, but no record is returned")?;
     item_from_row(row)
+
+    }).await;
+    transaction
+        .finish(pool, result, |value| Some(value.item_code))
+        .await
 }
 
 /// Retrieves an item from the database given its unique id.
-/// 
-/// 
-
+///
+///
 pub async fn get_item_by_id(pool: &Pool, id: i32) -> anyhow::Result<Option<Item>> {
     let mut client = pool
         .get()
@@ -398,12 +404,23 @@ pub async fn get_all_items(pool: &Pool) -> anyhow::Result<Vec<Item>> {
     rows.into_iter().map(item_from_row).collect()
 }
 
+pub async fn update_item(
+    pool: &Pool,
+    audit: &AuditContext,
+    id: i32,
+    item: UpdateItem,
+) -> anyhow::Result<Option<Item>> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Update,
+        AuditEntity::Items,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-pub async fn update_item(pool: &Pool, id: i32, item: UpdateItem) -> anyhow::Result<Option<Item>> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
     let row = client.query(
         r#"
         UPDATE dbo.Items
@@ -610,20 +627,38 @@ pub async fn update_item(pool: &Pool, id: i32, item: UpdateItem) -> anyhow::Resu
         ],
     ).await?.into_row().await?;
     row.map(item_from_row).transpose()
+
+    }).await;
+    transaction
+        .finish(pool, result, |value| {
+            value.as_ref().map(|record| record.item_code)
+        })
+        .await
 }
 
 /// Hard-deletes an item. Related records may prevent deletion via foreign keys.
-/// 
-/// 
+///
+///
+pub async fn delete_item_by_id(pool: &Pool, audit: &AuditContext, id: i32) -> anyhow::Result<bool> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Delete,
+        AuditEntity::Items,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-pub async fn delete_item_by_id(pool: &Pool, id: i32) -> anyhow::Result<bool> {
-    let mut client = pool
-        .get()
+        let result = client
+            .execute("DELETE FROM dbo.Items WHERE ItemCode = @P1;", &[&id])
+            .await
+            .context("Failed to delete item.")?;
+        Ok(result.total() > 0)
+    })
+    .await;
+    transaction
+        .finish(pool, result, |deleted| deleted.then_some(id))
         .await
-        .context("Failed to retrieve database connection.")?;
-    let result = client
-        .execute("DELETE FROM dbo.Items WHERE ItemCode = @P1;", &[&id])
-        .await
-        .context("Failed to delete item.")?;
-    Ok(result.total() > 0)
 }

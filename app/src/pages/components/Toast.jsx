@@ -12,6 +12,7 @@ import { Info, CircleX, TriangleAlert } from "lucide-react"
  * - Automatically dismissing the toast after a timeout
  *
  * Supported toast types:
+ * - "info"
  * - "success"
  * - "error"
  * - "warning"
@@ -34,7 +35,7 @@ import { Info, CircleX, TriangleAlert } from "lucide-react"
  * 
  * @param {Object} props
  * @param {string} props.message - Message displayed to the user.
- * @param {"success" | "error" | "warning"} [props.type="success"] - Visual style and icon.
+ * @param {"info" | "success" | "error" | "warning"} [props.type="success"] - Visual style and icon.
  *
  * @returns {JSX.Element} Toast notification component.
  * 
@@ -44,12 +45,14 @@ function Toast({ message, type = "success"}) {
     const baseStyle = "flex gap-2 fixed items-center bottom-5 px-3 py-2 text-white rounded shadow transition z-1000"
 
     const styles = {
+        info: "bg-blue-500",
         success: "bg-green-500",
         error: "bg-red-500",
         warning: "bg-yellow-500 text-black"
     }
 
     const icons = {
+        info: Info,
         success: Info,
         error: CircleX,
         warning: TriangleAlert
@@ -58,7 +61,7 @@ function Toast({ message, type = "success"}) {
     const Icon = icons[type] ?? Info
 
     return(
-        <div className={`${baseStyle} ${styles[type]}`}>
+        <div role="status" className={`${baseStyle} ${styles[type]}`}>
             <Icon size={18} />
             {message}
         </div>

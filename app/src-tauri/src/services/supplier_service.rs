@@ -1,3 +1,5 @@
+use crate::models::audit_log::{AuditAction, AuditContext, AuditEntity};
+use crate::services::audit_service::AuditTransaction;
 use anyhow::Context;
 use deadpool_tiberius::Pool;
 use tiberius::Row;
@@ -35,15 +37,25 @@ fn supplier_from_row(row: Row) -> anyhow::Result<Supplier> {
     })
 }
 
-pub async fn add_supplier(pool: &Pool, supplier: NewSupplier) -> anyhow::Result<Supplier> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+pub async fn add_supplier(
+    pool: &Pool,
+    audit: &AuditContext,
+    supplier: NewSupplier,
+) -> anyhow::Result<Supplier> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Create,
+        AuditEntity::Suppliers,
+        None,
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-    let row = client
-        .query(
-            r#"
+        let row = client
+            .query(
+                r#"
                 INSERT INTO dbo.Suppliers (
                     SupplierName, ContactName, ContactTitle, Address, City,
                     Province, ZipCode, Phone, Fax, Balance, PurchaseBalance, Credit, TIN
@@ -58,28 +70,33 @@ pub async fn add_supplier(pool: &Pool, supplier: NewSupplier) -> anyhow::Result<
                     @P8, @P9, @P10, @P11, @P12, @P13
                 );
             "#,
-            &[
-                &supplier.supplier_name,
-                &supplier.contact_name,
-                &supplier.contact_title,
-                &supplier.address,
-                &supplier.city,
-                &supplier.province,
-                &supplier.zip_code,
-                &supplier.phone,
-                &supplier.fax,
-                &supplier.balance,
-                &supplier.purchase_balance,
-                &supplier.credit,
-                &supplier.tin,
-            ],
-        )
-        .await?
-        .into_row()
-        .await?
-        .context("Supplier inserted, but no record is returned")?;
+                &[
+                    &supplier.supplier_name,
+                    &supplier.contact_name,
+                    &supplier.contact_title,
+                    &supplier.address,
+                    &supplier.city,
+                    &supplier.province,
+                    &supplier.zip_code,
+                    &supplier.phone,
+                    &supplier.fax,
+                    &supplier.balance,
+                    &supplier.purchase_balance,
+                    &supplier.credit,
+                    &supplier.tin,
+                ],
+            )
+            .await?
+            .into_row()
+            .await?
+            .context("Supplier inserted, but no record is returned")?;
 
-    supplier_from_row(row)
+        supplier_from_row(row)
+    })
+    .await;
+    transaction
+        .finish(pool, result, |value| Some(value.id))
+        .await
 }
 
 pub async fn get_supplier_by_id(pool: &Pool, id: i32) -> anyhow::Result<Option<Supplier>> {
@@ -132,17 +149,24 @@ pub async fn get_all_suppliers(pool: &Pool) -> anyhow::Result<Vec<Supplier>> {
 
 pub async fn update_supplier(
     pool: &Pool,
+    audit: &AuditContext,
     id: i32,
     supplier: UpdateSupplier,
 ) -> anyhow::Result<Option<Supplier>> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Update,
+        AuditEntity::Suppliers,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-    let row = client
-        .query(
-            r#"
+        let row = client
+            .query(
+                r#"
                 UPDATE dbo.Suppliers
                 SET
                     SupplierName = @P1,
@@ -165,40 +189,60 @@ pub async fn update_supplier(
                     INSERTED.Balance, INSERTED.PurchaseBalance, INSERTED.Credit, INSERTED.TIN
                 WHERE Id = @P14;
             "#,
-            &[
-                &supplier.supplier_name,
-                &supplier.contact_name,
-                &supplier.contact_title,
-                &supplier.address,
-                &supplier.city,
-                &supplier.province,
-                &supplier.zip_code,
-                &supplier.phone,
-                &supplier.fax,
-                &supplier.balance,
-                &supplier.purchase_balance,
-                &supplier.credit,
-                &supplier.tin,
-                &id,
-            ],
-        )
-        .await?
-        .into_row()
-        .await?;
+                &[
+                    &supplier.supplier_name,
+                    &supplier.contact_name,
+                    &supplier.contact_title,
+                    &supplier.address,
+                    &supplier.city,
+                    &supplier.province,
+                    &supplier.zip_code,
+                    &supplier.phone,
+                    &supplier.fax,
+                    &supplier.balance,
+                    &supplier.purchase_balance,
+                    &supplier.credit,
+                    &supplier.tin,
+                    &id,
+                ],
+            )
+            .await?
+            .into_row()
+            .await?;
 
-    row.map(supplier_from_row).transpose()
+        row.map(supplier_from_row).transpose()
+    })
+    .await;
+    transaction
+        .finish(pool, result, |value| value.as_ref().map(|record| record.id))
+        .await
 }
 
-pub async fn delete_supplier_by_id(pool: &Pool, id: i32) -> anyhow::Result<bool> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+pub async fn delete_supplier_by_id(
+    pool: &Pool,
+    audit: &AuditContext,
+    id: i32,
+) -> anyhow::Result<bool> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Delete,
+        AuditEntity::Suppliers,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-    let result = client
-        .execute("DELETE FROM dbo.Suppliers WHERE Id = @P1;", &[&id])
-        .await
-        .context("Failed to delete supplier.")?;
+        let result = client
+            .execute("DELETE FROM dbo.Suppliers WHERE Id = @P1;", &[&id])
+            .await
+            .context("Failed to delete supplier.")?;
 
-    Ok(result.total() > 0)
+        Ok(result.total() > 0)
+    })
+    .await;
+    transaction
+        .finish(pool, result, |deleted| deleted.then_some(id))
+        .await
 }

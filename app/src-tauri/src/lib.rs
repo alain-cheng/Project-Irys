@@ -5,6 +5,7 @@ mod commands;
 mod config;
 mod models;
 mod services;
+mod auth;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -13,6 +14,7 @@ pub fn run() {
 
   tauri::Builder::default()
     .manage(db_connection_pool)
+    .manage(auth::AuthSession::default())
     .setup(|app| {
       if cfg!(debug_assertions) {
         app.handle().plugin(
@@ -53,8 +55,18 @@ pub fn run() {
         commands::sales_order_detail_commands::add_sales_order_detail,
         commands::sales_order_detail_commands::get_sales_order_detail_by_id,
         commands::sales_order_detail_commands::get_all_sales_order_details,
+        commands::sales_order_detail_commands::get_sales_order_details_by_sales_order_id,
         commands::sales_order_detail_commands::update_sales_order_detail,
-        commands::sales_order_detail_commands::delete_sales_order_detail_by_id
+        commands::sales_order_detail_commands::delete_sales_order_detail_by_id,
+        commands::order_status_commands::add_order_status,
+        commands::order_status_commands::get_order_status_by_id,
+        commands::order_status_commands::get_all_order_statuses,
+        commands::order_status_commands::update_order_status,
+        commands::order_status_commands::delete_order_status_by_id,
+        commands::auth_commands::register_user,
+        commands::auth_commands::login,
+        commands::auth_commands::get_current_user,
+        commands::auth_commands::logout
         
       ])
     .run(tauri::generate_context!())

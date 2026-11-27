@@ -1,4 +1,7 @@
-import { BrowserRouter, Outlet, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import AuthProvider from "./auth/AuthProvider"
+import ProtectedLayout from "./auth/ProtectedLayout"
+import Register from "./pages/Login/Register"
 
 // make sure to add new pages here for routing
 import Dashboard from "./pages/Dashboard/Dashboard"
@@ -45,7 +48,6 @@ import ExpensesDefault from "./pages/Expenses/ExpensesDefault"
 
 import Reports from "./pages/Reports/Reports"
 
-import Header from './components/Header'
 import NotFound from "./pages/NotFound"
 
 
@@ -55,68 +57,70 @@ function App() {
 
   return (
       <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-        <Routes>
-          <Route path="/" element={<Login />} />
+            <Route element={<ProtectedLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route element={<><Header /><Outlet /></>}>
-          <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/orders" element={<Orders />}>
+              <Route index element={<OrdersDefault/>}/> 
 
-          <Route path="/orders" element={<Orders />}>
-            <Route index element={<OrdersDefault/>}/> 
+              <Route path="customers" element={<CustomersLayout />}>
+                <Route index element={<Customers />}/>
+                <Route path=":customerId" element={<CustomerDetails />}/>
+                <Route path="data_entry" element={<DataEntry />}/>
+                <Route path="payment_history" element={<PaymentHistory />}/>
+                <Route path="sales_history" element={<SalesHistory />}/>
+              </Route>
 
-            <Route path="customers" element={<CustomersLayout />}>
-              <Route index element={<Customers />}/>
-              <Route path=":customerId" element={<CustomerDetails />}/>
-              <Route path="data_entry" element={<DataEntry />}/>
-              <Route path="payment_history" element={<PaymentHistory />}/>
-              <Route path="sales_history" element={<SalesHistory />}/>
+              <Route path="sales_orders" element={<SalesOrders />}/>
+              <Route path="sales_orders/:salesOrderId" element={<SalesOrderDetails/>}/>
+
+              <Route path="invoices" element={<Invoices />}/>
+              <Route path="invoices/:invoiceId" element={<InvoiceDetails/>}/>
+
+              <Route path="order_payments" element={<OrderPayments />}/>
+
+              <Route path="credit_returns" element={<CreditReturns />}/>
+              <Route path="credit_returns/:creditReturnId" element={<CreditReturnDetails />}/>
+
+              <Route path="collections" element={<Collections />}/>
+              <Route path="collections/:collectionId" element={<CollectionDetails />}/>
+
+              <Route path="invoice_returns" element={<InvoiceReturns />}/>
+              <Route path="invoice_returns/:invoiceReturnId" element={<InvoiceReturnDetails/>}/>
             </Route>
 
-            <Route path="sales_orders" element={<SalesOrders />}/>
-            <Route path="sales_orders/:salesOrderId" element={<SalesOrderDetails/>}/>
+            <Route path="/items" element={<ItemsLayout />}>
+              <Route index element={<Items />} />
+              <Route path=":itemId" element={<ItemDetails/>}/>
+            </Route>
+            
+            <Route path="/item_orders" element={<ItemOrders />} />
 
-            <Route path="invoices" element={<Invoices />}/>
-            <Route path="invoices/:invoiceId" element={<InvoiceDetails/>}/>
+            <Route path="/purchases" element={<Purchases />}>
+              <Route index element={<PurchasesDefault/>}/> 
+              <Route path="suppliers" element={<Suppliers />}/>
+              <Route path="suppliers/:supplierId" element={<SupplierDetails/>}/>
+              <Route path="po" element={<PurchaseOrders />}/>
+              <Route path="receive" element={<Receive />}/>
+              <Route path="purchase_payment" element={<PurchasePayment />}/>
+              <Route path="credit_memo" element={<CreditMemo />}/>
+            </Route>
 
-            <Route path="order_payments" element={<OrderPayments />}/>
+            <Route path="/expenses" element={<Expenses />}>
+              <Route index element={<ExpensesDefault/>}/> 
+            </Route>
 
-            <Route path="credit_returns" element={<CreditReturns />}/>
-            <Route path="credit_returns/:creditReturnId" element={<CreditReturnDetails />}/>
+            <Route path="/reports" element={<Reports />} />
 
-            <Route path="collections" element={<Collections />}/>
-            <Route path="collections/:collectionId" element={<CollectionDetails />}/>
-
-            <Route path="invoice_returns" element={<InvoiceReturns />}/>
-            <Route path="invoice_returns/:invoiceReturnId" element={<InvoiceReturnDetails/>}/>
-          </Route>
-
-          <Route path="/items" element={<ItemsLayout />}>
-            <Route index element={<Items />} />
-            <Route path=":itemId" element={<ItemDetails/>}/>
-          </Route>
-          
-          <Route path="/item_orders" element={<ItemOrders />} />
-
-          <Route path="/purchases" element={<Purchases />}>
-            <Route index element={<PurchasesDefault/>}/> 
-            <Route path="suppliers" element={<Suppliers />}/>
-            <Route path="suppliers/:supplierId" element={<SupplierDetails/>}/>
-            <Route path="po" element={<PurchaseOrders />}/>
-            <Route path="receive" element={<Receive />}/>
-            <Route path="purchase_payment" element={<PurchasePayment />}/>
-            <Route path="credit_memo" element={<CreditMemo />}/>
-          </Route>
-
-          <Route path="/expenses" element={<Expenses />}>
-            <Route index element={<ExpensesDefault/>}/> 
-          </Route>
-
-          <Route path="/reports" element={<Reports />} />
-
-          <Route path="*" element={<NotFound />} /> 
-          </Route>
-        </Routes>
+            <Route path="*" element={<NotFound />} /> 
+            </Route>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
   )
 }
