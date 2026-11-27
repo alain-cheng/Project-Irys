@@ -32,6 +32,8 @@ npm i
 
 5. Run `npx tauri dev` begin running the app. The application window should open in a moment.
 
+# OpenAI Codex Agent Notes
+
 ## Development authentication
 
 After database setup, use **Create an account (temporary)** on the login screen.
