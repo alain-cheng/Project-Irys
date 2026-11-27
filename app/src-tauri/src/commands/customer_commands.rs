@@ -16,10 +16,10 @@ pub async fn add_customer(
     session: State<'_, AuthSession>,
     customer: NewCustomer,
 ) -> Result<Customer, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "customers.create")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "customers.create", None)
         .await
         .map_err(|e| e.to_string())?;
-    customer_service::add_customer(pool.inner(), customer)
+    customer_service::add_customer(pool.inner(), &audit, customer)
         .await
         .map_err(|e| e.to_string())
 }
@@ -34,7 +34,7 @@ pub async fn get_customer_by_id(
     session: State<'_, AuthSession>,
     id: i32,
 ) -> Result<Option<Customer>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "customers.view")
+    auth_service::authorize(pool.inner(), session.inner(), "customers.view", Some(id))
         .await
         .map_err(|e| e.to_string())?;
     customer_service::get_customer_by_id(pool.inner(), id)
@@ -48,7 +48,7 @@ pub async fn get_all_customers(
     pool: State<'_, Pool>,
     session: State<'_, AuthSession>,
 ) -> Result<Vec<Customer>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "customers.view")
+    auth_service::authorize(pool.inner(), session.inner(), "customers.view", None)
         .await
         .map_err(|e| e.to_string())?;
     customer_service::get_all_customers(pool.inner())
@@ -67,10 +67,11 @@ pub async fn delete_customer_by_id(
     session: State<'_, AuthSession>,
     id: i32,
 ) -> Result<bool, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "customers.delete")
-        .await
-        .map_err(|e| e.to_string())?;
-    customer_service::delete_customer_by_id(pool.inner(), id)
+    let audit =
+        auth_service::authorize(pool.inner(), session.inner(), "customers.delete", Some(id))
+            .await
+            .map_err(|e| e.to_string())?;
+    customer_service::delete_customer_by_id(pool.inner(), &audit, id)
         .await
         .map_err(|e| e.to_string())
 }
@@ -87,10 +88,11 @@ pub async fn update_customer(
     id: i32,
     customer: UpdateCustomer,
 ) -> Result<Option<Customer>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "customers.update")
-        .await
-        .map_err(|e| e.to_string())?;
-    customer_service::update_customer(pool.inner(), id, customer)
+    let audit =
+        auth_service::authorize(pool.inner(), session.inner(), "customers.update", Some(id))
+            .await
+            .map_err(|e| e.to_string())?;
+    customer_service::update_customer(pool.inner(), &audit, id, customer)
         .await
         .map_err(|e| e.to_string())
 }

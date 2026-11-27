@@ -6,9 +6,12 @@ use argon2::{
 use deadpool_tiberius::Pool;
 use rand_core::OsRng;
 
-use crate::auth::AuthSession;
+use crate::auth::{AuthSession, SessionIdentity};
+use crate::models::audit_log::{AuditAction, AuditContext, AuditEntity, AuditEvent, AuditOutcome};
 use crate::models::user::{LoginRequest, RegistrationRequest, User};
+use crate::services::audit_service;
 use crate::services::user_service;
+use uuid::Uuid;
 
 fn argon2id() -> anyhow::Result<Argon2<'static>> {
     let params = Params::new(19 * 1024, 2, 1, None)
@@ -48,14 +51,32 @@ fn normalize_username(username: &str) -> anyhow::Result<String> {
 }
 
 pub async fn register(pool: &Pool, request: RegistrationRequest) -> anyhow::Result<User> {
-    let username = normalize_username(&request.username)?;
-    anyhow::ensure!(
-        (12..=128).contains(&request.password.chars().count()),
-        "Password must contain 12–128 characters."
-    );
-    let hash =
-        tauri::async_runtime::spawn_blocking(move || hash_password(&request.password)).await??;
-    user_service::register_user(pool, &username, &hash).await
+    let context = AuditContext::anonymous();
+    let attempted = audit_service::attempted_username(&request.username);
+    let result = async {
+        let username = normalize_username(&request.username)?;
+        anyhow::ensure!(
+            (12..=128).contains(&request.password.chars().count()),
+            "Password must contain 12?128 characters."
+        );
+        let hash = tauri::async_runtime::spawn_blocking(move || hash_password(&request.password))
+            .await??;
+        user_service::register_user(pool, &context, &username, &hash).await
+    }
+    .await;
+    if result.is_err() {
+        let mut event = AuditEvent::new(
+            &context,
+            AuditAction::Register,
+            AuditEntity::Users,
+            None,
+            AuditOutcome::Failure,
+        );
+        event.attempted_username = Some(attempted);
+        event.reason = Some("REGISTRATION_REJECTED");
+        audit_service::record_best_effort(pool, &event).await;
+    }
+    result
 }
 
 pub async fn login(
@@ -63,7 +84,35 @@ pub async fn login(
     session: &AuthSession,
     request: LoginRequest,
 ) -> anyhow::Result<User> {
-    let revision = session.begin_login()?;
+    let context = AuditContext::anonymous();
+    let mut event = AuditEvent::new(
+        &context,
+        AuditAction::Login,
+        AuditEntity::Users,
+        None,
+        AuditOutcome::Failure,
+    );
+    event.attempted_username = Some(audit_service::attempted_username(&request.username));
+    let previous = session.identity()?;
+    let revision = match session.begin_login() {
+        Ok(revision) => revision,
+        Err(error) => {
+            event.reason = Some("LOGIN_THROTTLED");
+            audit_service::record_best_effort(pool, &event).await;
+            return Err(error);
+        }
+    };
+    if let Some(previous) = previous {
+        let mut ended = AuditEvent::new(
+            &previous.audit_context(),
+            AuditAction::Logout,
+            AuditEntity::Users,
+            Some(previous.user_id),
+            AuditOutcome::Success,
+        );
+        ended.reason = Some("REAUTHENTICATION");
+        audit_service::record_best_effort(pool, &ended).await;
+    }
     let result = async {
         let username = normalize_username(&request.username)
             .map_err(|_| anyhow::anyhow!("Invalid username or password."))?;
@@ -91,37 +140,139 @@ pub async fn login(
             .context("Invalid username or password.")
     }
     .await;
-    session.finish_login(
-        revision,
-        result.as_ref().ok().map(|user: &User| user.user_id),
-    )?;
-    result
+    match result {
+        Ok(user) => {
+            let identity = SessionIdentity {
+                user_id: user.user_id,
+                username: user.username.clone(),
+                reference: Uuid::new_v4(),
+            };
+            event.context.actor_user_id = Some(user.user_id);
+            event.context.actor_username = Some(user.username.clone());
+            event.context.session_reference = Some(identity.reference);
+            event.entity_id = Some(user.user_id);
+            event.outcome = AuditOutcome::Success;
+            // Fail closed: no session is granted unless the login event is durable.
+            if let Err(error) = audit_service::record(pool, &event).await {
+                let _ = session.complete_login(revision, None);
+                return Err(error.context("Login could not be audited"));
+            }
+            if let Err(error) = session.complete_login(revision, Some(identity)) {
+                // A concurrent logout/new login superseded this verified attempt.
+                event.outcome = AuditOutcome::Failure;
+                event.reason = Some("LOGIN_CANCELLED");
+                audit_service::record_best_effort(pool, &event).await;
+                return Err(error);
+            }
+            Ok(user)
+        }
+        Err(error) => {
+            event.reason = Some(if error.to_string() == "Invalid username or password." {
+                "INVALID_CREDENTIALS"
+            } else {
+                "AUTHENTICATION_ERROR"
+            });
+            if session.complete_login(revision, None).is_err() {
+                event.reason = Some("LOGIN_CANCELLED");
+            }
+            audit_service::record_best_effort(pool, &event).await;
+            Err(error)
+        }
+    }
+}
+
+pub async fn logout(pool: &Pool, session: &AuthSession) -> anyhow::Result<()> {
+    // Clear access first, even if the audit database is unavailable.
+    if let Some(identity) = session.end_session()? {
+        let event = AuditEvent::new(
+            &identity.audit_context(),
+            AuditAction::Logout,
+            AuditEntity::Users,
+            Some(identity.user_id),
+            AuditOutcome::Success,
+        );
+        audit_service::record_best_effort(pool, &event).await;
+    }
+    Ok(())
 }
 
 pub async fn current_user(pool: &Pool, session: &AuthSession) -> anyhow::Result<Option<User>> {
-    let Some(id) = session.user_id()? else {
+    let Some(identity) = session.identity()? else {
         return Ok(None);
     };
+    let id = identity.user_id;
     let user = user_service::get_active_user(pool, id).await?;
     if user.is_none() {
-        session.clear_user(id)?;
+        if let Some(identity) = session.invalidate(identity.reference)? {
+            let mut event = AuditEvent::new(
+                &identity.audit_context(),
+                AuditAction::Logout,
+                AuditEntity::Users,
+                Some(id),
+                AuditOutcome::Success,
+            );
+            event.reason = Some("SESSION_INVALIDATED");
+            audit_service::record_best_effort(pool, &event).await;
+        }
     }
     Ok(user)
 }
 
+pub async fn authorize(
+    pool: &Pool,
+    session: &AuthSession,
+    permission: &str,
+    entity_id: Option<i32>,
+) -> anyhow::Result<AuditContext> {
+    let (entity, action) = AuditEntity::from_permission(permission)?;
+    let identity = session.identity()?;
+    let mut context = identity
+        .as_ref()
+        .map(SessionIdentity::audit_context)
+        .unwrap_or_else(AuditContext::anonymous);
+    let result = async {
+        let user = current_user(pool, session)
+            .await?
+            .context("Authentication required. Please log in.")?;
+        anyhow::ensure!(
+            identity
+                .as_ref()
+                .zip(session.identity()?.as_ref())
+                .is_some_and(|(original, current)| original.reference == current.reference),
+            "Authentication required. Please log in."
+        );
+        context.actor_user_id = Some(user.user_id);
+        context.actor_username = Some(user.username);
+        anyhow::ensure!(
+            user.permissions.iter().any(|code| code == permission),
+            "Permission denied: {permission}"
+        );
+        Ok(context.clone())
+    }
+    .await;
+    if let Err(error) = &result {
+        let message = error.to_string();
+        let (outcome, reason) = if message.starts_with("Permission denied:") {
+            (AuditOutcome::Denied, "PERMISSION_DENIED")
+        } else if message.starts_with("Authentication required.") {
+            (AuditOutcome::Denied, "AUTHENTICATION_REQUIRED")
+        } else {
+            (AuditOutcome::Failure, "AUTHORIZATION_ERROR")
+        };
+        let mut event = AuditEvent::new(&context, action, entity, entity_id, outcome);
+        event.reason = Some(reason);
+        audit_service::record_best_effort(pool, &event).await;
+    }
+    result
+}
+
+#[cfg(test)]
 pub async fn require_permission(
     pool: &Pool,
     session: &AuthSession,
     permission: &str,
-) -> anyhow::Result<()> {
-    let user = current_user(pool, session)
-        .await?
-        .context("Authentication required. Please log in.")?;
-    anyhow::ensure!(
-        user.permissions.iter().any(|code| code == permission),
-        "Permission denied: {permission}"
-    );
-    Ok(())
+) -> anyhow::Result<AuditContext> {
+    authorize(pool, session, permission, None).await
 }
 
 #[cfg(test)]
@@ -149,7 +300,7 @@ mod tests {
     }
 
     /// Explicitly opt in after setup-dev.ps1. Requires an empty Users table and
-    /// removes only the temporary accounts it creates, including on failed checks.
+    /// disables the temporary accounts it creates, preserving their audit history.
     #[test]
     #[ignore = "requires freshly seeded local IRYS_Dev SQL Server database"]
     fn local_database_auth_roundtrip() {
@@ -234,11 +385,11 @@ mod tests {
             let mut client = pool.get().await.unwrap();
             client
                 .execute(
-                    "DELETE FROM dbo.Users WHERE Username IN (@P1, @P2);",
+                    "UPDATE dbo.Users SET isActive = 0 WHERE Username IN (@P1, @P2);",
                     &[&admin_name, &staff_name],
                 )
                 .await
-                .expect("Failed to clean up temporary authentication accounts");
+                .expect("Failed to deactivate temporary authentication accounts");
             result.unwrap();
         });
     }

@@ -708,6 +708,62 @@ execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N
 GO
 
 ---------------------------------------------------
+---                  AuditLogs                  ---
+---------------------------------------------------
+CREATE  TABLE IRYS_Dev.dbo.AuditLogs (
+	Id                   bigint    IDENTITY ( 1 , 1 )  NOT NULL,
+	OccurredAtUtc        datetime2(7)  CONSTRAINT DF_AuditLogs_OccurredAtUtc DEFAULT SYSUTCDATETIME()    NOT NULL,
+	ActorUserId          int      NULL,
+	ActorUsername        varchar(255)      NULL,
+	AttemptedUsername    nvarchar(255)      NULL,
+	Action               varchar(32)      NOT NULL,
+	EntityType           varchar(64)      NULL,
+	EntityId             int      NULL,
+	Outcome              varchar(16)      NOT NULL,
+	ReasonCode           varchar(64)      NULL,
+	BeforeData           nvarchar(max)      NULL,
+	AfterData            nvarchar(max)      NULL,
+	CorrelationId        uniqueidentifier      NOT NULL,
+	SessionReference     uniqueidentifier      NULL,
+	CONSTRAINT pk_AuditLogs PRIMARY KEY  ( Id ) ,
+	CONSTRAINT Cns_AuditLogs CHECK ( Action IN ( 'LOGIN', 'LOGOUT', 'REGISTER', 'CREATE', 'READ', 'UPDATE', 'DELETE' ) ),
+	CONSTRAINT Cns_AuditLogs_0 CHECK ( Outcome IN (
+    'SUCCESS', 'FAILURE', 'DENIED', 'NO_CHANGE'
+) ),
+	CONSTRAINT Cns_AuditLogs_1 CHECK ( BeforeData IS NULL OR ISJSON(BeforeData) = 1 ),
+	CONSTRAINT Cns_AuditLogs_2 CHECK ( AfterData IS NULL OR ISJSON(AfterData) = 1 )
+ );
+GO
+
+CREATE  INDEX idx_AuditLogs ON IRYS_Dev.dbo.AuditLogs ( OccurredAtUtc );
+GO
+
+CREATE  INDEX idx_AuditLogs_0 ON IRYS_Dev.dbo.AuditLogs ( ActorUserId, OccurredAtUtc );
+GO
+
+CREATE  INDEX idx_AuditLogs_1 ON IRYS_Dev.dbo.AuditLogs ( EntityType, EntityId, OccurredAtUtc );
+GO
+
+execute [IRYS_Dev].sys.sp_addextendedproperty  @name=N'MS_Description', @value=N'NEW TABLE
+
+---
+Definitions:
+
+ActorUserId - Authenticated user responsible for the action.
+ActorUsername - Username snapshot.
+AttemptedUsername - Submitted username for login attempts.
+Action - Controlled action code
+EntityType - Target table/resource
+EntityId - Target record ID
+Outcome - Operation outcome
+ReasonCode - Controlled reason
+BeforeData - JSON data before the action
+AfterData - JSON data after the action
+CorrelationId - groups entries belonging to an operation
+SessionReference - groups activity from one authenticated session' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'AuditLogs';;
+GO
+
+---------------------------------------------------
 ---                 SalesOrders                 ---
 ---------------------------------------------------
 CREATE  TABLE IRYS_Dev.dbo.SalesOrders ( 
@@ -1037,6 +1093,9 @@ ALTER TABLE IRYS_Dev.dbo.Accounts ADD CONSTRAINT fk_accounts_accountclasses FORE
 GO
 
 ALTER TABLE IRYS_Dev.dbo.Accounts ADD CONSTRAINT fk_accounts_accounts FOREIGN KEY ( SubAccountOf ) REFERENCES IRYS_Dev.dbo.Accounts( Id );
+GO
+
+ALTER TABLE IRYS_Dev.dbo.AuditLogs ADD CONSTRAINT fk_auditlogs_users FOREIGN KEY ( ActorUserId ) REFERENCES IRYS_Dev.dbo.Users( UserId );
 GO
 
 ALTER TABLE IRYS_Dev.dbo.BillDetails ADD CONSTRAINT fk_billdetails_bills FOREIGN KEY ( BillId ) REFERENCES IRYS_Dev.dbo.Bills( Id );

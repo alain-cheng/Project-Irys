@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { invoke } from "@tauri-apps/api/core"
 
 import CopyButton from "../../components/CopyButton"
@@ -131,7 +131,15 @@ function SalesOrderDetails() {
                                         return (
                                             <tr key={field} className={index % 2 === 0 ? "bg-background" : "bg-background-light"}>
                                                 <td className="w-48 font-semibold">{label}</td>
-                                                <td className="w-full"><span className="whitespace-normal wrap-break-word">{value}</span></td>
+                                                <td className="w-full">
+                                                    {field === "customerId" && salesOrder.customerId != null ? (
+                                                        <Link to={`/orders/customers/${salesOrder.customerId}`} className="text-accent-strong underline hover:no-underline">
+                                                            {value}
+                                                        </Link>
+                                                    ) : (
+                                                        <span className="whitespace-normal wrap-break-word">{value}</span>
+                                                    )}
+                                                </td>
                                                 <td><CopyButton value={value} /></td>
                                             </tr>
                                         )

@@ -1,3 +1,5 @@
+use crate::models::audit_log::{AuditAction, AuditContext, AuditEntity};
+use crate::services::audit_service::AuditTransaction;
 use anyhow::Context;
 use deadpool_tiberius::Pool;
 
@@ -98,13 +100,15 @@ pub async fn get_active_user(pool: &Pool, id: i32) -> anyhow::Result<Option<User
 /// An exclusive transaction lock makes first-user assignment safe across app instances.
 pub(crate) async fn register_user(
     pool: &Pool,
+    audit: &AuditContext,
     username: &str,
     password_hash: &str,
 ) -> anyhow::Result<User> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+    let mut transaction =
+        AuditTransaction::begin(pool, audit, AuditAction::Register, AuditEntity::Users, None)
+            .await?;
+    let result: anyhow::Result<i32> = async {
+    let client = transaction.client();
     // Keep BEGIN/COMMIT in one parameterized SQL batch: SQL Server RPC calls
     // must finish with the same transaction count with which they started.
     let row = client.query(
@@ -132,7 +136,9 @@ pub(crate) async fn register_user(
         &[&username, &password_hash],
     ).await?.into_row().await?.context("Registered user ID was not returned")?;
     let id: i32 = row.try_get("UserId")?.context("Missing UserId")?;
-    drop(client);
+    Ok(id)
+    }.await;
+    let id = transaction.finish(pool, result, |id| Some(*id)).await?;
     get_active_user(pool, id)
         .await?
         .context("Registered user is unavailable")

@@ -37,6 +37,8 @@ pub async fn get_current_user(
 }
 
 #[tauri::command]
-pub fn logout(session: State<'_, AuthSession>) -> Result<(), String> {
-    session.logout().map_err(|e| e.to_string())
+pub async fn logout(pool: State<'_, Pool>, session: State<'_, AuthSession>) -> Result<(), String> {
+    auth_service::logout(pool.inner(), session.inner())
+        .await
+        .map_err(|e| e.to_string())
 }

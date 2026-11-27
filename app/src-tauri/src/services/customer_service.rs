@@ -1,3 +1,5 @@
+use crate::models::audit_log::{AuditAction, AuditContext, AuditEntity};
+use crate::services::audit_service::AuditTransaction;
 use anyhow::Context;
 use chrono::NaiveDate;
 use deadpool_tiberius::Pool;
@@ -61,16 +63,25 @@ fn customer_from_row(row: Row) -> anyhow::Result<Customer> {
 ///
 /// # Arguments
 /// * `new_customer` - a customer model containing the data for a new customer
+pub async fn add_customer(
+    pool: &Pool,
+    audit: &AuditContext,
+    new_customer: NewCustomer,
+) -> anyhow::Result<Customer> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Create,
+        AuditEntity::Customers,
+        None,
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-pub async fn add_customer(pool: &Pool, new_customer: NewCustomer) -> anyhow::Result<Customer> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
-
-    let row = client
-        .query(
-            r#"
+        let row = client
+            .query(
+                r#"
                 INSERT INTO dbo.Customers (
                     CompanyName,
                     ContactName,
@@ -135,38 +146,43 @@ pub async fn add_customer(pool: &Pool, new_customer: NewCustomer) -> anyhow::Res
                     @P21, @P22, @P23
                 );
             "#,
-            &[
-                &new_customer.company_name,   // P1
-                &new_customer.contact_name,   // P2
-                &new_customer.contact_title,  // P3
-                &new_customer.address,        // P4
-                &new_customer.city,           // P5
-                &new_customer.province,       // P6
-                &new_customer.zip_code,       // P7
-                &new_customer.phone,          // P8
-                &new_customer.fax,            // P9
-                &new_customer.employee_id,    // P10
-                &new_customer.credit_limit,   // P11
-                &new_customer.tin,            // P12
-                &new_customer.area_code,      // P13
-                &new_customer.customer_code,  // P14
-                &new_customer.customer_area,  // P15
-                &new_customer.customer_agent, // P16
-                &new_customer.agent_name,     // P17
-                &new_customer.customer_type,  // P18
-                &new_customer.sm_code,        // P19
-                &new_customer.term,           // P20
-                &new_customer.term_code,      // P21
-                &new_customer.p_type,         // P22
-                &new_customer.remarks,        // P23
-            ],
-        )
-        .await?
-        .into_row()
-        .await?
-        .context("Customer inserted, but no record is returned")?;
+                &[
+                    &new_customer.company_name,   // P1
+                    &new_customer.contact_name,   // P2
+                    &new_customer.contact_title,  // P3
+                    &new_customer.address,        // P4
+                    &new_customer.city,           // P5
+                    &new_customer.province,       // P6
+                    &new_customer.zip_code,       // P7
+                    &new_customer.phone,          // P8
+                    &new_customer.fax,            // P9
+                    &new_customer.employee_id,    // P10
+                    &new_customer.credit_limit,   // P11
+                    &new_customer.tin,            // P12
+                    &new_customer.area_code,      // P13
+                    &new_customer.customer_code,  // P14
+                    &new_customer.customer_area,  // P15
+                    &new_customer.customer_agent, // P16
+                    &new_customer.agent_name,     // P17
+                    &new_customer.customer_type,  // P18
+                    &new_customer.sm_code,        // P19
+                    &new_customer.term,           // P20
+                    &new_customer.term_code,      // P21
+                    &new_customer.p_type,         // P22
+                    &new_customer.remarks,        // P23
+                ],
+            )
+            .await?
+            .into_row()
+            .await?
+            .context("Customer inserted, but no record is returned")?;
 
-    customer_from_row(row)
+        customer_from_row(row)
+    })
+    .await;
+    transaction
+        .finish(pool, result, |value| Some(value.id))
+        .await
 }
 
 /// Retrieves a customer from the database given by its unique id.
@@ -175,7 +191,6 @@ pub async fn add_customer(pool: &Pool, new_customer: NewCustomer) -> anyhow::Res
 ///
 /// # Arguments
 /// * `id` - A 32-bit integer representing the customer's unique identifier.
-
 pub async fn get_customer_by_id(pool: &Pool, id: i32) -> anyhow::Result<Option<Customer>> {
     let mut client = pool
         .get()
@@ -238,18 +253,33 @@ pub async fn get_all_customers(pool: &Pool) -> anyhow::Result<Vec<Customer>> {
 ///
 /// # Arguments
 /// * `id` - The unique identifier of the customer record to be deleted.
-pub async fn delete_customer_by_id(pool: &Pool, id: i32) -> anyhow::Result<bool> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection")?;
+pub async fn delete_customer_by_id(
+    pool: &Pool,
+    audit: &AuditContext,
+    id: i32,
+) -> anyhow::Result<bool> {
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Delete,
+        AuditEntity::Customers,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-    let result = client
-        .execute("DELETE FROM dbo.Customers WHERE Id = @P1", &[&id])
-        .await
-        .context("Failed to delete customer.")?;
+        let result = client
+            .execute("DELETE FROM dbo.Customers WHERE Id = @P1", &[&id])
+            .await
+            .context("Failed to delete customer.")?;
 
-    Ok(result.total() > 0)
+        Ok(result.total() > 0)
+    })
+    .await;
+    transaction
+        .finish(pool, result, |deleted| deleted.then_some(id))
+        .await
 }
 
 /// Updates a customer record given its id
@@ -257,20 +287,26 @@ pub async fn delete_customer_by_id(pool: &Pool, id: i32) -> anyhow::Result<bool>
 /// # Arguments
 /// * `id` - Unique identifier of the customer record to be updated.
 /// * `customer` - Customer model containing the updated records.
-
 pub async fn update_customer(
     pool: &Pool,
+    audit: &AuditContext,
     id: i32,
     customer: UpdateCustomer,
 ) -> anyhow::Result<Option<Customer>> {
-    let mut client = pool
-        .get()
-        .await
-        .context("Failed to retrieve database connection.")?;
+    let mut transaction = AuditTransaction::begin(
+        pool,
+        audit,
+        AuditAction::Update,
+        AuditEntity::Customers,
+        Some(id),
+    )
+    .await?;
+    let result = Box::pin(async {
+        let client = transaction.client();
 
-    let row = client
-        .query(
-            r#"
+        let row = client
+            .query(
+                r#"
             UPDATE dbo.Customers
             SET
                 CompanyName = @P1,
@@ -335,42 +371,47 @@ pub async fn update_customer(
                 INSERTED.Remarks
             WHERE Id = @P30;
             "#,
-            &[
-                &customer.company_name,   // P1
-                &customer.contact_name,   // P2
-                &customer.contact_title,  // P3
-                &customer.address,        // P4
-                &customer.city,           // P5
-                &customer.province,       // P6
-                &customer.zip_code,       // P7
-                &customer.phone,          // P8
-                &customer.fax,            // P9
-                &customer.alarm,          // P10
-                &customer.employee_id,    // P11
-                &customer.price_lvl,      // P12
-                &customer.credit_limit,   // P13
-                &customer.balance,        // P14
-                &customer.credit,         // P15
-                &customer.inv_balance,    // P16
-                &customer.tin,            // P17
-                &customer.area_code,      // P18
-                &customer.customer_code,  // P19
-                &customer.customer_area,  // P20
-                &customer.customer_agent, // P21
-                &customer.agent_name,     // P22
-                &customer.customer_type,  // P23
-                &customer.start_date,     // P24
-                &customer.sm_code,        // P25
-                &customer.term,           // P26
-                &customer.term_code,      // P27
-                &customer.p_type,         // P28
-                &customer.remarks,        // P29
-                &id,                      // P30
-            ],
-        )
-        .await?
-        .into_row()
-        .await?;
+                &[
+                    &customer.company_name,   // P1
+                    &customer.contact_name,   // P2
+                    &customer.contact_title,  // P3
+                    &customer.address,        // P4
+                    &customer.city,           // P5
+                    &customer.province,       // P6
+                    &customer.zip_code,       // P7
+                    &customer.phone,          // P8
+                    &customer.fax,            // P9
+                    &customer.alarm,          // P10
+                    &customer.employee_id,    // P11
+                    &customer.price_lvl,      // P12
+                    &customer.credit_limit,   // P13
+                    &customer.balance,        // P14
+                    &customer.credit,         // P15
+                    &customer.inv_balance,    // P16
+                    &customer.tin,            // P17
+                    &customer.area_code,      // P18
+                    &customer.customer_code,  // P19
+                    &customer.customer_area,  // P20
+                    &customer.customer_agent, // P21
+                    &customer.agent_name,     // P22
+                    &customer.customer_type,  // P23
+                    &customer.start_date,     // P24
+                    &customer.sm_code,        // P25
+                    &customer.term,           // P26
+                    &customer.term_code,      // P27
+                    &customer.p_type,         // P28
+                    &customer.remarks,        // P29
+                    &id,                      // P30
+                ],
+            )
+            .await?
+            .into_row()
+            .await?;
 
-    row.map(customer_from_row).transpose()
+        row.map(customer_from_row).transpose()
+    })
+    .await;
+    transaction
+        .finish(pool, result, |value| value.as_ref().map(|record| record.id))
+        .await
 }

@@ -12,10 +12,10 @@ pub async fn add_item(
     session: State<'_, AuthSession>,
     item: NewItem,
 ) -> Result<Item, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "items.create")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "items.create", None)
         .await
         .map_err(|e| e.to_string())?;
-    item_service::add_item(pool.inner(), item)
+    item_service::add_item(pool.inner(), &audit, item)
         .await
         .map_err(|e| e.to_string())
 }
@@ -26,7 +26,7 @@ pub async fn get_item_by_id(
     session: State<'_, AuthSession>,
     id: i32,
 ) -> Result<Option<Item>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "items.view")
+    auth_service::authorize(pool.inner(), session.inner(), "items.view", Some(id))
         .await
         .map_err(|e| e.to_string())?;
     item_service::get_item_by_id(pool.inner(), id)
@@ -39,7 +39,7 @@ pub async fn get_all_items(
     pool: State<'_, Pool>,
     session: State<'_, AuthSession>,
 ) -> Result<Vec<Item>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "items.view")
+    auth_service::authorize(pool.inner(), session.inner(), "items.view", None)
         .await
         .map_err(|e| e.to_string())?;
     item_service::get_all_items(pool.inner())
@@ -54,10 +54,10 @@ pub async fn update_item(
     id: i32,
     item: UpdateItem,
 ) -> Result<Option<Item>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "items.update")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "items.update", Some(id))
         .await
         .map_err(|e| e.to_string())?;
-    item_service::update_item(pool.inner(), id, item)
+    item_service::update_item(pool.inner(), &audit, id, item)
         .await
         .map_err(|e| e.to_string())
 }
@@ -68,10 +68,10 @@ pub async fn delete_item_by_id(
     session: State<'_, AuthSession>,
     id: i32,
 ) -> Result<bool, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "items.delete")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "items.delete", Some(id))
         .await
         .map_err(|e| e.to_string())?;
-    item_service::delete_item_by_id(pool.inner(), id)
+    item_service::delete_item_by_id(pool.inner(), &audit, id)
         .await
         .map_err(|e| e.to_string())
 }

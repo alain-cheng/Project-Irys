@@ -12,10 +12,10 @@ pub async fn add_order(
     session: State<'_, AuthSession>,
     order: NewOrder,
 ) -> Result<Order, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "orders.create")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "orders.create", None)
         .await
         .map_err(|e| e.to_string())?;
-    order_service::add_order(pool.inner(), order)
+    order_service::add_order(pool.inner(), &audit, order)
         .await
         .map_err(|e| e.to_string())
 }
@@ -26,7 +26,7 @@ pub async fn get_order_by_id(
     session: State<'_, AuthSession>,
     id: i32,
 ) -> Result<Option<Order>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "orders.view")
+    auth_service::authorize(pool.inner(), session.inner(), "orders.view", Some(id))
         .await
         .map_err(|e| e.to_string())?;
     order_service::get_order_by_id(pool.inner(), id)
@@ -39,7 +39,7 @@ pub async fn get_all_orders(
     pool: State<'_, Pool>,
     session: State<'_, AuthSession>,
 ) -> Result<Vec<Order>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "orders.view")
+    auth_service::authorize(pool.inner(), session.inner(), "orders.view", None)
         .await
         .map_err(|e| e.to_string())?;
     order_service::get_all_orders(pool.inner())
@@ -54,10 +54,10 @@ pub async fn update_order(
     id: i32,
     order: UpdateOrder,
 ) -> Result<Option<Order>, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "orders.update")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "orders.update", Some(id))
         .await
         .map_err(|e| e.to_string())?;
-    order_service::update_order(pool.inner(), id, order)
+    order_service::update_order(pool.inner(), &audit, id, order)
         .await
         .map_err(|e| e.to_string())
 }
@@ -68,10 +68,10 @@ pub async fn delete_order_by_id(
     session: State<'_, AuthSession>,
     id: i32,
 ) -> Result<bool, String> {
-    auth_service::require_permission(pool.inner(), session.inner(), "orders.delete")
+    let audit = auth_service::authorize(pool.inner(), session.inner(), "orders.delete", Some(id))
         .await
         .map_err(|e| e.to_string())?;
-    order_service::delete_order_by_id(pool.inner(), id)
+    order_service::delete_order_by_id(pool.inner(), &audit, id)
         .await
         .map_err(|e| e.to_string())
 }

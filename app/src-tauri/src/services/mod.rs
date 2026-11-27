@@ -8,3 +8,6 @@ pub mod sales_order_detail_service;
 pub mod order_status_service;
 pub mod user_service;
 pub mod auth_service;
+pub mod audit_service;
+#[cfg(test)]
+mod audit_integration;

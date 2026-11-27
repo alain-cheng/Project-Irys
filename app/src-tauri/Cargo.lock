@@ -91,6 +91,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-log",
  "tiberius",
+ "uuid",
 ]
 
 [[package]]
